@@ -1,6 +1,6 @@
 # theme                  : "minimal-mistakes-jekyll"
 # remote_theme           : "mmistakes/minimal-mistakes@4.27.3"
-minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+minimal_mistakes_skin    : "dark"
 
 # Site Settings
 locale                   : "en-Uk"
@@ -8,10 +8,10 @@ rtl                      : # true, false (default) # turns direction of the page
 title                    : "Adaptive Systems Theory"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
-name                     : "Your Name"
+name                     : ""
 description              : "Understanding adaptation, not pathology"
 url                      : "https://millbo01.github.io"
-baseurl                  : # the subpath of your site, e.g. "/blog"
+baseurl                  : ""
 repository               : "millbo01/millbo01.github.io"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
 logo                     : # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
@@ -76,19 +76,21 @@ naver_site_verification  :
 yandex_site_verification :
 baidu_site_verification  :
 
-main:
-  - title: "Introduction"
-    url: /introduction/
-  - title: "Framework"  
-    url: /framework/
-  - title: "Library"
-    url: /library/
-  - title: "Concepts"
-    url: /concepts/
-  - title: "Research"
-    url: /research/
+navigation:
+  main:
+    - title: "Introduction"
+      url: /introduction/
+    - title: "Framework"  
+      url: /framework/
+    - title: "Library"
+      url: /library/
+    - title: "Concepts"
+      url: /concepts/
+    - title: "Research"
+      url: /research/
 
-    collections:
+# Collections
+collections:
   concepts:
     output: true
     permalink: /concepts/:name/
@@ -98,22 +100,6 @@ main:
   research:
     output: true
     permalink: /research/:name/
-
-    defaults:
-  - scope:
-      path: ""
-      type: concepts
-    values:
-      layout: single
-      sidebar:
-        nav: "concepts"
-  - scope:
-      path: ""
-      type: library
-    values:
-      layout: single
-      sidebar:
-        nav: "library"
 
 # Social Sharing
 twitter:
@@ -352,3 +338,25 @@ defaults:
       comments: # true
       share: true
       related: true
+  # _concepts
+  - scope:
+      path: ""
+      type: concepts
+    values:
+      layout: single
+      sidebar:
+        nav: "concepts"
+  # _library
+  - scope:
+      path: ""
+      type: library
+    values:
+      layout: single
+      sidebar:
+        nav: "library"
+  # _research
+  - scope:
+      path: ""
+      type: research
+    values:
+      layout: single
