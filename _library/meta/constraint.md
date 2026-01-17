@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Constraint"
-permalink: /meta/constraint/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Constraint (Meta)**
