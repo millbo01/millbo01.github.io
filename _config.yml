@@ -88,6 +88,8 @@ navigation:
       url: /concepts/
     - title: "Research"
       url: /research/
+    - title: "FAQ"
+      url: /faq/
 
 # Collections
 collections:
