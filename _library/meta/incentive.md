@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Incentive"
-permalink: /meta/incentive/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Incentive (Meta)**
