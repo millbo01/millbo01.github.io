@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Option Set"
-permalink: /meta/option-set/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Option Set (Meta)**
