@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Human Distance"
-permalink: /meta/human-distance/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Human Distance (Meta)**
