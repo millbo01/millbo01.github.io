@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Model"
-permalink: /meta/model
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Model (Meta)**
