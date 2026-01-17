@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "Library: Kin & Tribe (T1/T2)"
-permalink: /library/kin-and-tribe/
+permalink: /library/autonomy-and-behavior/
 toc: true
 toc_label: "Terms"
 ---
