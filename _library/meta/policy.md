@@ -1,8 +1,6 @@
 ---
 layout: single
 title: "Policy"
-permalink: /meta/policy/
-toc: true
 ---
 
 ## **Policy (Meta)**
