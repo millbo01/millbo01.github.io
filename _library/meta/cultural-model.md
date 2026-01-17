@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Cultural Model"
-permalink: /meta/cultural-model/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Cultural Model (Meta)**
