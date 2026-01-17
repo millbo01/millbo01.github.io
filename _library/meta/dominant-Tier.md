@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Dominant Tier"
-permalink: /meta/dominant-tier/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Dominant Tier (Meta)**
