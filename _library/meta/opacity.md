@@ -1,9 +1,6 @@
 ---
 layout: single
 title: "Opacity"
-permalink: /meta/opacity/
-toc: true
-toc_label: "Terms"
 ---
 
 ## **Opacity (Meta)**
