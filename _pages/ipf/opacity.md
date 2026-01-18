@@ -37,8 +37,6 @@ The bottom-right quadrant is where most institutional failure lives: misaligned 
 
 ## Three Mechanisms That Break Feedback
 
-![Three mechanisms that break feedback loops](/assets/images/opacity-mechanisms.svg)
-
 *Opacity operates through diffused attribution, temporal delay, and displaced costs—each breaking the connection between action and consequence in different ways.*
 
 Opacity operates through three distinct mechanisms, often simultaneously:
@@ -46,6 +44,8 @@ Opacity operates through three distinct mechanisms, often simultaneously:
 ### 1. Diffused Attribution
 
 **Can't trace outcome to specific actor.**
+
+![Three mechanisms that break feedback loops](/assets/images/assets/images/diffused-attribution.svg)
 
 When responsibility is distributed across many actors, complex systems, or collective decisions, no individual bears visible consequence for failure. Everyone contributed, so no one is accountable.
 
