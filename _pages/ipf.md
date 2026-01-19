@@ -76,7 +76,7 @@ Values, temperament, intelligence, culture, and history still matter, but they f
 
 IPF provides a unified framework for understanding:
 
-- **Why good people produce bad outcomes** - Misaligned incentives, not bad character
+- **Why well-meaning people produce bad outcomes** - Misaligned incentives, not bad character
 - **Why organizations drift from stated missions** - Proxy metrics capture optimization
 - **Why reform attempts repeatedly fail** - Treating symptoms, not structural causes
 - **Why the same problems recur across domains** - Shared incentive patterns
