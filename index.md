@@ -163,6 +163,7 @@ Feedback latency operates through two structurally distinct mechanisms that are 
 <a href="/assets/images/latency-mechanisms.png" target="_blank">
   <img src="/assets/images/latency-mechanisms.png" alt="The Core Dynamic">
 </a>
+
 *Click to enlarge*
 
 <br>
