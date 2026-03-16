@@ -34,8 +34,8 @@ A common assumption in economic and governance theory, present in Nash equilibri
 
 *The term structural drift is used here in a precise sense distinct from its usage in historical institutionalism, where drift typically refers to slow, path-dependent institutional change through layering or conversion. Structural drift in this framework refers specifically to the pressure-induced migration of behaviour toward the constraint frontier, a dynamic process driven by optimisation pressure rather than incremental reform*
 
-<a href="/assets/images/gov-theatre1.svg" target="_blank">
-  <img src="/assets/images/gov-theatre1.svg" alt="The Core Dynamic">
+<a href="/assets/images/gov-theatre.png" target="_blank">
+  <img src="/assets/images/gov-theatre1.png" alt="The Core Dynamic">
 </a>
 
 *Click to enlarge*
