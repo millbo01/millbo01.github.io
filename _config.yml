@@ -182,6 +182,18 @@ include:
   - .htaccess
   - _pages
 exclude:
+  - _pages/applications.md
+  - _pages/core-mechanism.md
+  - _pages/diagnostic-method.md
+  - _pages/opacity.md
+  - _pages/six-tiers.md
+  - _pages/6nf.md
+  - _pages/faq.md
+  - _pages/framework.md
+  - _pages/introduction.md
+  - _pages/ipf.md
+  - _pages/library.md
+  - _pages/nrt.md
   - "*.sublime-project"
   - "*.sublime-workspace"
   - vendor
