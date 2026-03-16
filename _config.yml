@@ -5,7 +5,7 @@ minimal_mistakes_skin    : "dark"
 # Site Settings
 locale                   : "en-Uk"
 rtl                      : # true, false (default) # turns direction of the page into right to left for RTL languages
-title                    : "Adaptive Systems Theory"
+title                    : "James Miller"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : ""
