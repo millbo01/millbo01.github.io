@@ -56,8 +56,8 @@ reCaptcha:
 atom_feed:
   path                   : # blank (default) uses feed.xml
   hide                   : # true, false (default)
-search                   : true
-search_full_content      : true
+search                   : false
+search_full_content      : false
 search_provider          : lunr
 lunr:
   search_within_pages    : # true, false (default)
