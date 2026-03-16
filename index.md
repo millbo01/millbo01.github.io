@@ -246,6 +246,12 @@ Near-equilibrium is achievable. True equilibrium is not. The distance between th
 
 Each case study in the following appendices is chosen not because it is an easy fit for Miller's Law of Structural Drift, but because it appears, at first glance, to break it. The approach is deliberately adversarial. A framework that survives only comfortable evidence is not a framework, it is a preference. What follows is a genuine attempt to falsify the law against three high-profile institutional failures before assessing whether it holds.
 
+A legitimate methodological concern is whether the load displacement mechanism renders the law unfalsifiable in practice. If institutional survival can always be attributed to displacement rather than genuine load reduction, the law risks becoming a closed explanatory system that absorbs counterexamples rather than engaging them. This concern is worth stating directly.
+
+The law's falsifiability rests on three conditions. First, displacement leaves observable structural traces, in counterparty balance sheets, deferred liabilities, regulatory capture patterns, and the distribution of who bears costs relative to who generated them, that can in principle be empirically examined. Second, the directional load accumulation prediction is measurable independently of displacement dynamics. Third, and most importantly, displacement is a structural prediction of the law rather than an ad hoc rescue mechanism. If actors rationally optimise within constraint fields and displacement is an available optimisation, the law predicts displacement will occur rather than invoking it retrospectively to explain away inconvenient evidence.
+
+A system exhibiting genuine load reduction without displacement traces, under conditions of weak enforcement and delayed feedback, would constitute falsifying evidence. The absence of such a case in the empirical record is not claimed as confirmation of the law. It is acknowledged as a limitation of the framework's empirical testability that future work should address.
+
 ---
 
 ## **Appendix A: Attempted Falsification, Boeing 737 MAX**
