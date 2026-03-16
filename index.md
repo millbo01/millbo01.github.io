@@ -213,7 +213,7 @@ Miller’s Law of Structural Drift provides a simple structural explanation for 
 
 Understanding this dynamic allows system designers to shift focus from governance theatre toward the structural conditions that determine the real behavioural frontier within complex systems.
 
-There is, however, a deeper structural claim underlying these implications, one that concerns not the design of governance systems but the limits of what any governance system can achieve
+There is, however, a deeper structural claim underlying these implications, one that concerns not the design of governance systems but the limits of what any governance system can achieve.
 
 ---
 
