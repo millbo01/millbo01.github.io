@@ -89,7 +89,7 @@ The implication for governance design is direct. Constraining deliberate miscond
 
 Optimisation pressure operates continuously and is not uniformly distributed. It concentrates where opportunity is visible, where consequences are distant, and where the gap between declared rules and operational enforcement is widest. Actors do not need to consciously identify these gaps. Through iterative adaptation, adjusting strategies based on what produces advantage and what produces consequence, behaviour naturally migrates toward the edges of what the system effectively permits.
 
-As a result, systems containing adaptive actors exhibit a consistent tendency: behavioural strategies expand until they encounter the operational boundary of what the system effectively permits. The boundary itself then becomes the target.
+As a result, systems containing adaptive actors exhibit a consistent tendency: behavioural strategies expand until they encounter the operational boundary of what the system effectively permits. The constraint frontier therefore functions not merely as a limit but as a behavioural attractor, continuously pulling behaviour toward it rather than toward stable equilibrium.
 
 ---
 
