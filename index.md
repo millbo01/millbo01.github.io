@@ -158,9 +158,14 @@ Feedback latency operates through two structurally distinct mechanisms that are 
 
 **Architectural latency** arises when feedback exists but is structurally prevented from reaching actors with the power to correct behaviour. The signal is present but the system contains no pathway, or no sufficiently powerful pathway, through which it can produce corrective consequence. Warnings are documented, concerns are raised, dissent is recorded, and nothing changes, not because the information arrived too late but because the constraint field contained no mechanism that made acting on it rational for those with authority to do so.
 
+<br>
+
 <a href="/assets/images/latency-mechanisms.png" target="_blank">
   <img src="/assets/images/latency-mechanisms.png" alt="The Core Dynamic">
 </a>
+*Click to enlarge*
+
+<br>
 
 Both forms produce the same outcome: load accumulates beyond the level that corrective mechanisms are responding to. But they require different interventions. Temporal latency is addressed by accelerating feedback architecture, faster detection, shorter consequence cycles, more responsive monitoring. Architectural latency requires structural power rebalancing, ensuring that actors who receive feedback signals have either the authority to act on them or access to actors who do. A system that addresses temporal latency without addressing architectural latency will still suppress correction wherever warnings can be safely ignored by those they implicate.
 
