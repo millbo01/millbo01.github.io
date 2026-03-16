@@ -8,8 +8,6 @@ toc_label: "Contents"
 toc_sticky: true
 ---
 
-# Beyond Nash: Drift, Load and the Impossibility of Institutional Equilibrium
-
 *A structural explanation for governance drift in systems with adaptive actors*
 
 ## Abstract
