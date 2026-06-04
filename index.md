@@ -141,13 +141,13 @@ Fabrication here is not a moral accusation - it is a structural description. At 
 
 The significance for the drift framework is this: the reputational corrective mechanism - the signal that should function as a brake on drift - is itself a casualty of the scale that drives drift. As institutions grow, authentic reputation degrades as an enforcement signal at precisely the moment when drift pressure is highest and the enforcement signal is most needed.
 
-**The asymmetry with load displacement**
+### **The asymmetry with load displacement**
 
 Load displacement has a partial homeostatic effect. Load offloaded onto regulators, contractors, or counterparties removes it from the institution's registered load, creating temporary corrective space. The institution bleeds pressure, however exploitatively.
 Fabricated reputation has no equivalent release valve. Each signal emitted to sustain the reputational fiction adds to the total fiction that must be maintained. There is no counterparty onto whom reputational debt can be quietly transferred. The available moves are more performance, more coordination of the fiction across more actors, and more resource deployment toward reputation management - all of which increase the surface area that must remain coherent under scrutiny.
 The coordination burden grows faster than linearly with institutional size. The number of actors who must maintain consistent performance with one another scales faster than membership, in a manner analogous to how network connections scale as n(n-1)/2 rather than linearly with nodes (Metcalfe, 1980, cited as structural analogy rather than direct application). The 2005 critique of Metcalfe's Law by Briscoe, Odlyzko, and Tilly - that connection quality rather than quantity determines network value - strengthens this application: it is the quality and consistency of fiction-maintenance relationships that determines when the fabricated layer fails, and that quality degrades fastest at the periphery where coordination is weakest and individual actors have least to lose by defecting.
 
-**Interaction with drift dynamics**
+### **Interaction with drift dynamics**
 
 When both mechanisms operate simultaneously - as they always do in large institutions, since scale drives both - they interact multiplicatively rather than additively. Drift increases the gap between presented and actual performance. That gap increases the facade load required to sustain the reputational fiction. That facade load consumes resources that could otherwise reduce the underlying gap. The corrective mechanism degrades in direct proportion to the drift it is nominally correcting.
 This is the structural explanation for why large institutional scandals tend to arrive suddenly and completely rather than gradually and partially. The fabricated reputational layer does not thin gradually under pressure. It holds until the coordination of the fiction fails at a peripheral point, at which point every actor who has traded in the fabricated reputation must simultaneously seek distance from it. The collapse is proportional not to the immediate trigger but to the accumulated gap the fiction was sustaining.
@@ -298,7 +298,7 @@ The conventional account of institutional scale treats it as an accumulation of 
 
 This matters because the costs of scale are not borne by the institution that captures its benefits. The parasitic load of facade maintenance, the systemic cost of displacement, the degradation of corrective mechanisms across the broader institutional environment - these are externalised. The institution captures the gain. The system absorbs the cost. This is not an accidental feature of how large institutions behave. It is the structural mechanism that makes scale rational for those pursuing it.
 
-**The satiation problem**
+### **The satiation problem**
 
 Physical resource accumulation has natural constraints. Storage capacity, logistics, and diminishing marginal utility all create feedback on accumulation. These constraints evolved alongside the human drive to secure resources, and for most of human history they imposed a practical ceiling on how far that drive could run before environmental resistance kicked in.
 
@@ -306,19 +306,19 @@ Abstract resource accumulation - capital, market position, institutional power -
 
 This is not a cultural failure or a leadership failure. It is the correct output of the incentive structure that governs institutional behaviour. Calling it greed misidentifies the mechanism. The drive is hardwired and adaptive. The environment simply never developed the feedback constraints that would have bounded it at a scale compatible with systemic health.
 
-**The interconnectivity problem**
+### **The interconnectivity problem**
 
 The scale pathology is not primarily a function of population size. It is a function of interconnectivity. Dunbar's cognitive limit on authentic social relationships - approximately 150 - was never a constraint on how many humans could exist. It was always a constraint on how many could be held in genuine reputational relationship with one another. For most of human history, the scale at which institutions operated stayed within or close to that limit by necessity. Geography, communication technology, and the logistics of coordination all imposed practical boundaries that roughly corresponded to the social architecture within which corrective mechanisms could function.
 
 The progressive removal of those boundaries - through communications technology, financial infrastructure, and legal frameworks that enable institutions to operate at continental and global scale - did not extend the reach of corrective mechanisms. It extended the reach of extraction while leaving the corrective mechanisms behind. The result is institutions operating at a scale for which no authentic enforcement infrastructure exists, sustained by fabricated reputation and displacement capacity, degrading the systemic environment they depend on faster than that environment can recover.
 
-**The lock-in dynamic**
+### **The lock-in dynamic**
 
 Once an institution crosses the threshold at which authentic corrective feedback can no longer function, voluntary return below it becomes structurally impossible. The actors with the power to reduce the institution's scale are precisely the actors whose positions depend on maintaining it. The incentive to preserve scale is concentrated and immediate. The benefit of reducing it is diffuse and delayed. This is the same calculus that makes individual restraint irrational at scale, applied to the institution's own existence.
 
 Return below the threshold therefore does not occur voluntarily. It occurs through catastrophic correction - forced restructuring, collapse, or external intervention powerful enough to override internal resistance. The institution does not choose to shrink. It is reduced by a system that can no longer absorb its displacement.
 
-**The masking problem**
+### **The masking problem**
 
 The aggregate picture is further obscured by an uneven distribution of genuine productivity across sectors. Technological innovation represents a real expansion of productive capacity - more output from fewer inputs, compounding across decades. But the gains from that expansion are currently distributed across an entire institutional landscape, much of which is, by the measures this framework predicts, in advanced drift.
 
@@ -326,7 +326,7 @@ Strip the productivity signal of genuine innovation from the aggregate indices, 
 
 This masking does not eliminate the underlying dynamic. It delays the corrective event and increases its eventual magnitude. The latent load continues accumulating across drifting sectors regardless of what the aggregate indicators report. When the masking effect weakens - as it will, because even genuine productivity gains have diminishing returns at the frontier - the correction will be proportional to the accumulated gap, not to any single triggering event.
 
-**The structural implication**
+### **The structural implication**
 
 The framework does not offer a return to smaller scales as a solution. The interconnectivity that enabled institutions to exceed authentic corrective limits cannot be wished away, and the actors who would need to choose reduction are structurally incapable of choosing it voluntarily.
 
