@@ -147,6 +147,17 @@ This fails because:
 
 → [Explore Feedback Integrity in the Library](/library/meta/feedback-integrity/)
 
+## Scale as an Opacity Multiplier
+The three feedback-breaking mechanisms - diffused attribution, temporal delay, and displaced costs - all worsen predictably with institutional scale. This is not incidental. Scale is a structural variable that systematically increases opacity, and opacity systematically increases drift. The relationship compounds.
+As headcount grows:
+
+Attribution becomes more diffused - causal chains lengthen, decision-making disperses, and individual accountability becomes harder to establish even in good faith
+Temporal delay increases - the distance between decision and consequence grows as hierarchies deepen and feedback must travel further before reaching decision-makers
+Cost displacement expands - larger institutions have more capacity to externalise costs onto regulators, contractors, suppliers, junior staff, and future stakeholders
+
+These three mechanisms compound rather than add. This is why large institutional failures, when they arrive, tend to arrive suddenly and completely - the opacity has been accumulating across all three dimensions simultaneously, and the correction when it comes must address all three at once.
+The efficiency ceiling: Energy spent maintaining the gap between presented and actual performance - communications, narrative management, governance theatre, compliance performance - constitutes a parasitic load on the productive core. This load is not recoverable. It grows as a function of the gap it is sustaining, because a wider gap requires more active maintenance. The practical implication is that every institution trending toward opacity is also trending toward a state where an increasing proportion of its total energy is consumed by self-description rather than function. The theoretical ceiling is a system that produces nothing except the maintenance of the appearance that it produces something. This is not hyperbole - it is the logical endpoint of unconstrained drift under opacity protection.
+
 ---
 
 ## Information Asymmetry as Power
