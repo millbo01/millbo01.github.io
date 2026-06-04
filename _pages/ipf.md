@@ -374,6 +374,14 @@ The framework makes forward predictions based on dominance of observable incenti
 
 The framework's credibility depends not on ideological certainty but on continuous testing against empirical evidence.
 
+## Scale, Reputation, and the Compounding of Fragility
+
+A critical extension of the two-factor model concerns what happens when institutions grow beyond the cognitive limits of authentic social enforcement.
+Reputation functions as the primary enforcement mechanism in human systems - more powerful in practice than formal rules, which work mainly by making reputational consequence credible. But reputation has a hard structural limit: it cannot be authenticated beyond approximately two degrees of separation (Dunbar, 1992). Beyond that radius, verification chains break. What appears as institutional reputation is structurally fabricated - not as deception, but as necessity. No other mechanism exists at that scale.
+This creates a second fragility operating alongside drift, with a crucial asymmetry: drift has a partial release valve through load displacement onto other actors. Fabricated reputation has no equivalent. Each signal emitted to sustain the fiction adds to the total fiction requiring maintenance. The coordination cost grows faster than linearly with scale. The system cannot bleed this pressure the way it can bleed operational load.
+When both fragility types are present simultaneously - as they always are in large institutions, since scale drives both - they interact multiplicatively. The corrective mechanism that should slow drift (reputation as accountability) is itself destroyed by the scale that accelerates drift. This is the structural explanation for why large institutional scandals arrive suddenly and completely, rather than gradually and partially.
+The diagnostic consequence: T4 resources deployed on T2 reputation management are not neutral expenditure. They confirm that the institution is operating beyond its authentic reputation threshold, and they constitute a parasitic drain on productive capacity that grows with the gap they are sustaining. In any assessment context, the scale of reputation management activity is a negative indicator, not a positive one.
+
 ---
 
 ## Dive Deeper
