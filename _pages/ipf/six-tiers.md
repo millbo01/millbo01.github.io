@@ -124,6 +124,26 @@ The mechanism: Satisfied survival needs cause T1/T3 to recede. T2 fills the vacu
 
 **Prediction:** Any society that secures material needs without structural transparency will experience accelerating T2 fragmentation and elite extraction until legitimacy collapse.
 
+### The Fabrication Threshold: Why T2 Reputation Fails at Scale
+Reputation is the primary enforcement mechanism in human systems. Formal penalties work mainly by making reputational consequence credible and visible - it is the reputational damage itself, not the direct sanction cost, that disciplines behaviour across most social and institutional contexts.
+For reputational consequence to function, three structural prerequisites must hold:
+
+Visibility - the behaviour must be seen by the relevant network
+Attribution speed - the connection between action and actor must be clear and fast enough that reputation travels before the actor exits
+Network persistence - future interactions must remain possible, so reputational damage carries real cost
+
+When all three are present, prosocial behaviour is structurally rational. When any one is removed, the enforcement mechanism degrades - regardless of whether formal rules remain unchanged.
+Dunbar's sociocognitive research establishes a cognitive limit on stable social relationships - approximately 150, with a reliable trust radius of roughly two degrees of separation. Within that radius, reputation can be verified, transmitted, and acted upon through trusted intermediaries. Beyond it, the verification chain breaks.
+This produces a structural threshold: no authentic reputation can exist beyond approximately two degrees of separation. Where one appears to, it has been fabricated.
+Fabrication here is not a moral accusation - it is a structural description. At institutional scale, constructing reputation through signals, proxies, and managed perception is not a choice; it is a necessity. Every institution operating beyond Dunbar scale is, by structural necessity, maintaining a fabricated reputational layer.
+This has three direct consequences:
+
+The fabricated layer is load-bearing until scrutiny arrives. When it fails, it does not merely fail to protect - it accelerates collapse, because every actor who traded in the fabricated reputation must simultaneously seek distance from it.
+T4 resources (money, capital) deployed to manage or amplify T2 reputation confirm the fabricated layer rather than evidencing authentic reputation. Resource expenditure on reputation should reduce confidence in its authenticity, not increase it. This inverts the conventional assumption that a well-resourced communications operation signals institutional health.
+The coordination burden of maintaining the fiction does not grow linearly with size. It grows with the number of active relationships across which the fiction must remain consistent - analogous to how network connections scale faster than membership (Metcalfe, 1980; cited as structural analogy). This means fabricated reputation becomes progressively harder to sustain at scale, and breaks first at the periphery, where coordination is weakest and individual actors have least to lose by defecting.
+
+Diagnostic implication: When assessing any institution, the size of the communications function, the volume of reputation management activity, and the deployment of T4 resources toward T2 signals are not neutral indicators. They are confirmation that the institution is operating beyond the authentic reputation threshold. The louder the signal management, the weaker the underlying signal.
+
 ---
 
 ## Tier 3: Safety
@@ -238,6 +258,13 @@ This isn't malice. It's correct optimization when consequences attach to metrics
 Observers often mistake T4 optimization for greed or materialism, when it's actually instrumental pursuit of what T4 converts into for their dominant tier.
 
 Someone optimizing wealth for T1 (family security) looks identical to someone optimizing for T2 (status) or T3 (safety buffer), but the underlying motivation differs. Same behavior, different tier drivers.
+
+### T4 on T2: The Negative Indicator
+A specific and diagnostically important misapplication of T4 resources is their deployment toward T2 reputation management - PR budgets, communications teams, narrative campaigns, ESG signalling, awards participation, and brand-level values statements.
+Conventional analysis treats this expenditure as neutral or positive - evidence that the institution takes its reputation seriously. IPF analysis inverts this.
+Resources spent on facade maintenance are not invested in reducing the gap between presented and actual performance. They are extracted from the productive core and consumed entirely in sustaining the fiction. Every pound spent on reputation management is a pound not spent on closing the underlying gap. And because the facade must expand to keep pace with a widening gap, the spend grows as a function of the gap itself - a compounding drain, not a fixed overhead.
+This means T4 deployment on T2 signals functions as a parasitic load on the system. The energy is gone. It produces no productive output. And it increases as institutional drift increases, because more drift requires more facade to cover it.
+The practical consequence: In any diagnostic context - due diligence, governance review, institutional assessment - T4 expenditure on T2 reputation should be treated as a negative signal correlated with drift severity, not a positive signal of institutional quality.
 
 ---
 
