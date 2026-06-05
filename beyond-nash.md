@@ -1,7 +1,7 @@
 ---
 layout: single
-title: "Beyond Nash: Drift, Load and the Impossibility of Institutional Equilibrium"
-permalink: /
+title: Beyond Nash
+permalink: /beyond-nash/
 author_profile: false
 toc: true
 toc_label: "Contents"
