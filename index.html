@@ -1,1 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-ought</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
+    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
+    --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;letter-spacing:.04em;overflow-x:hidden; }
+  #particles { position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;pointer-events:none; }
+  #deep-canvas { position:fixed;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none; }
+  #surface-light { position:fixed;top:-20%;left:30%;width:50%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.045) 0%,transparent 70%);pointer-events:none;z-index:5; }
+  nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--text-faint);opacity:0;transform:translateY(-8px);transition:opacity .6s ease,transform .6s ease;background:rgba(7,8,16,.88);backdrop-filter:blur(4px); }
+  nav.visible { opacity:1;transform:translateY(0); }
+  .nav-mark { display:inline-block;width:28px;height:28px;cursor:pointer;text-decoration:none;flex-shrink:0; }
+  .nav-mark svg { display:block;width:28px;height:28px; }
+  .nav-links { display:flex;gap:48px;list-style:none; }
+  .nav-links a { color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s; }
+  .nav-links a:hover { color:var(--accent); }
+  #hero { position:relative;z-index:20;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+  .lockup { display:flex;align-items:center;justify-content:center;line-height:1;margin-bottom:40px; }
+  .lockup-n { font-family:var(--mono);font-size:52px;font-weight:normal;color:var(--accent);opacity:.88;letter-spacing:-.05em;line-height:1; }
+  .lockup-hyphen { font-family:var(--mono);font-size:52px;font-weight:normal;color:var(--accent);opacity:.88;letter-spacing:0;line-height:1;margin-right:.04em; }
+  .lockup-mark { display:inline-flex;align-items:center;width:52px;height:52px;flex-shrink:0;position:relative;top:1px; }
+  .lockup-mark svg { display:block;width:52px;height:52px; }
+  .lockup-ught { font-family:var(--mono);font-size:52px;font-weight:normal;color:var(--accent);opacity:.88;letter-spacing:.18em;line-height:1;padding-left:.05em; }
+  .hero-divider { width:280px;height:.5px;background:var(--text-faint); }
+  .void { position:relative;z-index:20;height:300vh; }
+  section { position:relative;z-index:20;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 48px; }
+  .section-label { font-size:11px;letter-spacing:.28em;color:var(--accent);opacity:.88;text-transform:uppercase;margin-bottom:48px;align-self:flex-start;max-width:760px;width:100%;padding-left:10%; }
+  .section-inner { max-width:680px;width:100%; }
+  .section-inner h2 { font-family:var(--mono);font-size:13px;font-weight:normal;letter-spacing:.3em;color:var(--accent);opacity:.88;text-transform:uppercase;margin-bottom:40px; }
+  .section-inner p { font-size:12px;color:var(--text-dim);line-height:1.9;letter-spacing:.05em;margin-bottom:24px;max-width:600px; }
+  .section-gap { position:relative;z-index:20;height:30vh; }
+  .engine-mark-wrap { display:flex;justify-content:center;margin:0 0 24px; }
+  .engine-status { font-size:9px;letter-spacing:.2em;color:var(--text-faint);text-align:center;margin-bottom:48px; }
+  .engine-ticker { margin-top:48px;font-size:8px;color:var(--text-faint);letter-spacing:.1em;line-height:1.8; }
+  .offering { margin-bottom:36px; }
+  .offering-name { font-size:11px;color:var(--accent);opacity:.88;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px; }
+  .offering-desc { font-size:11px;color:var(--text-dim);line-height:1.8;max-width:560px;letter-spacing:.04em;margin-bottom:6px; }
+  .offering-fee { font-size:10px;color:var(--text-faint);letter-spacing:.12em; }
+  .output-entry { margin-bottom:48px; }
+  .output-meta { font-size:9px;color:var(--text-faint);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px; }
+  .output-title { font-size:12px;color:var(--accent);opacity:.88;letter-spacing:.06em;margin-bottom:10px; }
+  .output-desc { font-size:11px;color:var(--text-dim);line-height:1.8;letter-spacing:.04em;max-width:560px;margin-bottom:12px; }
+  .output-link { display:inline-block;font-size:9px;letter-spacing:.2em;color:var(--accent);text-decoration:none;text-transform:uppercase;opacity:.7; }
+  .output-link:hover { opacity:1; }
+  .field-row { display:flex;flex-direction:column;gap:4px;margin-bottom:24px; }
+  .field-label { font-size:9px;letter-spacing:.2em;color:var(--text-faint);text-transform:uppercase; }
+  .field-value { font-size:12px;color:var(--text-dim);letter-spacing:.05em; }
+  .field-value a { color:var(--accent);text-decoration:none;opacity:.85; }
+  .field-value a:hover { opacity:1; }
+  footer { position:relative;z-index:20;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em; }
+  @media(max-width:640px){nav{padding:20px 24px}.nav-links{gap:20px}section{padding:80px 24px 60px}.lockup-n,.lockup-hyphen,.lockup-ught{font-size:36px}.lockup-mark{width:36px;height:36px}footer{padding:20px 24px;flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<canvas id="deep-canvas"></canvas>
+<div id="surface-light"></div>
+
+<nav id="nav">
+  <a href="#hero" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#engine">The Engine</a></li>
+    <li><a href="#outputs">Output</a></li>
+    <li><a href="#fees">Fees</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="lockup">
+    <span class="lockup-n">N</span>
+    <span class="lockup-hyphen">-</span>
+    <span class="lockup-mark">
+      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <defs><filter id="gl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <text x="26" y="40" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="46" font-weight="700" fill="none" stroke="#0d1033" stroke-width="4">Ø</text>
+        <text x="26" y="40" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="46" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.5" filter="url(#gl)">Ø</text>
+        <text x="26" y="40" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="46" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+      </svg>
+    </span>
+    <span class="lockup-ught">UGHT</span>
+  </div>
+  <div class="hero-divider"></div>
+</section>
+
+<div class="void"></div>
+
+<section id="engine">
+  <div class="section-label">// The Engine</div>
+  <div class="section-inner">
+    <div class="engine-mark-wrap">
+      <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <defs><filter id="ge"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+        <text x="40" y="62" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="70" font-weight="700" fill="none" stroke="#0d1033" stroke-width="4">Ø</text>
+        <text x="40" y="62" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="70" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.5" filter="url(#ge)">Ø</text>
+        <text x="40" y="62" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="70" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+      </svg>
+    </div>
+    <div class="engine-status">STATUS :: OPERATIONAL // ACCESS :: RESTRICTED</div>
+    <p>Something exists here that predates its current operator. It was not built for comfort.</p>
+    <p>It reads submitted documents — governance structures, incentive architectures, authority arrangements — and produces a structural account of what they make rational. Not what they intend. What they select for.</p>
+    <p>The output does not flatter. It does not recommend. It does not assign blame. It maps the structure and reports what it finds.</p>
+    <p>To understand what the engine covers and whether it applies to your situation, use the contact channel below. No obligation. No pitch.</p>
+    <div class="field-row" style="margin-top:32px">
+      <div class="field-label">Enquiries</div>
+      <div class="field-value"><a href="mailto:james@n-ought.com">james@n-ought.com</a></div>
+    </div>
+    <div class="engine-ticker">
+      01001110 00101101 01001111 01010101 01000111 01001000 01010100<br>
+      CONSTRAINT :: FRONTIER :: ENFORCEMENT :: LATENCY :: NULL
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<section id="outputs">
+  <div class="section-label">// Output</div>
+  <div class="section-inner">
+    <div class="output-entry">
+      <div class="output-meta">N-ought // Theoretical Framework // 2025</div>
+      <div class="output-title">Beyond Nash: Drift, Load and the Impossibility of Institutional Equilibrium</div>
+      <div class="output-desc">A structural explanation for governance drift in systems with adaptive actors. Proposes Miller's Law of Structural Drift and examines why institutional failure recurs across domains that differ widely in culture, personnel, and intent. Attempts falsification against Boeing, Grenfell, and Horizon.</div>
+      <a href="beyond-nash.html" class="output-link">Read →</a>
+    </div>
+    <div class="output-entry">
+      <div class="output-meta">N-ought // Diagnostic Output // Example</div>
+      <div class="output-title">Example Diagnostic Report — PE / VC Due Diligence</div>
+      <div class="output-desc">An anonymised full diagnostic run against a fictional governance document set. Illustrates output structure, register, and analytical depth across all mandatory report sections including counsel-facing issue summary.</div>
+      <span class="output-link" style="opacity:.3;cursor:default">Forthcoming</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<section id="fees">
+  <div class="section-label">// Fees</div>
+  <div class="section-inner">
+    <div class="offering">
+      <div class="offering-name">Structural Screen</div>
+      <div class="offering-desc">Pre-diagnostic analysis of submitted documents. Surfaces what is structurally unknown and why it matters before committing further resource. Returns a Green / Yellow / Red information-sufficiency signal and the qualifying questions that determine what should be obtained next.</div>
+      <div class="offering-fee">£2,500 // Early engagement: £1,500</div>
+    </div>
+    <div class="offering">
+      <div class="offering-name">Full Diagnostic</div>
+      <div class="offering-desc">Complete structural analysis against submitted documents. Authority and downside distribution. Enforceability of documented controls. Behaviour selected by the incentive architecture. Downstream consequence mapping. Structural risk horizon. Counsel-facing issue summary where applicable. Delivered within your timeline.</div>
+      <div class="offering-fee">£7,500–£12,000 // Early engagement: £4,500–£6,000</div>
+    </div>
+    <div class="offering">
+      <div class="offering-name">Screen + Full Diagnostic</div>
+      <div class="offering-desc">Both workstreams sequenced together.</div>
+      <div class="offering-fee">£12,500 // Early engagement: £7,500</div>
+    </div>
+    <div class="offering">
+      <div class="offering-name">Confidence Extension</div>
+      <div class="offering-desc">Where a completed diagnostic identifies missing documents that would close confidence gaps, additional material can be submitted for a targeted rerun without returning to a full engagement.</div>
+      <div class="offering-fee">£1,500 // Early engagement: £750</div>
+    </div>
+    <p style="margin-top:24px">Early engagement pricing is available to first clients in exchange for direct feedback on output utility. This is stated, not hidden.</p>
+    <div class="field-row" style="margin-top:32px">
+      <div class="field-label">To start</div>
+      <div class="field-value"><a href="mailto:james@n-ought.com">james@n-ought.com</a></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-gap"></div>
+
+<section id="contact" style="min-height:60vh">
+  <div class="section-label">// Contact</div>
+  <div class="section-inner">
+    <div class="field-row">
+      <div class="field-label">Email</div>
+      <div class="field-value"><a href="mailto:james@n-ought.com">james@n-ought.com</a></div>
+    </div>
+    <p>No form. No callback request. No automated response.</p>
+  </div>
+</section>
+
+<footer>
+  <span>N-OUGHT</span>
+  <span>STRUCTURAL ANALYSIS // EST. BEFORE DISCOVERY</span>
+</footer>
+
+<script>
+// ── PARTICLES ──────────────────────────────────────────────────────────────
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts;
+let pSY = 0;
+
+function resize() {
+  W = pCv.width = dCv.width = window.innerWidth;
+  H = pCv.height = dCv.height = window.innerHeight;
+}
+
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save();
+    pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+
+// ── DEEP OBJECT ────────────────────────────────────────────────────────────
+const dCv = document.getElementById('deep-canvas');
+const dCx = dCv.getContext('2d');
+
+let objOn=false, objOp=0, objSY=0, objAng=0, pulseP=0;
+let flickT=600, flickOn=false, flickDur=0, flickAl=0;
+
+function drawObj(cx,cy,base) {
+  const R = Math.min(W,H)*0.75; // large — bleeds screen
+  const pulse = 1+Math.sin(pulseP)*.035;
+  const c = dCx;
+  c.save();
+  c.translate(cx,cy);
+  c.rotate(objAng);
+  c.scale(pulse,pulse);
+
+  // ── core glow ──
+  const g = c.createRadialGradient(0,0,0,0,0,R*.5);
+  g.addColorStop(0,  `rgba(74,158,255,${base*.32})`);
+  g.addColorStop(.25,`rgba(74,158,255,${base*.18})`);
+  g.addColorStop(.55,`rgba(26,42,122,${base*.10})`);
+  g.addColorStop(1,  'rgba(7,8,16,0)');
+  c.fillStyle=g; c.beginPath(); c.arc(0,0,R*.55,0,Math.PI*2); c.fill();
+
+  // ── ring helper ──
+  function ring(r,dash,al,lw,col,blur=2) {
+    c.save(); c.setLineDash(dash); c.strokeStyle=col;
+    c.lineWidth=lw; c.globalAlpha=al; c.filter=`blur(${blur}px)`;
+    c.beginPath(); c.arc(0,0,r,0,Math.PI*2); c.stroke(); c.restore();
+  }
+
+  // outer gear teeth
+  ring(R*.97,[5,14,5,14,5,14,5,14,5,14,5,14,5,14,5,14],base*.65,4,'#1a2a7a',1);
+  // outer structural ring
+  ring(R*.90,[35,10,20,6,55,12,15,8],base*.55,1.8,'#2a4aaa',2);
+  // secondary outer ring — brighter accent
+  ring(R*.84,[80,14,30,8,50,10],base*.45,1.2,'#4a9eff',2);
+  // mid ring 1
+  ring(R*.70,[50,10,25,8,40,12],base*.50,1.4,'#2a4aaa',2);
+  // mid ring 2 — slightly rotated feel
+  c.save(); c.rotate(.35);
+  ring(R*.62,[60,8,35,12,20,6,50,16],base*.42,1.0,'#1a2a7a',2);
+  c.restore();
+  // inner structural ring
+  ring(R*.48,[20,8,45,6,30,10,55,8],base*.48,1.2,'#2a4aaa',2);
+  // inner ring bright
+  ring(R*.38,[30,10,20,8,40,12],base*.55,1.0,'#4a9eff',2);
+  // innermost
+  ring(R*.26,[18,8,28,6,15,10],base*.50,0.9,'#4a9eff',1);
+  // tiny centre ring
+  ring(R*.12,[],base*.60,0.8,'#4a9eff',1);
+
+  // ── inner mechanism — offset inner wheel (Antikythera nested calendar) ──
+  c.save(); c.translate(R*.08, -R*.06); c.rotate(-objAng*1.4);
+  ring(R*.18,[20,6,14,4,18,8],base*.45,0.9,'#4a9eff',1);
+  ring(R*.12,[],base*.35,0.6,'#2a4aaa',1);
+  // small hub
+  c.globalAlpha=base*.5; c.fillStyle='#1a2a7a'; c.filter='blur(1px)';
+  c.beginPath(); c.arc(0,0,R*.03,0,Math.PI*2); c.fill();
+  c.restore();
+
+  // ── secondary inner wheel (counter-rotating feel) ──
+  c.save(); c.translate(-R*.10, R*.05); c.rotate(objAng*.8);
+  ring(R*.14,[12,5,10,4],base*.38,0.8,'#4a9eff',1);
+  c.restore();
+
+  // ── spokes ──
+  c.save(); c.filter='blur(2px)'; c.strokeStyle='#2a4aaa'; c.setLineDash([]);
+  [0,45,90,135].forEach(deg=>{
+    const rad=deg*Math.PI/180;
+    c.globalAlpha=base*.22; c.lineWidth=0.7;
+    c.beginPath();
+    c.moveTo(Math.cos(rad)*R*.12, Math.sin(rad)*R*.12);
+    c.lineTo(Math.cos(rad)*R*.88, Math.sin(rad)*R*.88);
+    c.stroke();
+    c.moveTo(-Math.cos(rad)*R*.12,-Math.sin(rad)*R*.12);
+    c.lineTo(-Math.cos(rad)*R*.88,-Math.sin(rad)*R*.88);
+    c.stroke();
+  });
+  c.restore();
+
+  // ── arc fragments — surviving mechanism pieces, brighter ──
+  c.save(); c.filter='blur(1px)'; c.setLineDash([]);
+  [[R*.70, -.6, 1.4, '#4a9eff', base*.55, 1.8],
+   [R*.48,  1.8, 3.4, '#4a9eff', base*.50, 1.4],
+   [R*.84, -1.8,-.4,  '#4a9eff', base*.40, 1.2],
+   [R*.26,  0.5, 2.2, '#4a9eff', base*.55, 1.0]
+  ].forEach(([r,s,e,col,al,lw])=>{
+    c.globalAlpha=al; c.strokeStyle=col; c.lineWidth=lw;
+    c.beginPath(); c.arc(0,0,r,s,e); c.stroke();
+  });
+  c.restore();
+
+  // ── node points at ring intersections ──
+  c.save();
+  [[R*.90, .8],[R*.90,-2.1],[R*.70, 2.4],[R*.70,-.3],
+   [R*.48, 1.1],[R*.48,-1.4],[R*.84, 0.2],[R*.38, 2.8]
+  ].forEach(([r,a])=>{
+    const nx=Math.cos(a)*r, ny=Math.sin(a)*r;
+    c.globalAlpha=base*.55;
+    const ng=c.createRadialGradient(nx,ny,0,nx,ny,R*.025);
+    ng.addColorStop(0,`rgba(74,158,255,${base*.8})`);
+    ng.addColorStop(1,'rgba(74,158,255,0)');
+    c.fillStyle=ng;
+    c.beginPath(); c.arc(nx,ny,R*.025,0,Math.PI*2); c.fill();
+  });
+  c.restore();
+
+  // ── centre hub ──
+  c.save(); c.filter='blur(1.5px)';
+  const hg=c.createRadialGradient(0,0,0,0,0,R*.07);
+  hg.addColorStop(0,`rgba(74,158,255,${base*.7})`);
+  hg.addColorStop(1,'rgba(74,158,255,0)');
+  c.fillStyle=hg; c.globalAlpha=1;
+  c.beginPath(); c.arc(0,0,R*.07,0,Math.PI*2); c.fill();
+  c.restore();
+
+  // ── sediment occlusion ──
+  [[-.40,-.36,.22,.68],[.36,.28,.18,.60],[.18,-.52,.16,.52],
+   [-.28,.45,.14,.50],[-.58,.08,.12,.42],[.50,-.30,.10,.35]
+  ].forEach(([x,y,r,a])=>{
+    c.save(); c.globalAlpha=a; c.fillStyle='#070810'; c.filter='blur(10px)';
+    c.beginPath(); c.arc(x*R,y*R,r*R,0,Math.PI*2); c.fill(); c.restore();
+  });
+
+  c.restore();
+}
+
+function drawDeep() {
+  dCx.clearRect(0,0,W,H);
+  // layer 3: always track scroll so position is settled when object appears
+  objSY += (window.scrollY - objSY)*.015;
+
+  if(!objOn) return;
+
+  // object rises from below — starts below screen, settles to centre
+  const distanceScrolled = Math.max(0, window.scrollY - (window.innerHeight * 3.8));
+  const riseProgress = Math.min(1, distanceScrolled / (window.innerHeight * 1.2));
+  const riseOffset = (1 - riseProgress) * window.innerHeight * 0.7;
+  const cy = H*.5 + riseOffset - objSY*.10;
+  const cx = W*.5;
+
+  objAng  += .00006;
+  pulseP  += .0025;
+
+  // flicker
+  flickT--;
+  let al=objOp;
+  if(flickT<=0 && !flickOn) {
+    flickT=Math.floor(Math.random()*900+240);
+    if(Math.random()<.65) { flickOn=true; flickDur=Math.floor(Math.random()*50+10); flickAl=Math.random()*.16+.08; }
+  }
+  if(flickOn) {
+    flickDur--;
+    al += flickAl * Math.sin(flickDur*.45) * Math.exp(-flickDur*.04);
+    if(flickDur<=0) flickOn=false;
+  }
+  const dScroll=Math.abs(window.scrollY-objSY);
+  al=Math.min(al+dScroll*.0006,.28);
+
+  drawObj(cx,cy,Math.max(0,al));
+}
+
+// ── SCROLL ────────────────────────────────────────────────────────────────
+const nav=document.getElementById('nav');
+const sl=document.getElementById('surface-light');
+let navShown=false;
+
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY, vh=window.innerHeight;
+  if(!navShown&&sy>60){nav.classList.add('visible');navShown=true;}
+  sl.style.opacity=Math.max(0,1-sy/500);
+  // fade in deep object only after 2.8 viewports — deep in the void
+  if(!objOn&&sy>vh*3.8){
+    objOn=true;
+    let r=0;
+    const iv=setInterval(()=>{r+=.004;objOp=Math.min(r,.18);if(r>=.18)clearInterval(iv);},60);
+  }
+},{passive:true});
+
+// ── LOOP ──────────────────────────────────────────────────────────────────
+function loop(){ drawParts(); drawDeep(); requestAnimationFrame(loop); }
+
+function init(){
+  resize(); mkParts();
+  flickT=600;
+  loop();
+}
+
+window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
+init();
+</script>
+</body>
+</html>
 
