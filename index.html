@@ -377,12 +377,8 @@ function drawDeep() {
   if(!objOn) return;
 
   // object rises from below — starts below screen, settles to centre
-  const distanceScrolled = Math.max(0, window.scrollY - (window.innerHeight * 3.8));
-  const riseProgress = Math.min(1, distanceScrolled / (window.innerHeight * 0.5));
-  const riseOffset = (1 - riseProgress) * window.innerHeight * 0.3;
-  const cy = H*.5 + riseOffset - objSY*.025;
-  const cx = W*.5;
-
+  const cy = H*.5;
+ 
   objAng  += .00006;
   pulseP  += .0025;
 
