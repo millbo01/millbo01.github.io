@@ -245,7 +245,7 @@ function drawParts() {
 const dCv = document.getElementById('deep-canvas');
 const dCx = dCv.getContext('2d');
 
-let objOn=false, objOp=0, objSY=0, objAng=0, pulseP=0;
+let objOn=true, objOp=.10, objSY=0, objAng=0, pulseP=0;
 let flickT=600, flickOn=false, flickDur=0, flickAl=0;
 
 function drawObj(cx,cy,base) {
@@ -259,8 +259,8 @@ function drawObj(cx,cy,base) {
 
   // ── core glow ──
   const g = c.createRadialGradient(0,0,0,0,0,R*.5);
-  g.addColorStop(0,  `rgba(74,158,255,${base*.32})`);
-  g.addColorStop(.25,`rgba(74,158,255,${base*.18})`);
+  g.addColorStop(0,  `rgba(74,158,255,${base*.55})`);
+  g.addColorStop(.25,`rgba(74,158,255,${base*.32})`);
   g.addColorStop(.55,`rgba(26,42,122,${base*.10})`);
   g.addColorStop(1,  'rgba(7,8,16,0)');
   c.fillStyle=g; c.beginPath(); c.arc(0,0,R*.55,0,Math.PI*2); c.fill();
@@ -399,7 +399,7 @@ function drawDeep() {
     if(flickDur<=0) flickOn=false;
   }
   const dScroll=Math.abs(window.scrollY-objSY);
-  al=Math.min(al+dScroll*.0006,.28);
+  al=Math.min(al+dScroll*.0006,.20);
 
   drawObj(cx,cy,Math.max(0,al));
 }
@@ -414,10 +414,9 @@ window.addEventListener('scroll',()=>{
   if(!navShown&&sy>60){nav.classList.add('visible');navShown=true;}
   sl.style.opacity=Math.max(0,1-sy/500);
   // fade in deep object only after 2.8 viewports — deep in the void
-  if(!objOn&&sy>vh*3.8){
+ if(!objOn&&sy>vh*3.8){
     objOn=true;
-    let r=0;
-    const iv=setInterval(()=>{r+=.004;objOp=Math.min(r,.18);if(r>=.18)clearInterval(iv);},60);
+    objOp=.18;
   }
 },{passive:true});
 
