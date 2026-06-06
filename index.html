@@ -259,8 +259,8 @@ function drawObj(cx,cy,base) {
 
   // ── core glow ──
   const g = c.createRadialGradient(0,0,0,0,0,R*.5);
-  g.addColorStop(0,  `rgba(74,158,255,${base*.32})`);
-  g.addColorStop(.25,`rgba(74,158,255,${base*.18})`);
+  g.addColorStop(0,  `rgba(74,158,255,${base*.55})`);
+  g.addColorStop(.25,`rgba(74,158,255,${base*.32})`);
   g.addColorStop(.55,`rgba(26,42,122,${base*.10})`);
   g.addColorStop(1,  'rgba(7,8,16,0)');
   c.fillStyle=g; c.beginPath(); c.arc(0,0,R*.55,0,Math.PI*2); c.fill();
@@ -399,7 +399,7 @@ function drawDeep() {
     if(flickDur<=0) flickOn=false;
   }
   const dScroll=Math.abs(window.scrollY-objSY);
-  al=Math.min(al+dScroll*.0006,.28);
+  al=Math.min(al+dScroll*.0006,.14);
 
   drawObj(cx,cy,Math.max(0,al));
 }
