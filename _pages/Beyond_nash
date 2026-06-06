@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond Nash — N-ought</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
+    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
+    --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;line-height:1.6;letter-spacing:.04em;overflow-x:hidden; }
+
+  /* particles only — no deep canvas */
+  #particles { position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none; }
+  #surface-light { position:fixed;top:-20%;left:30%;width:50%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);pointer-events:none;z-index:2; }
+
+  /* NAV — identical to index */
+  nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--text-faint);background:rgba(7,8,16,.88);backdrop-filter:blur(4px); }
+  .nav-mark { display:inline-block;width:28px;height:28px;cursor:pointer;text-decoration:none;flex-shrink:0; }
+  .nav-mark svg { display:block;width:28px;height:28px; }
+  .nav-links { display:flex;gap:48px;list-style:none; }
+  .nav-links a { color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s; }
+  .nav-links a:hover { color:var(--accent); }
+
+  /* CONTENT WRAPPER */
+  .doc-wrap {
+    position:relative;
+    z-index:10;
+    max-width:860px;
+    margin:0 auto;
+    padding:140px 48px 120px;
+  }
+
+  /* PAPER HEADER */
+  .paper-meta {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:40px;
+  }
+
+  .paper-title {
+    font-family:var(--mono);
+    font-size:18px;
+    font-weight:normal;
+    color:var(--accent);
+    opacity:.9;
+    letter-spacing:.12em;
+    line-height:1.5;
+    margin-bottom:16px;
+  }
+
+  .paper-subtitle {
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:.06em;
+    font-style:italic;
+    margin-bottom:48px;
+  }
+
+  .paper-rule {
+    width:100%;
+    height:.5px;
+    background:var(--text-faint);
+    margin-bottom:56px;
+  }
+
+  /* TOC */
+  .toc {
+    position:fixed;
+    top:80px;
+    right:24px;
+    width:250px;
+    max-height:calc(100vh - 120px);
+    overflow-y:auto;
+    padding:20px 20px;
+    border:.5px solid var(--text-faint);
+    background:rgba(7,8,16,.92);
+    z-index:50;
+    font-size:10px;
+  }
+
+  .toc-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+
+  .toc ol {
+    list-style:none;
+    counter-reset:toc;
+  }
+
+  .toc li {
+    counter-increment:toc;
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:.05em;
+    padding:5px 0;
+    border-bottom:.5px solid var(--text-faint);
+    display:flex;
+    gap:12px;
+  }
+
+  .toc li:last-child { border-bottom:none; }
+
+  .toc li::before {
+    content:counter(toc,decimal-leading-zero);
+    color:var(--text-faint);
+    font-size:9px;
+    letter-spacing:.1em;
+    flex-shrink:0;
+    padding-top:1px;
+  }
+
+  .toc a {
+    color:var(--text-dim);
+    text-decoration:none;
+    transition:color .2s;
+  }
+
+  .toc a:hover { color:var(--accent); }
+
+  /* ABSTRACT */
+  .abstract {
+    margin-bottom:56px;
+    padding:28px 32px;
+    border-left:1px solid var(--accent-mid);
+    background:rgba(13,16,51,.1);
+  }
+
+  .abstract-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .abstract p {
+    font-size:12px;
+    color:var(--text-dim);
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:16px;
+  }
+
+  .abstract p:last-child { margin-bottom:0; }
+
+  /* SECTION */
+  .section {
+    margin-bottom:72px;
+  }
+
+  .section-anchor {
+    display:block;
+    height:80px;
+    margin-top:-80px;
+    visibility:hidden;
+  }
+
+  .section-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--accent);
+    opacity:.7;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .section h2 {
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:normal;
+    letter-spacing:.25em;
+    color:var(--accent);
+    opacity:.88;
+    text-transform:uppercase;
+    margin-bottom:32px;
+    padding-bottom:16px;
+    border-bottom:.5px solid var(--text-faint);
+  }
+
+  .section h3 {
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:normal;
+    letter-spacing:.2em;
+    color:var(--accent);
+    opacity:.75;
+    text-transform:uppercase;
+    margin:40px 0 20px;
+  }
+
+  .section p {
+    font-size:12px;
+    color:#7a8faa;
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:20px;
+    max-width:720px;
+    white-space:normal;
+  }
+
+  .section ul, .section ol {
+    margin:0 0 20px 0;
+    padding-left:0;
+    list-style:none;
+  }
+
+  .section ul li, .section ol li {
+    font-size:12px;
+    color:var(--text-dim);
+    line-height:1.9;
+    letter-spacing:.04em;
+    padding:4px 0 4px 20px;
+    position:relative;
+    max-width:720px;
+    white-space:normal;
+  }
+
+  .section ul li::before {
+    content:'—';
+    position:absolute;
+    left:0;
+    color:var(--text-faint);
+  }
+
+  .section ol { counter-reset:ol; }
+  .section ol li { counter-increment:ol; }
+  .section ol li::before {
+    content:counter(ol)'.';
+    position:absolute;
+    left:0;
+    color:var(--text-faint);
+    font-size:10px;
+  }
+
+  /* BLOCKQUOTE — law statement & callouts */
+  .section blockquote {
+    margin:32px 0;
+    padding:24px 28px;
+    border-left:1px solid var(--accent-mid);
+    background:rgba(13,16,51,.15);
+  }
+
+  .section blockquote p {
+    font-size:12px;
+    color:var(--text);
+    opacity:.8;
+    letter-spacing:.05em;
+    line-height:1.9;
+    margin-bottom:0;
+    font-style:italic;
+  }
+
+  /* CALLOUT — Nordic, method note, etc */
+  .callout {
+    margin:32px 0;
+    padding:24px 28px;
+    border:.5px solid var(--text-faint);
+    background:rgba(7,8,16,.4);
+  }
+
+  .callout p {
+    font-size:11px;
+    color:var(--text-dim);
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:12px;
+    max-width:none;
+  }
+
+  .callout p:last-child { margin-bottom:0; }
+
+  /* STRONG / EM */
+  strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.55; }
+  em { color:var(--text-dim);font-style:italic; }
+
+  /* FORMULA BLOCK */
+  .formula {
+    margin:24px 0;
+    padding:20px 24px;
+    background:rgba(13,16,51,.25);
+    border:.5px solid var(--text-faint);
+    font-size:12px;
+    color:var(--text);
+    letter-spacing:.06em;
+    line-height:2;
+  }
+
+  .formula-var {
+    margin-top:16px;
+    font-size:11px;
+    color:var(--text-dim);
+    line-height:2;
+    letter-spacing:.04em;
+  }
+
+  /* DIVIDER */
+  .doc-rule {
+    width:100%;
+    height:.5px;
+    background:var(--text-faint);
+    margin:64px 0;
+  }
+
+  /* APPENDIX label */
+  .appendix-tag {
+    font-size:9px;
+    letter-spacing:.3em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+
+  /* BACK LINK */
+  .back-link {
+    display:inline-block;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:var(--text-dim);
+    text-decoration:none;
+    text-transform:uppercase;
+    margin-bottom:64px;
+    transition:color .2s;
+  }
+  .back-link:hover { color:var(--accent); }
+
+  /* FOOTER */
+  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
+
+ @media(max-width:720px){
+    nav { padding:20px 24px; }
+    .nav-links { gap:20px; }
+    .doc-wrap { padding:110px 24px 80px; }
+    footer { padding:20px 24px;flex-direction:column;gap:8px; }
+    .toc { display:none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li><a href="index.html#fees">Fees</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="doc-wrap">
+
+  <a href="index.html#outputs" class="back-link">← Output</a>
+
+  <div class="paper-meta">N-ought // Theoretical Framework // 2025</div>
+  <h1 class="paper-title">Beyond Nash</h1>
+  <p class="paper-subtitle">A structural explanation for governance drift in systems with adaptive actors</p>
+  <div class="paper-rule"></div>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-label">Contents</div>
+    <ol>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#s1">Introduction</a></li>
+      <li><a href="#s2">The Constraint Field</a></li>
+      <li><a href="#s3">Optimisation Pressure</a></li>
+      <li><a href="#s4">System Load</a></li>
+      <li><a href="#s5">Load Displacement</a></li>
+      <li><a href="#s5a">Reputational Fabrication as a Secondary Load Mechanism</a></li>
+      <li><a href="#s6">Miller's Law of Structural Drift</a></li>
+      <li><a href="#s7">Latency and Overshoot</a></li>
+      <li><a href="#s8">Governance Theatre</a></li>
+      <li><a href="#s9">Implications</a></li>
+      <li><a href="#s10">Interim Conclusions</a></li>
+      <li><a href="#s11">The Irreducibility Clause</a></li>
+      <li><a href="#s12">The Scale Threshold</a></li>
+      <li><a href="#method">A Note on Method</a></li>
+      <li><a href="#appA">Appendix A — Boeing 737 MAX</a></li>
+      <li><a href="#appB">Appendix B — Grenfell Tower</a></li>
+      <li><a href="#appC">Appendix C — Horizon (Post Office)</a></li>
+      <li><a href="#appD">Appendix D — Formal Sketch</a></li>
+    </ol>
+  </nav>
+
+  <!-- ABSTRACT -->
+  <span class="section-anchor" id="abstract"></span>
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+    <p>Many institutional failures occur in systems that appear robust on paper. Organisations often possess formal rules, oversight bodies, and compliance structures designed to constrain harmful behaviour, yet outcomes repeatedly diverge from those intended by the rule set. This paper proposes a structural explanation: actors optimise within the <strong>effective constraint field</strong>, not within the declared governance structure.</p>
+    <p>The effective constraint field is defined by enforcement integrity and feedback latency rather than written policy. In systems containing adaptive actors, optimisation pressure continuously increases system load until it approaches this operational frontier. System load exists in two forms: registered load, which is visible to corrective mechanisms, and latent load, which has accumulated but not yet surfaced within the system's feedback architecture. When feedback latency is significant, latent load may accumulate well beyond sustainable levels before corrective mechanisms activate.</p>
+    <p>This dynamic is formalised as <strong>Miller's Law of Structural Drift</strong>, which states that aggregate system load will rise toward the constraint frontier defined by enforcement integrity and feedback latency. The paper further identifies reputational fabrication as a secondary load mechanism distinct from displacement, and argues that institutional scale is not neutral. Transparency infrastructure is identified as the intervention class the framework implies: not a cultural programme, but an engineering problem.</p>
+  </div>
+
+  <div class="doc-rule"></div>
+
+  <!-- SECTION 1 -->
+  <span class="section-anchor" id="s1"></span>
+  <div class="section">
+    <div class="section-label">// 01</div>
+    <h2>Introduction</h2>
+    <p>Institutional analysis frequently evaluates systems based on their formal governance structures. Rules, compliance procedures, safety frameworks, and oversight bodies are assumed to define the behavioural boundaries within which actors operate.</p>
+    <p>Empirical outcomes often contradict this assumption. Systems with extensive governance frameworks routinely produce outcomes inconsistent with their stated rules or intentions. Failures in financial markets, regulatory systems, infrastructure governance, and environmental management frequently occur despite the presence of detailed compliance regimes.</p>
+    <p>These failures are commonly attributed to cultural breakdown, poor leadership, or individual misconduct. While these explanations may describe specific events, they fail to explain why structurally similar failures recur across domains that differ widely in culture and personnel.</p>
+    <p>This paper proposes an alternative explanation. Behaviour within complex systems is governed not by the <strong>declared rule set</strong> but by the <strong>effective constraint field</strong> that actors experience in practice.</p>
+    <p>A common assumption in economic and governance theory, present in Nash equilibrium models and much of institutional design, is that systems tend toward stable equilibrium when actors behave rationally and rules are well specified. This paper challenges that assumption directly. In systems containing adaptive actors, rational behaviour does not produce equilibrium. It produces drift.</p>
+    <p>The argument that follows develops in six stages. Actors optimise within real constraint fields rather than declared ones. That optimisation generates load. Load is hidden, displaced, or delayed through mechanisms that prevent corrective feedback from operating in real time. Reputation — the primary informal enforcement mechanism in human systems — is itself destroyed by the scale that accelerates drift. Scale therefore increases drift rate while simultaneously degrading every mechanism designed to slow it. The conclusion is that true equilibrium is structurally impossible in systems with adaptive actors, but near-equilibrium is achievable through transparency infrastructure that restores the informational conditions corrective mechanisms depend on.</p>
+    <p><em>The term structural drift is used here in a precise sense distinct from its usage in historical institutionalism, where drift typically refers to slow, path-dependent institutional change. Structural drift in this framework refers specifically to the pressure-induced migration of behaviour toward the constraint frontier — a dynamic process driven by optimisation pressure rather than incremental reform.</em></p>
+
+<a href="/assets/images/gov_theatre.png" target="_blank">
+  <img src="/assets/images/gov_theatre.png" alt="The Core Dynamic" style="max-width:100%;margin:24px 0;opacity:0.85;">
+</a>
+  </div>
+
+  <!-- SECTION 2 -->
+  <span class="section-anchor" id="s2"></span>
+  <div class="section">
+    <div class="section-label">// 02</div>
+    <h2>The Constraint Field</h2>
+    <p>The constraint field represents the operational boundary within which actors optimise behaviour. It differs from the formal rule system in that it reflects the <strong>actual probability and timing of consequences</strong>, rather than the theoretical consequences defined by policy.</p>
+    <p>The effective constraint field is determined by several structural factors:</p>
+    <ul>
+      <li><strong>Enforcement integrity</strong>: the probability that violations are detected and punished.</li>
+      <li><strong>Consequence severity</strong>: the magnitude of penalties once enforcement occurs.</li>
+      <li><strong>Detection latency</strong>: the time delay between action and consequence.</li>
+      <li><strong>Actor exposure window</strong>: the likelihood that the responsible actor remains subject to enforcement when consequences materialise.</li>
+    </ul>
+    <p>Together, these factors define the operational limits of behaviour within the system. Written rules may describe strict constraints, but if enforcement is inconsistent or delayed, the effective constraint field expands.</p>
+    <p>Actors optimise within this field rather than within the formal rule structure.</p>
+    <p>The constraint field framework applies wherever there is directed advantage-seeking under constraints defined by a governance or design architecture. This includes human institutions in their conventional forms but extends to any system designed or shaped by human intent. The law applies wherever optimisation pressure is present, regardless of whether that pressure is exercised consciously.</p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <span class="section-anchor" id="s3"></span>
+  <div class="section">
+    <div class="section-label">// 03</div>
+    <h2>Optimisation Pressure</h2>
+    <p>Optimisation pressure should be understood as a field property, not a personality trait.</p>
+    <p>Actors within human systems continuously seek advantage relative to their environment. This optimisation does not require malicious intent or conscious calculation. It emerges naturally from incentive structures, competitive dynamics, and adaptive learning.</p>
+    <p>It is important to be precise about what optimisation pressure describes, because the framework is easily misread as a theory of bad actors. It is not. The vast majority of load-generating behaviour within real systems is mundane, socially acceptable, and frequently considered good organisational practice.</p>
+    <p>A procurement manager slightly overstates supplier risk to justify a preferred vendor. A department head presents capacity figures conservatively to protect headcount. A regulator frames ambiguous evidence toward the interpretation that most clearly justifies their institution's continued relevance. A consultant emphasises uncertainty to extend an engagement. A budget holder spends the remaining allocation in the final weeks of the financial year not because the expenditure generates return but because unspent budget signals surplus capacity.</p>
+    <p>These behaviours are not exceptional. They are the texture of ordinary institutional life, and they are visible in every major governance failure on record — from the incremental commercial compromises that preceded the Boeing 737 MAX crashes to the accumulated budget and procurement decisions that characterised the governance environment at Grenfell Tower in the years before the fire.</p>
+    <p>None of these actors consider themselves extractors. Most would be genuinely offended by the suggestion. They are responding rationally to the constraint field and incentive structures they operate within. Each individual decision is defensible in isolation. The aggregate is load.</p>
+    <p>This is precisely what makes the dynamic so structurally significant. Systems are not primarily threatened by the deliberate misconduct of identifiable bad actors. They are threatened by the accumulated weight of ordinary rational decisions made by participants who are, in the conventional sense, doing their jobs.</p>
+    <p>Optimisation pressure operates continuously and is not uniformly distributed. It concentrates where opportunity is visible, where consequences are distant, and where the gap between declared rules and operational enforcement is widest. Through iterative adaptation, behaviour naturally migrates toward the edges of what the system effectively permits. The constraint frontier therefore functions not merely as a limit but as a behavioural attractor.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <span class="section-anchor" id="s4"></span>
+  <div class="section">
+    <div class="section-label">// 04</div>
+    <h2>System Load</h2>
+    <p>System load represents the accumulation of structural stress generated by optimisation within the constraint field. It exists in two analytically distinct forms.</p>
+    <p><strong>Registered load</strong> is visible within the system's feedback architecture — it has surfaced as observable stress, measurable risk, or detectable deviation from intended outcomes.</p>
+    <p><strong>Latent load</strong> has accumulated as a consequence of optimisation behaviour but has not yet propagated through the feedback structure to become visible. It exists in the system but not yet in the system's awareness of itself.</p>
+    <p>The distinction between registered and latent load is not theoretical. The Horizon scandal demonstrates it at scale — an institution maintaining near-zero registered load for two decades while latent load accumulated continuously beneath the feedback threshold.</p>
+    <p>Corrective mechanisms respond to registered load, not latent load. Interventions are therefore always calibrated against an incomplete picture of actual systemic stress. The greater the feedback latency, the larger the proportion of total load that remains latent at any given moment.</p>
+    <p>System load increases as actors exploit available opportunities within the constraint field. Corrective mechanisms reduce registered load when consequences become visible. Latent load continues to accumulate beneath that threshold until feedback latency closes sufficiently to surface it.</p>
+  </div>
+
+  <!-- SECTION 5 -->
+  <span class="section-anchor" id="s5"></span>
+  <div class="section">
+    <div class="section-label">// 05</div>
+    <h2>Load Displacement</h2>
+    <p>Load accumulation is not the only systemic response to optimisation pressure. Institutions operating near the constraint frontier frequently reduce observable load not by changing behaviour but by displacing consequences onto other actors, systems, or timeframes. Load displacement does not reduce aggregate systemic stress. It redistributes it, often in ways that obscure its origin and delay its visibility.</p>
+    <p>Load displacement takes several structural forms:</p>
+    <ul>
+      <li><strong>Temporal displacement:</strong> Institutions export consequences into the future through deferred liabilities, underfunded obligations, and accounting structures that recognise gains immediately while deferring losses.</li>
+      <li><strong>Counterparty displacement:</strong> Risk and cost are pushed down supply chains, onto contractors, franchisees, gig workers, or smaller counterparties with less bargaining power. The institution de-risks its own position while structural load migrates to actors less equipped to absorb it.</li>
+      <li><strong>Societal displacement:</strong> Environmental cost, public health burden, infrastructure degradation, and systemic financial risk are externalised to commons that have no direct contractual relationship with the institution generating the load.</li>
+      <li><strong>Regulatory displacement:</strong> Sophisticated institutions invest in moving the constraint frontier itself — through lobbying, jurisdiction shopping, regulatory capture, and compliance architectures designed to satisfy the letter of declared constraints while expanding the operational ones.</li>
+    </ul>
+    <p>Load displacement has a precise implication for the Law of Structural Drift. Institutions that appear to have escaped structural drift have not done so. They have become sufficiently sophisticated to export their load. The apparent stability of large, long-lived institutions is frequently a measure not of governance health but of displacement capacity.</p>
+  </div>
+
+  <!-- SECTION 5a -->
+  <span class="section-anchor" id="s5a"></span>
+  <div class="section">
+    <div class="section-label">// 05a</div>
+    <h2>Reputational Fabrication as a Secondary Load Mechanism</h2>
+    <p>Load displacement accounts for one class of structural stress that escapes the registered load channel. A related but analytically distinct mechanism operates specifically on institutional reputation, and its dynamics differ from displacement in ways that matter for the framework's completeness.</p>
+    <p>Reputation functions as the primary enforcement mechanism in human systems. For reputational consequence to function, three structural prerequisites must hold: the behaviour must be visible to the relevant network; attribution must be clear and fast enough that reputation travels before the actor exits; and future interactions must remain possible so that reputational damage carries real cost.</p>
+    <p>These prerequisites are cognitively bounded by the limits of human social architecture. Dunbar's sociocognitive research establishes that individuals can maintain stable social relationships with approximately 150 others — the maximum number whose behaviour and reputation can be actively tracked and processed. This defines the boundary of direct reputational reach. Trusted intermediaries extend this radius by one further degree. Beyond that second degree, the verification chain breaks. No authentic reputation can exist at third degree or beyond. Where one appears to, it has been fabricated.</p>
+    <p>Fabrication here is not a moral accusation — it is a structural description. At institutional scale, constructing reputation through signals, proxies, and managed perception is not a choice. It is a necessity imposed by scale. Every institution operating beyond the Dunbar threshold is, by structural necessity, maintaining a fabricated reputational layer.</p>
+
+    <h3>The asymmetry with load displacement</h3>
+    <p>Load displacement has a partial homeostatic effect. Load offloaded onto regulators, contractors, or counterparties removes it from the institution's registered load, creating temporary corrective space. The institution bleeds pressure, however exploitatively.</p>
+    <p>Fabricated reputation has no equivalent release valve. Each signal emitted to sustain the reputational fiction adds to the total fiction that must be maintained. There is no counterparty onto whom reputational debt can be quietly transferred. The available moves are more performance, more coordination of the fiction across more actors, and more resource deployment toward reputation management — all of which increase the surface area that must remain coherent under scrutiny.</p>
+    <p>The coordination burden grows faster than linearly with institutional size, in a manner analogous to how network connections scale as n(n-1)/2 rather than linearly with nodes (Metcalfe, 1980, cited as structural analogy rather than direct application). The 2005 critique of Metcalfe's Law by Briscoe, Odlyzko, and Tilly — that connection quality rather than quantity determines network value — strengthens this application: it is the quality and consistency of fiction-maintenance relationships that determines when the fabricated layer fails.</p>
+
+    <h3>Interaction with drift dynamics</h3>
+    <p>When both mechanisms operate simultaneously — as they always do in large institutions — they interact multiplicatively rather than additively. Drift increases the gap between presented and actual performance. That gap increases the facade load required to sustain the reputational fiction. That facade load consumes resources that could otherwise reduce the underlying gap. The corrective mechanism degrades in direct proportion to the drift it is nominally correcting.</p>
+    <p>This is the structural explanation for why large institutional scandals tend to arrive suddenly and completely rather than gradually and partially. The fabricated reputational layer does not thin gradually under pressure. It holds until the coordination of the fiction fails at a peripheral point, at which point every actor who has traded in the fabricated reputation must simultaneously seek distance from it.</p>
+    <p>Resources deployed to manage or amplify institutional reputation constitute a parasitic load on the productive core. Unlike operational expenditure, this spend produces no output that closes the gap between presented and actual performance. As the gap widens through drift, the resource requirement to maintain the facade increases — a compounding drain that accelerates as the institution's underlying position deteriorates.</p>
+    <p>Resource expenditure on institutional reputation management is not a neutral indicator. It is a signal, proportional to its scale relative to productive activity, that the institution is operating beyond its authentic reputation threshold and that the gap between presented and actual performance has grown large enough to require active maintenance.</p>
+  </div>
+
+  <!-- SECTION 6 -->
+  <span class="section-anchor" id="s6"></span>
+  <div class="section">
+    <div class="section-label">// 06</div>
+    <h2>Miller's Law of Structural Drift</h2>
+    <p>The dynamics described above produce a consistent structural pattern.</p>
+    <blockquote>
+      <p>In systems containing adaptive actors, aggregate system load will rise toward the effective constraint frontier defined by enforcement integrity and feedback latency. This tendency is irreducible: optimisation pressure cannot be eliminated by governance design, only constrained in its rate and effect.</p>
+    </blockquote>
+    <p>This law reflects the interaction between optimisation pressure and corrective capacity. As long as opportunities for advantage exist within the constraint field, actors will exploit them. Load therefore increases until the boundary of the system's corrective capacity is reached.</p>
+    <p><em>A formal dynamical sketch of the interaction between optimisation pressure, feedback latency, and corrective capacity is provided in Appendix D for readers who prefer a mathematical representation.</em></p>
+  </div>
+
+  <!-- SECTION 7 -->
+  <span class="section-anchor" id="s7"></span>
+  <div class="section">
+    <div class="section-label">// 07</div>
+    <h2>Latency and Overshoot</h2>
+    <p>In most human systems, feedback occurs with delay. Consequences often appear long after the actions that generated them. This temporal mismatch is the central mechanism of systemic overshoot. Actors optimise against current conditions while the system reacts to past behaviour. By the time corrective mechanisms respond to accumulated load, the behaviour generating that load has already compounded.</p>
+    <p>Feedback latency operates through two structurally distinct mechanisms:</p>
+    <p><strong>Temporal latency</strong> arises when feedback is delayed by the natural lag between action and consequence. The signal exists in the system but takes time to surface.</p>
+    <p><strong>Architectural latency</strong> arises when feedback exists but is structurally prevented from reaching actors with the power to correct behaviour. Warnings are documented, concerns are raised, dissent is recorded — and nothing changes, not because the information arrived too late but because the constraint field contained no mechanism that made acting on it rational for those with authority to do so.</p>
+    <p>Both forms produce the same outcome: load accumulates beyond the level that corrective mechanisms are responding to. But they require different interventions. Temporal latency is addressed by accelerating feedback architecture. Architectural latency requires structural power rebalancing — ensuring that actors who receive feedback signals have either the authority to act on them or access to actors who do.</p>
+
+<a href="/assets/images/latency-mechanisms.png" target="_blank">
+  <img src="/assets/images/latency-mechanisms.png" alt="The Latency Mechanisms" style="max-width:100%;margin:24px 0;opacity:0.85;">
+</a>
+
+    <h3>Scale as a latency determinant</h3>
+    <p>Feedback latency is not solely a function of system architecture or deliberate suppression. It grows as a systematic function of institutional scale, through three compounding mechanisms:</p>
+    <p><strong>Opacity increases with scale.</strong> As organisations grow, no individual actor perceives the aggregate load being generated across the system. Each local decision is locally visible; the systemic accumulation is not.</p>
+    <p><strong>Attribution diffusion compounds at scale.</strong> Causal chains lengthen as hierarchies deepen. The connection between decisions made at one level and consequences experienced at another grows progressively harder to trace.</p>
+    <p><strong>Cognitive displacement becomes individually rational at scale.</strong> Where collective restraint would reduce aggregate load, the personal cost of unilateral restraint exceeds the personal benefit, since the systemic gain is distributed while the personal cost is concentrated.</p>
+    <p>These three mechanisms compound rather than add, which is why feedback latency grows non-linearly with scale. The drift condition — where time-averaged load accumulation exceeds recovery capacity — becomes progressively harder to avoid as institutional size increases.</p>
+  </div>
+
+  <!-- SECTION 8 -->
+  <span class="section-anchor" id="s8"></span>
+  <div class="section">
+    <div class="section-label">// 08</div>
+    <h2>Governance Theatre</h2>
+    <p>Many governance frameworks fail because they operate primarily at the level of declared constraints rather than operational ones. Rules, policies, and oversight bodies create the appearance of control, but if enforcement integrity is weak or feedback latency is high, the effective constraint field remains wide.</p>
+    <p>Governance theatre arises structurally whenever the declared constraint field diverges from the operational one. It is not primarily a product of bad faith or regulatory incompetence. It is the predictable outcome of any governance architecture in which the cost of maintaining operational enforcement falls below the benefit of tolerating the gap.</p>
+    <p>This dynamic has a precise corollary: where the marginal benefit of tolerating that gap exceeds the marginal cost of closing it, governance theatre becomes the rational equilibrium strategy of the institution itself. The institution is not failing to govern — it is governing in the only way its own constraint field makes rational.</p>
+    <p>Interventions premised on improving institutional intent will not change this calculus. Only interventions that alter the cost structure of tolerating the gap will.</p>
+  </div>
+
+  <!-- SECTION 9 -->
+  <span class="section-anchor" id="s9"></span>
+  <div class="section">
+    <div class="section-label">// 09</div>
+    <h2>Implications</h2>
+    <p>Three structural interventions follow directly from the law.</p>
+    <p>Rules alone do not determine behaviour. Enforcement integrity does. A governance system that produces detailed policy without operational enforcement does not constrain actors — it provides the appearance of constraint while leaving the effective boundary wide.</p>
+    <p>Feedback latency is equally critical. Systems that detect stress slowly are structurally prone to overshoot because actors continue optimising against conditions that no longer reflect reality. Reducing latency is therefore not an administrative improvement but a primary structural intervention.</p>
+    <p>Designing resilient systems requires monitoring the constraint field directly rather than inferring it from formal governance structures. The gap between declared constraints and operational ones is where load accumulates invisibly. That gap is measurable. It is also, in most institutions, unmeasured.</p>
+  </div>
+
+  <!-- SECTION 10 -->
+  <span class="section-anchor" id="s10"></span>
+  <div class="section">
+    <div class="section-label">// 10</div>
+    <h2>Interim Conclusions</h2>
+    <p>Systems containing adaptive actors naturally drift toward the operational limits of what they effectively permit. This behaviour does not arise from moral failure but from the structural dynamics of optimisation within constraint fields.</p>
+    <p>Miller's Law of Structural Drift provides a simple structural explanation for why governance systems frequently fail despite extensive rule sets. Written constraints matter only to the extent that they are operationally enforced and rapidly coupled to consequences.</p>
+    <p>Understanding this dynamic allows system designers to shift focus from governance theatre toward the structural conditions that determine the real behavioural frontier within complex systems.</p>
+  </div>
+
+  <!-- SECTION 11 -->
+  <span class="section-anchor" id="s11"></span>
+  <div class="section">
+    <div class="section-label">// 11</div>
+    <h2>The Irreducibility Clause: Implications and Limits</h2>
+    <p>The law's second clause — that optimisation pressure cannot be eliminated by governance design, only constrained in its rate and effect — is worth unpacking fully, because it is the part most likely to be misread as fatalism. It is not. It is a design specification.</p>
+    <p>Optimisation pressure is a structural feature of systems containing adaptive actors. It cannot be eliminated by governance design, cultural intervention, or the genuine prosocial motivations that many actors bring to institutional life. The question is never whether this will occur but how quickly, and with what consequence.</p>
+    <p>This irreducibility has a precise implication. No governance architecture can achieve permanent equilibrium between extraction and recovery. The design goal is therefore not equilibrium but rate management — minimising the gap between extraction pressure and corrective capacity such that load accumulates slowly enough to remain within viable bounds across meaningful timescales.</p>
+
+    <div class="callout">
+      <p>The closest available candidate approximation of near-equilibrium conditions is observable in Nordic governance systems — not a proven endpoint, but a set of structural conditions that appear to suppress drift more durably than most comparable systems.</p>
+      <p>Norway, Sweden, Denmark, and Finland consistently maintain lower corruption, higher institutional trust, and more functional public services than comparable developed economies over extended timeframes. The structural features that distinguish Nordic governance map directly onto the framework's variables. Radical transparency architecture — including full public disclosure of individual tax returns in Norway — compresses architectural latency by making opacity structurally difficult to maintain. Strong and genuinely independent enforcement mechanisms close the gap between declared and operational constraint fields.</p>
+      <p>These are not cultural achievements. They are structural ones. The same populations operating within different constraint field architectures produce different outcomes — which is precisely what the framework predicts. Nordic governance therefore does not falsify Miller's Law of Structural Drift. It provides the closest available empirical existence proof for the near-equilibrium condition the law identifies as the realistic design target.</p>
+    </div>
+
+    <p>Much of economic theory has proceeded on the implicit assumption that rational actors in well-specified systems will converge toward stable equilibrium. Miller's Law of Structural Drift suggests the opposite. Rational actors in well-specified systems do not drift toward equilibrium. They drift toward the constraint frontier. Equilibrium is not the attractor. The constraint frontier is. And the constraint frontier moves.</p>
+    <p>Near-equilibrium is achievable. True equilibrium is not. The distance between those two states is where governance design either succeeds or fails.</p>
+  </div>
+
+  <!-- SECTION 12 -->
+  <span class="section-anchor" id="s12"></span>
+  <div class="section">
+    <div class="section-label">// 12</div>
+    <h2>The Scale Threshold: When Growth Becomes Structurally Self-Defeating</h2>
+    <p>Scale is not neutral. Beyond a threshold defined by the limits of authentic corrective feedback, institutional growth is not merely inefficient — it is structurally self-defeating.</p>
+    <p>The conventional account of institutional scale treats it as an accumulation of genuine advantage: larger organisations coordinate more capacity, distribute fixed costs across greater output, and access opportunities unavailable to smaller actors. These effects are real, up to a point. But the costs of scale are not borne by the institution that captures its benefits. The parasitic load of facade maintenance, the systemic cost of displacement, the degradation of corrective mechanisms across the broader institutional environment — these are externalised.</p>
+
+    <h3>The satiation problem</h3>
+    <p>Physical resource accumulation has natural constraints. Abstract resource accumulation — capital, market position, institutional power — has no equivalent storage constraint. Growth continues because the incentive structure rewards it and nothing in the operational environment stops it — until the corrective mechanisms of the broader system, which the institution has been progressively degrading, finally fail.</p>
+
+    <h3>The interconnectivity problem</h3>
+    <p>The scale pathology is a function of interconnectivity. Dunbar's cognitive limit on authentic social relationships was never a constraint on how many humans could exist. It was always a constraint on how many could be held in genuine reputational relationship with one another. The progressive removal of geographic and logistical boundaries extended the reach of extraction while leaving the corrective mechanisms behind.</p>
+
+    <h3>The lock-in dynamic</h3>
+    <p>Once an institution crosses the threshold at which authentic corrective feedback can no longer function, voluntary return below it becomes structurally impossible. The actors with the power to reduce the institution's scale are precisely the actors whose positions depend on maintaining it. Return below the threshold therefore does not occur voluntarily. It occurs through catastrophic correction.</p>
+
+    <h3>The structural implication</h3>
+    <p>The framework implies a specific intervention class. The corrective mechanisms that scale destroyed were informational: reputation, attribution, visible consequence. Transparency infrastructure that makes provenance visible — that traces the connection between decisions and consequences across the distances that scale has opened — is not a cultural programme or a moral appeal. It is an engineering problem.</p>
+    <p>Near-equilibrium at scale is achievable only through transparency infrastructure that extends the reach of corrective mechanisms beyond what unaided human social architecture can sustain.</p>
+  </div>
+
+  <div class="doc-rule"></div>
+
+  <!-- METHOD NOTE -->
+  <span class="section-anchor" id="method"></span>
+  <div class="section">
+    <div class="section-label">// Method</div>
+    <h2>A Note on Method</h2>
+    <p>Each case study in the following appendices is chosen not because it is an easy fit for Miller's Law of Structural Drift, but because it appears, at first glance, to break it. The approach is deliberately adversarial. A framework that survives only comfortable evidence is not a framework — it is a preference.</p>
+    <p>A legitimate methodological concern is whether the load displacement mechanism renders the law unfalsifiable in practice. If institutional survival can always be attributed to displacement rather than genuine load reduction, the law risks becoming a closed explanatory system that absorbs counterexamples rather than engaging them.</p>
+    <p>The law's falsifiability rests on three conditions. First, displacement leaves observable structural traces that can in principle be empirically examined. Second, the directional load accumulation prediction is measurable independently of displacement dynamics. Third, displacement is a structural prediction of the law rather than an ad hoc rescue mechanism — if actors rationally optimise within constraint fields and displacement is an available optimisation, the law predicts displacement will occur rather than invoking it retrospectively.</p>
+  </div>
+
+  <div class="doc-rule"></div>
+
+  <!-- APPENDIX A -->
+  <span class="section-anchor" id="appA"></span>
+  <div class="section">
+    <div class="appendix-tag">Appendix A</div>
+    <h2>Attempted Falsification — Boeing 737 MAX</h2>
+    <p>The Boeing 737 MAX case presents an immediate challenge to Miller's Law of Structural Drift. Boeing as an institution did not collapse. It absorbed two fatal crashes, 346 deaths, a global fleet grounding, billions in settlement costs, and sustained reputational damage — and it continues operating as a major aerospace manufacturer.</p>
+
+    <h3>The falsification attempt</h3>
+    <p>The strongest version of the falsification argument runs as follows. Boeing possessed extensive formal governance, engineering review boards, certification architecture, documented safety processes, and regulatory oversight. If constraint fields govern behaviour rather than declared rules, the 737 MAX should not have been possible, because the declared constraint field was robust. Yet the failure occurred anyway.</p>
+
+    <h3>Where the falsification attempt breaks down</h3>
+    <p>The first argument — that formal governance was present and failure occurred anyway — is not a falsification of the law. It is the law's central claim. The framework predicts exactly this outcome wherever the declared constraint field diverges from the operational one.</p>
+    <p>The operational constraint field at Boeing had been quietly renegotiated over the preceding decade. The FAA's delegated authority arrangement, which allowed Boeing to self-certify elements of its own airworthiness approval process, is a textbook example of regulatory displacement. The constraint frontier did not disappear — it moved. Through sustained regulatory engagement, Boeing had extended the operational boundary to the point where MCAS could be misclassified as a minor system modification, pilot training requirements could be commercially suppressed, and internal dissent could be managed within the bounds of what the operational environment actually penalised.</p>
+    <p>The load did not disappear. It transferred. The 346 deaths are the most visible cost, but structural load displaced extensively onto counterparties, onto the FAA whose regulatory credibility was materially damaged, onto the travelling public who absorbed risk during the concealment period, and onto Boeing's supply chain. Boeing's continued existence reflects displacement capacity rather than governance health.</p>
+
+    <h3>Verdict</h3>
+    <p>Miller's Law of Structural Drift survives the Boeing falsification attempt. More usefully, the attempt clarifies something the framework needed to make explicit: institutional survival is not evidence of governance health. It may be evidence of displacement capacity.</p>
+  </div>
+
+  <!-- APPENDIX B -->
+  <span class="section-anchor" id="appB"></span>
+  <div class="section">
+    <div class="appendix-tag">Appendix B</div>
+    <h2>Attempted Falsification — Grenfell Tower</h2>
+    <p>The Grenfell Tower fire presents a structurally different falsification challenge. Unlike Boeing, there is no single dominant institution whose rational optimisation drove the outcome. The cladding manufacturer, the building manager, the local authority, the refurbishment contractor, the fire safety inspectors — each operated within their own constraint field and made locally rational decisions. Nobody chose the outcome.</p>
+
+    <h3>The falsification attempt</h3>
+    <p>The strongest version of the argument is that Grenfell was a coordination failure rather than an extraction failure. No actor extracted sufficient value from the specific decisions that led to the fire to constitute the kind of optimisation pressure the law describes. The cladding substitution saved approximately £300,000 across a large refurbishment contract — a marginal figure relative to the scale of the outcome.</p>
+    <p>The more pointed challenge concerns feedback. The Grenfell Action Group documented fire safety concerns repeatedly between 2013 and 2017. Feedback was not absent — it was present and ignored. If the law attributes overshoot to feedback latency, the Grenfell case suggests the mechanism is not latency but suppression.</p>
+
+    <h3>Where the falsification attempt breaks down</h3>
+    <p>The coordination failure argument underestimates the cumulative extraction dynamic. The £300,000 cladding substitution did not occur in isolation. It was one decision within a governance environment that had been systematically defunded and deregulated over the preceding decade. The aggregate load accumulated across the entire governance architecture, not within any single actor's decision.</p>
+    <p>The feedback suppression argument does require the framework to do additional work. The Grenfell Action Group's warnings were not delayed — they were structurally weightless. The constraint field contained no mechanism that made acting on resident feedback rational for those with authority to respond. This refines the law, adding architectural latency as a distinct mechanism alongside temporal latency.</p>
+
+    <h3>Verdict</h3>
+    <p>Miller's Law of Structural Drift survives the Grenfell falsification attempt, but not without earning a genuine theoretical refinement. The distributed causation objection fails because the law operates at the level of aggregate system load. The feedback suppression objection succeeds as a partial challenge, sufficient to require the framework to distinguish between temporal and architectural latency — which it now does. A framework that requires refinement under adversarial scrutiny is behaving as a good framework should.</p>
+  </div>
+
+  <!-- APPENDIX C -->
+  <span class="section-anchor" id="appC"></span>
+  <div class="section">
+    <div class="appendix-tag">Appendix C</div>
+    <h2>Attempted Falsification — Horizon (Post Office)</h2>
+    <p>The Horizon case is the most sustained falsification challenge of the three. The Post Office systematically prosecuted subpostmasters for financial discrepancies caused by its own defective Fujitsu software over a period exceeding two decades. More than 900 people were wrongfully convicted. The institution not only survived but actively wielded the legal system as an instrument of load displacement throughout.</p>
+
+    <h3>The falsification attempt</h3>
+    <p>The strongest falsification argument is durational. Twenty years is not a brief deviation from equilibrium. It is a sustained operational state. If structural drift produces collapse, and if the Post Office was accumulating load throughout this period, the law either requires a time qualification or it is falsified by cases where institutions sustain high load indefinitely.</p>
+    <p>The secondary argument concerns the mechanism of prosecution itself. The Post Office did not merely displace load passively — it actively generated new load displacement instruments, prosecuting individuals through criminal courts and deploying legal authority as an extraction mechanism against the very actors it was harming.</p>
+
+    <h3>Where the falsification attempt breaks down</h3>
+    <p>The durational argument assumes that two decades of operational continuity constitutes evidence against load accumulation. It does not. It constitutes evidence of displacement capacity. The Post Office maintained near-zero registered load for twenty years because every instance of latent load surfacing was legally redirected onto subpostmasters.</p>
+    <p>The latent load, however, kept accumulating throughout. Each wrongful conviction added to a reservoir of suppressed consequence. The collapse, when it came, was proportional to the duration of suppression — a national public inquiry, criminal referrals at the executive level, legislation to overturn convictions en masse. The overshoot was catastrophic precisely because displacement had operated for so long.</p>
+
+    <h3>Verdict</h3>
+    <p>Miller's Law of Structural Drift survives the Horizon falsification attempt, and does so most cleanly of the three cases. Horizon is not a counterexample to the collapse attractor. It is a demonstration of what happens when displacement capacity delays the collapse event across an extended timeframe. The law predicts exactly this dynamic. Horizon simply ran it at a scale and duration that makes the mechanism unusually visible.</p>
+    <p>If anything, the Horizon case strengthens the framework's most uncomfortable claim: that the apparent stability of institutions operating near the constraint frontier is not evidence of governance health. It may be evidence that the latent load reservoir has not yet found a pathway to surface. The longer that remains true, the worse the eventual correction will be.</p>
+  </div>
+
+  <!-- APPENDIX D -->
+  <span class="section-anchor" id="appD"></span>
+  <div class="section">
+    <div class="appendix-tag">Appendix D</div>
+    <h2>A Formal Sketch of System Load Dynamics</h2>
+    <p>The following is a simplified dynamical representation of the mechanisms described in the main text. It is offered as an illustrative sketch rather than a fully specified empirical model.</p>
+
+    <h3>Basic load dynamics</h3>
+    <p>Let L(t) represent total system load at time t. Load accumulates as a function of optimisation pressure and diminishes as a function of corrective response:</p>
+    <div class="formula">
+      dL/dt = αO(t) − βC(L<sub>r</sub>, t−τ)
+      <div class="formula-var">
+        O(t) — aggregate optimisation pressure at time t<br>
+        C(L<sub>r</sub>, t−τ) — corrective capacity, operating on registered load with lag τ<br>
+        α — scaling coefficient: efficiency of optimisation pressure → load accumulation<br>
+        β — scaling coefficient: strength of corrective mechanisms on activation<br>
+        τ — feedback latency: time delay between load generation and corrective response
+      </div>
+    </div>
+    <p>The critical feature is that corrective capacity operates on registered load with delay, not on total load in real time. When τ is large, the corrective term understates the actual load the system is carrying.</p>
+
+    <h3>The registered and latent load distinction</h3>
+    <div class="formula">
+      L(t) = L<sub>r</sub>(t) + L<sub>λ</sub>(t)
+      <div class="formula-var">
+        L<sub>r</sub>(t) — registered load: visible within the feedback architecture<br>
+        L<sub>λ</sub>(t) — latent load: accumulated but not yet coupled into the feedback structure
+      </div>
+    </div>
+    <p>Corrective mechanisms respond only to L<sub>r</sub>. The latent component accumulates outside the corrective loop until a coupling event occurs, potentially producing a rapid and disproportionate corrective response relative to what the system appeared to require immediately prior.</p>
+
+    <h3>The drift condition</h3>
+    <p>Structural drift toward the constraint frontier becomes the system attractor when time-averaged load accumulation exceeds the system's recovery capacity:</p>
+    <div class="formula">
+      αŌ / βγ ≥ L<sub>crit</sub>
+      <div class="formula-var">
+        Ō — time-averaged optimisation pressure across actors<br>
+        γ — system recovery rate under normal operating conditions<br>
+        L<sub>crit</sub> — critical load threshold beyond which systemic failure becomes probable
+      </div>
+    </div>
+    <p>When this condition holds, the system is not merely experiencing episodic stress. Load accumulation is structural. The drift toward the constraint frontier is not a deviation from normal operation — it is normal operation. This is the formal expression of Miller's Law of Structural Drift.</p>
+
+    <h3>Limitations of this sketch</h3>
+    <p>This model abstracts considerably from the complexity of real institutional systems. It treats optimisation pressure as an aggregate scalar rather than capturing the heterogeneous strategies of individual actors. It does not represent power asymmetry, displacement dynamics, or the distinction between temporal and architectural latency in formal terms.</p>
+    <p>Empirical observation across the case studies suggests that latent load accumulation is unlikely to be linear near the frontier. The relationship between proximity to L<sub>crit</sub> and the rate of further accumulation appears to exhibit non-linear, potentially exponential behaviour — consistent with tipping point dynamics described in catastrophe theory. Formalising this non-linearity represents the highest-priority direction for future mathematical development of the framework.</p>
+  </div>
+
+  <div class="doc-rule"></div>
+  <a href="index.html#outputs" class="back-link">← Return to Output</a>
+
+</div><!-- /doc-wrap -->
+
+<footer>
+  <span>N-OUGHT</span>
+  <span>STRUCTURAL ANALYSIS // EST. BEFORE DISCOVERY</span>
+</footer>
+
+<script>
+// ── PARTICLES — identical to index, single canvas only ──────────────────────
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts;
+let pSY = 0;
+
+function resize() {
+  W = pCv.width = window.innerWidth;
+  H = pCv.height = window.innerHeight;
+}
+
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save();
+    pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+
+function loop(){ drawParts(); requestAnimationFrame(loop); }
+
+function init(){ resize(); mkParts(); loop(); }
+
+window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
+init();
+</script>
+</body>
+</html>
