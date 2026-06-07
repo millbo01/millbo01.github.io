@@ -432,6 +432,86 @@ function init(){
 
 window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
 init();
+  // ── ENQUIRY MAILTO ─────────────────────────────────────────────────────────
+const ENQUIRY = {
+  to: 'contact@n-ought.com',
+  subject: 'N-ought // Enquiry',
+  body: [
+    'This is an automated brief.',
+    '',
+    '---',
+    '',
+    '// CONFIRM YOUR ENGAGEMENT TYPE',
+    '',
+    'Confirm which of the following applies:',
+    '',
+    '[ ] Private Equity or Venture Capital — structural diagnosis for acquisition or investment due diligence',
+    '[ ] Insurance Underwriting — structural risk assessment for underwriting or claims context',
+    '[ ] Legal — structural analysis for proceedings, dispute, or regulatory context',
+    '',
+    'If none of these accurately describes your position, state it plainly.',
+    '',
+    '---',
+    '',
+    '// DOCUMENT PREPARATION',
+    '',
+    'Documents must be submitted as a single folder via secure link provided on confirmation of engagement type.',
+    '',
+    'Accepted formats: .PDF and .DOCX only. No other formats will be processed.',
+    'Documents must not be image-heavy. Scanned documents that are not text-searchable will be rejected.',
+    '',
+    'The submission must contain no named individuals. Role titles and structural positions are acceptable. Named natural persons are not.',
+    'The submission must contain no named organisations. Redact or pseudonymise all organisation names before submission.',
+    'All documents must be submitted together in one folder. Partial submissions are not processed.',
+    '',
+    '---',
+    '',
+    '// WHAT TO SUBMIT',
+    '',
+    'The engine reads governance structures, incentive arrangements, authority distributions, remuneration frameworks, reporting lines, and contractual obligation structures.',
+    '',
+    'Typical submissions include: constitutional documents, board and committee terms of reference, executive remuneration frameworks, governance manuals, organisational structure documentation, incentive scheme rules, delegated authority matrices.',
+    '',
+    'Do not submit financial performance data, marketing material, or personnel records.',
+    '',
+    '---',
+    '',
+    '// FEES',
+    '',
+    'Structural Screen: £2,500 // Early engagement: £1,500',
+    'Full Diagnostic: £7,500-£12,000 // Early engagement: £4,500-£6,000',
+    'Screen + Full Diagnostic: £12,500 // Early engagement: £7,500',
+    'Confidence Extension: £1,500 // Early engagement: £750',
+    '',
+    'Early engagement pricing is available to first clients in exchange for direct feedback on output utility.',
+    '',
+    '---',
+    '',
+    '// OUTPUT AND DELIVERY',
+    '',
+    'On receipt of a complete and compliant submission, processing begins without further correspondence.',
+    'The report will be delivered to this email address on completion.',
+    'An invoice will accompany the report, payable within 28 days of issue.',
+    'First engagements: no payment required prior to delivery.',
+    '',
+    '---',
+    '',
+    'N-ought',
+    'n-ought.com',
+    'contact@n-ought.com'
+  ].join('\n')
+};
+
+function buildMailto() {
+  return 'mailto:' + ENQUIRY.to +
+    '?subject=' + encodeURIComponent(ENQUIRY.subject) +
+    '&body=' + encodeURIComponent(ENQUIRY.body);
+}
+
+['enquiry-link','enquiry-link-2','enquiry-link-3'].forEach(function(id) {
+  const el = document.getElementById(id);
+  if (el) el.href = buildMailto();
+});
 </script>
 </body>
 </html>
