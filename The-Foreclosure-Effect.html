@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Foreclosure Effect — N-ought</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
+    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
+    --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;line-height:1.6;letter-spacing:.04em;overflow-x:hidden; }
+
+  /* particles only — no deep canvas */
+  #particles { position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none; }
+  #surface-light { position:fixed;top:-20%;left:30%;width:50%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);pointer-events:none;z-index:2; }
+
+  /* NAV — identical to index */
+  nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--text-faint);background:rgba(7,8,16,.88);backdrop-filter:blur(4px); }
+  .nav-mark { display:inline-block;width:28px;height:28px;cursor:pointer;text-decoration:none;flex-shrink:0; }
+  .nav-mark svg { display:block;width:28px;height:28px; }
+  .nav-links { display:flex;gap:48px;list-style:none; }
+  .nav-links a { color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s; }
+  .nav-links a:hover { color:var(--accent); }
+
+  /* CONTENT WRAPPER */
+  .doc-wrap {
+    position:relative;
+    z-index:10;
+    max-width:860px;
+    margin:0 auto;
+    padding:140px 48px 120px;
+  }
+
+  /* PAPER HEADER */
+  .paper-meta {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:40px;
+  }
+
+  .paper-title {
+    font-family:var(--mono);
+    font-size:18px;
+    font-weight:normal;
+    color:var(--accent);
+    opacity:.9;
+    letter-spacing:.12em;
+    line-height:1.5;
+    margin-bottom:16px;
+  }
+
+  .paper-subtitle {
+    font-size:12px;
+    color:var(--text-dim);
+    letter-spacing:.06em;
+    font-style:italic;
+    margin-bottom:48px;
+  }
+
+  .paper-rule {
+    width:100%;
+    height:.5px;
+    background:var(--text-faint);
+    margin-bottom:56px;
+  }
+
+  /* TOC */
+  .toc {
+    position:fixed;
+    top:80px;
+    right:24px;
+    width:250px;
+    max-height:calc(100vh - 120px);
+    overflow-y:auto;
+    padding:20px 20px;
+    border:.5px solid var(--text-faint);
+    background:rgba(7,8,16,.92);
+    z-index:50;
+    font-size:10px;
+  }
+
+  .toc-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+
+  .toc ol {
+    list-style:none;
+    counter-reset:toc;
+  }
+
+  .toc li {
+    counter-increment:toc;
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:.05em;
+    padding:5px 0;
+    border-bottom:.5px solid var(--text-faint);
+    display:flex;
+    gap:12px;
+  }
+
+  .toc li:last-child { border-bottom:none; }
+
+  .toc li::before {
+    content:counter(toc,decimal-leading-zero);
+    color:var(--text-faint);
+    font-size:9px;
+    letter-spacing:.1em;
+    flex-shrink:0;
+    padding-top:1px;
+  }
+
+  .toc a {
+    color:var(--text-dim);
+    text-decoration:none;
+    transition:color .2s;
+  }
+
+  .toc a:hover { color:var(--accent); }
+
+  /* ABSTRACT */
+  .abstract {
+    margin-bottom:56px;
+    padding:28px 32px;
+    border-left:1px solid var(--accent-mid);
+    background:rgba(13,16,51,.1);
+  }
+
+  .abstract-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .abstract p {
+    font-size:12px;
+    color:var(--text-dim);
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:16px;
+  }
+
+  .abstract p:last-child { margin-bottom:0; }
+
+  /* SECTION */
+  .section {
+    margin-bottom:72px;
+  }
+
+  .section-anchor {
+    display:block;
+    height:80px;
+    margin-top:-80px;
+    visibility:hidden;
+  }
+
+  .section-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--accent);
+    opacity:.7;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .section h2 {
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:normal;
+    letter-spacing:.25em;
+    color:var(--accent);
+    opacity:.88;
+    text-transform:uppercase;
+    margin-bottom:32px;
+    padding-bottom:16px;
+    border-bottom:.5px solid var(--text-faint);
+  }
+
+  .section h3 {
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:normal;
+    letter-spacing:.2em;
+    color:var(--accent);
+    opacity:.75;
+    text-transform:uppercase;
+    margin:40px 0 20px;
+  }
+
+  .section p {
+    font-size:12px;
+    color:#7a8faa;
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:20px;
+    max-width:860px;
+    white-space:normal;
+  }
+
+  /* BLOCKQUOTE */
+  .section blockquote {
+    margin:32px 0;
+    padding:24px 28px;
+    border-left:1px solid var(--accent-mid);
+    background:rgba(13,16,51,.15);
+  }
+
+  .section blockquote p {
+    font-size:12px;
+    color:var(--text);
+    opacity:.8;
+    letter-spacing:.05em;
+    line-height:1.9;
+    margin-bottom:0;
+    font-style:italic;
+  }
+
+  /* CALLOUT */
+  .callout {
+    margin:32px 0;
+    padding:24px 28px;
+    border:.5px solid var(--text-faint);
+    background:rgba(7,8,16,.4);
+  }
+
+  .callout p {
+    font-size:11px;
+    color:var(--text-dim);
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:12px;
+    max-width:none;
+  }
+
+  .callout p:last-child { margin-bottom:0; }
+
+  /* STRONG / EM */
+  strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.55; }
+  em { color:var(--text-dim);font-style:italic; }
+
+  /* DIVIDER */
+  .doc-rule {
+    width:100%;
+    height:.5px;
+    background:var(--text-faint);
+    margin:64px 0;
+  }
+
+  /* BACK LINK */
+  .back-link {
+    display:inline-block;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:var(--text-dim);
+    text-decoration:none;
+    text-transform:uppercase;
+    margin-bottom:64px;
+    transition:color .2s;
+  }
+  .back-link:hover { color:var(--accent); }
+
+  /* DIAGRAM */
+  .diagram-wrap {
+    margin:40px -48px;
+    padding:32px 48px;
+    background:rgba(13,16,51,.12);
+    border-top:.5px solid var(--text-faint);
+    border-bottom:.5px solid var(--text-faint);
+    overflow-x:auto;
+  }
+
+  .diagram-wrap svg {
+    width:100%;
+    max-width:100%;
+    height:auto;
+    display:block;
+    opacity:.88;
+  }
+
+  .diagram-caption {
+    font-size:9px;
+    letter-spacing:.2em;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-top:16px;
+    text-align:center;
+  }
+
+  /* FOOTER */
+  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
+
+  @media(max-width:860px){
+    nav { padding:20px 24px; }
+    .nav-links { gap:20px; }
+    .doc-wrap { padding:110px 24px 80px; }
+    footer { padding:20px 24px;flex-direction:column;gap:8px; }
+    .toc { display:none; }
+    .diagram-wrap { margin:40px -24px; padding:24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li><a href="index.html#fees">Fees</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="doc-wrap">
+
+  <a href="index.html#outputs" class="back-link">← Output</a>
+
+  <div class="paper-meta">N-ought // Applied Framework // 2025</div>
+  <h1 class="paper-title">The Foreclosure Effect</h1>
+  <p class="paper-subtitle">How condemnation forecloses prevention in complex systems</p>
+  <div class="paper-rule"></div>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-label">Contents</div>
+    <ol>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#s1">The Foundational Axiom</a></li>
+      <li><a href="#s2">The Mechanism</a></li>
+      <li><a href="#s3">Case Studies</a></li>
+      <li><a href="#s4">The Prescription</a></li>
+    </ol>
+  </nav>
+
+  <!-- ABSTRACT -->
+  <span class="section-anchor" id="abstract"></span>
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+    <p>When harm occurs within complex systems, the dominant institutional response is moral condemnation: locating an agent and assigning fault. This paper argues that moral condemnation, when deployed as the primary response to harm, does not merely fail to prevent recurrence — it actively forecloses the structural analysis that would make prevention possible.</p>
+    <p>The mechanism operates through reframing: the analytical question becomes indistinguishable from sympathy for the condemned actor. The cost of this foreclosure is not borne by those who generate it. It is paid forward, by the next person harmed by the same unexamined conditions.</p>
+    <p>Three case studies — the Post Office Horizon scandal, sexual violence prevention, and the opioid crisis — demonstrate the mechanism across radically different domains. A four-point prescription for epistemic permission concludes the paper.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <span class="section-anchor" id="s1"></span>
+  <div class="section">
+    <div class="section-label">// 01</div>
+    <h2>The Foundational Axiom</h2>
+
+    <p>Every system operates under conservation constraints. Energy cannot be created from nothing. Matter cannot be conjured from absence. These are hard limits on what is physically possible. The first and second laws of thermodynamics do not bend to intention, effort, or institutional preference.</p>
+
+    <p>What is less commonly acknowledged is that the same constraint applies to value, attention, and analytical capacity within human systems. When a resource is consumed in one part of a system, it is unavailable elsewhere. The analogy is not exact, but it is useful: human systems also run on finite attention, bandwidth, and institutional capacity.</p>
+
+    <p>Most human systems operate far below their theoretical efficiency limit. The distance between current performance and that limit is not empty space. It is load, carried somewhere else in the system, by other actors, at other times, or in currencies that are not being measured. When we declare efficiency gains, we are almost never describing the creation of new capacity. We are describing the partial recovery of losses that were always being paid, just not always by us, and not always visibly.</p>
+
+    <p>This has a specific implication for how we understand social and institutional responses to harm. When a system produces a response to a harmful outcome, that response consumes resources. Attention. Political will. Institutional energy. These are finite. Their consumption in one direction forecloses their availability in another.</p>
+
+    <p>The question this paper asks is not merely where the resources went. Misallocation implies they were available and redirected. What this paper argues is more precise and more troubling. Moral condemnation, when deployed as the primary response to harm, does not simply consume the attention structural analysis would have required. It actively forecloses the possibility of that analysis by reframing it as morally suspect. To ask <em>why</em> becomes equivalent to excusing. To examine structure becomes equivalent to defending the actor within it. The analytical question is not crowded out. It is often treated as illegitimate before it can be asked.</p>
+
+    <p>The cost is not merely inefficiency. It is often the prevention of the kind of intervention most capable of changing the conditions that produced the harm. And that prevention is paid, reliably and invisibly, by the next victims of those unexamined conditions.</p>
+
+    <blockquote>
+      <p>Moral comfort prevents the discovery of prevention.</p>
+    </blockquote>
+  </div>
+
+  <!-- SECTION 2 -->
+  <span class="section-anchor" id="s2"></span>
+  <div class="section">
+    <div class="section-label">// 02</div>
+    <h2>The Mechanism</h2>
+
+    <p>Moral condemnation serves a genuine function. It signals group norms, establishes boundaries of acceptable behaviour, and provides social cohesion around shared values. This paper does not dispute that function. Condemnation is necessary. The argument is that it is being asked to do work it cannot do, and that the cost of that overreach is borne by people who had no part in the conversation.</p>
+
+    <p>The mechanism operates as follows.</p>
+
+    <p>When harm occurs, the immediate social response is to locate an agent. Someone did this. That location of agency is not wrong in itself. Actors exist, choices are made, and accountability has legitimate social purpose. The problem begins at the next step, when the location of agency becomes the terminus of the analysis rather than its starting point. Having found the person, the system stops looking.</p>
+
+    <p>The structural question — what conditions made this outcome likely, what incentives were operating, what visibility existed, what feedback loops failed — goes unasked. Not because it is unimportant. Because asking it has been made to feel like a defence of the person already located.</p>
+
+    <p>This is the active foreclosure. It is not that structural analysis competes with moral condemnation for limited attention and loses. It is that moral condemnation reframes structural analysis as morally suspect activity. The analyst can be treated as if they are defending the actor. The question becomes the excuse. The examination of conditions becomes indistinguishable, in the social environment the condemnation has created, from sympathy for the actor.</p>
+
+    <p>The result is a system that produces condemnation reliably and structural intervention only rarely. Not because structural intervention is harder, though it often is. But because the social cost of attempting it has been elevated by the prior moral framing.</p>
+
+    <p>And here the underlying constraint logic reasserts itself. The comfort generated by condemnation is real, even if it is partial and temporary. It provides norm signalling, group cohesion, the satisfaction of located accountability. These are genuine outputs. But they are not free. Their cost is the analysis that did not happen, the conditions that remained unexamined, and the intervention that was never designed because the question that would have produced it was rendered illegitimate before it could be asked.</p>
+
+    <p>That cost does not disappear. It is paid forward, by the next person harmed by the same unexamined conditions, in the same environment, under the same structural pressures that produced the original harm and survived the response to it entirely intact.</p>
+
+    <blockquote>
+      <p>By protecting the institution's virtue in the short term, the foreclosure mechanism guarantees the next infection. It ensures the system remains clean of difficult questions, which keeps it dirty with structural defects.</p>
+    </blockquote>
+  </div>
+
+  <!-- DIAGRAM — placed between mechanism and case studies -->
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 5305.714569091797 3602.857666015625" xmlns="http://www.w3.org/2000/svg"><defs><style class="style-fonts">@font-face { font-family: Excalifont; src: url(data:font/woff2;base64,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); }</style></defs><g stroke-linecap="round"><g transform="translate(2664.1013132500175 422.31482220564976) rotate(0 4.728851149598086 1385.344811785389)"><path d="M1.14 -0.86 C2.37 460.95, 7.08 2309.67, 8.32 2771.55" stroke="#d3d3d3" stroke-width="4.5" fill="none" stroke-dasharray="8 12"></path></g></g><mask></mask><g transform="translate(1597.400886990159 422.3148222056502) rotate(0 360.7583646061785 48.29239661558182)"><text x="360.7583646061783" y="68.07296226932414" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="77.26783458493091px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Condemnation Path</text></g><g transform="translate(3043.006814623208 422.3148222056502) rotate(0 304.8618701666737 48.29239661558182)"><text x="304.8618701666742" y="68.07296226932414" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="77.26783458493091px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Prevention Path</text></g><g stroke-linecap="round" transform="translate(1577.0341095257318 659.0044042678915) rotate(0 386.700123369219 159.22946256379666)"><path d="M32 0 C251.42 0.34, 471.84 0.74, 741.4 0 M32 0 C309.76 0.15, 587.74 0.3, 741.4 0 M741.4 0 C763.37 0.25, 773.4 9.28, 773.4 32 M741.4 0 C764.8 -2.19, 775 8.41, 773.4 32 M773.4 32 C771.85 114.7, 771.54 199.19, 773.4 286.46 M773.4 32 C775.54 96.38, 774.66 161.35, 773.4 286.46 M773.4 286.46 C772.31 308.25, 762.62 317.77, 741.4 318.46 M773.4 286.46 C774.63 307.56, 761.83 319.81, 741.4 318.46 M741.4 318.46 C514.62 315.81, 289.01 315.86, 32 318.46 M741.4 318.46 C475.19 319.65, 208.32 319.57, 32 318.46 M32 318.46 C11.75 318.97, 0.81 306.39, 0 286.46 M32 318.46 C9.2 318.9, 2.22 306.78, 0 286.46 M0 286.46 C-1.06 213.33, 1.54 141.45, 0 32 M0 286.46 C1.33 184.75, 1.27 83.73, 0 32 M0 32 C-1.51 11.39, 8.75 1.4, 32 0 M0 32 C-1.85 8.46, 10.44 -2.19, 32 0" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(1773.8798932953414 794.963242904703) rotate(0 189.85433959960938 23.270623926985195)"><text x="189.85433959960938" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Action / Harm occurs</text></g><g stroke-linecap="round" transform="translate(1577.0341095257318 1112.790815655581) rotate(0 386.700123369219 159.22946256379666)"><path d="M32 0 C276.7 2.67, 522.34 2.25, 741.4 0 M32 0 C257.58 -0.99, 482.94 -1.15, 741.4 0 M741.4 0 C764.26 1.6, 774.28 10.58, 773.4 32 M741.4 0 C761.97 -0.03, 775.62 8.37, 773.4 32 M773.4 32 C772.91 116.65, 775.78 199.63, 773.4 286.46 M773.4 32 C773.89 118.16, 775.44 204.51, 773.4 286.46 M773.4 286.46 C773.76 307.07, 763.22 318.59, 741.4 318.46 M773.4 286.46 C774.77 308.89, 762.62 319.33, 741.4 318.46 M741.4 318.46 C489.91 317.25, 238.55 317.35, 32 318.46 M741.4 318.46 C497.34 321.22, 253.06 321.13, 32 318.46 M32 318.46 C11.11 317.55, 0.98 308.07, 0 286.46 M32 318.46 C10.64 317.31, -0.84 310.09, 0 286.46 M0 286.46 C1.29 186.48, 0.26 85.5, 0 32 M0 286.46 C0.93 200.55, 0.75 115, 0 32 M0 32 C0.83 10.11, 9.64 1.12, 32 0 M0 32 C0.59 12.45, 12.69 -2.13, 32 0" stroke="#cdd0d2" stroke-width="4" fill="none"></path></g><g transform="translate(1838.1760969086226 1248.7496542923923) rotate(0 125.55813598632812 23.27062392698518)"><text x="125.55813598632812" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#cdd0d2" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Actor located</text></g><g stroke-linecap="round" transform="translate(1575.2286859504547 1565.6600272750618) rotate(0 386.700123369219 159.2294625637967)"><path d="M32 0 C236.4 -1.5, 441.81 -0.37, 741.4 0 M32 0 C293.16 2.01, 553.86 2.28, 741.4 0 M741.4 0 C764.63 -0.08, 771.5 11.91, 773.4 32 M741.4 0 C764.79 0.88, 773.28 11.18, 773.4 32 M773.4 32 C773.11 125.09, 775.1 220.07, 773.4 286.46 M773.4 32 C774.51 87.83, 774.62 142.74, 773.4 286.46 M773.4 286.46 C773.93 306.65, 762.89 319.67, 741.4 318.46 M773.4 286.46 C772.22 306.62, 764.3 319.46, 741.4 318.46 M741.4 318.46 C531.62 317.97, 321.27 318.59, 32 318.46 M741.4 318.46 C528.92 317.91, 316.51 318.16, 32 318.46 M32 318.46 C9.58 316.56, -1.55 306.65, 0 286.46 M32 318.46 C9.44 319.51, 0.29 306.22, 0 286.46 M0 286.46 C-1.11 226.42, 0.13 168.49, 0 32 M0 286.46 C-0.45 232.85, 0.26 179.82, 0 32 M0 32 C-0.04 12.32, 12.64 1, 32 0 M0 32 C1.69 8.92, 12.81 -1.05, 32 0" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1839.3490668880331 1701.6188659118734) rotate(0 122.57974243164062 23.270623926985195)"><text x="122.57974243164062" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#b86200" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Condemnation</text></g><g stroke-linecap="round" transform="translate(1575.2286859504547 2073.216952057423) rotate(0 386.700123369219 159.2294625637967)"><path d="M32 0 C198.76 1.47, 367.56 0.97, 741.4 0 M32 0 C311.62 -0.73, 590.82 -0.66, 741.4 0 M741.4 0 C763.3 1.86, 775.11 12.19, 773.4 32 M741.4 0 C761.69 -1.05, 774.99 12.71, 773.4 32 M773.4 32 C773.08 118.5, 773.36 206.1, 773.4 286.46 M773.4 32 C774.33 121.86, 774.59 211.71, 773.4 286.46 M773.4 286.46 C773.61 309.3, 763.36 318.25, 741.4 318.46 M773.4 286.46 C773.01 305.72, 761.08 316.74, 741.4 318.46 M741.4 318.46 C585.64 317.11, 428.22 316.08, 32 318.46 M741.4 318.46 C561.76 316.25, 381.67 316.08, 32 318.46 M32 318.46 C12.42 317.79, 0.4 308.16, 0 286.46 M32 318.46 C9.68 318.86, -0.09 308.39, 0 286.46 M0 286.46 C-0.96 227.89, 1.75 168.85, 0 32 M0 286.46 C-0.45 215.89, -0.83 146.25, 0 32 M0 32 C-0.32 10.84, 9.96 0.2, 32 0 M0 32 C-1.97 9.4, 12.24 -0.07, 32 0" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1634.6772224056112 2209.1757906942344) rotate(0 327.2515869140625 23.270623926985195)"><text x="327.2515869140625" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#b86200" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Structural analysis becomes suspect</text></g><g stroke-linecap="round" transform="translate(1577.0341095257318 2913.0314591471333) rotate(0 386.700123369219 159.22946256379657)"><path d="M32 0 C231.06 2.19, 428.57 2.79, 741.4 0 M32 0 C225.33 2.43, 418.01 2.25, 741.4 0 M741.4 0 C762.34 1.9, 774.18 9.43, 773.4 32 M741.4 0 C760.91 0.12, 772.72 10.5, 773.4 32 M773.4 32 C770.6 98.73, 773.03 168.04, 773.4 286.46 M773.4 32 C773.06 84.22, 773.71 135.77, 773.4 286.46 M773.4 286.46 C774.91 306.88, 761.78 316.81, 741.4 318.46 M773.4 286.46 C773.68 309.97, 762.13 316.73, 741.4 318.46 M741.4 318.46 C507.66 320.53, 272.11 320.32, 32 318.46 M741.4 318.46 C505.54 318, 269.45 317.87, 32 318.46 M32 318.46 C11.48 316.91, -0.93 306.35, 0 286.46 M32 318.46 C11.93 316.83, -0.37 305.81, 0 286.46 M0 286.46 C1.82 211.07, 2.84 135.25, 0 32 M0 286.46 C1.97 211.93, 2.32 135.99, 0 32 M0 32 C0.16 12.65, 11.73 1.38, 32 0 M0 32 C1.22 9.43, 11.01 -0.75, 32 0" stroke="#b44d4d" stroke-width="4" fill="none"></path></g><g transform="translate(1862.5431241913375 3048.9902977839447) rotate(0 101.19110870361328 23.270623926985195)"><text x="101.19110870361328" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#b44d4d" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Next victim</text></g><g stroke-linecap="round" transform="translate(3004.1307641042513 659.0044042678915) rotate(0 386.700123369219 159.22946256379666)"><path d="M32 0 C268.93 0.62, 506.13 2, 741.4 0 M32 0 C282.04 -0.18, 532.25 -0.49, 741.4 0 M741.4 0 C764.38 -1.73, 771.69 9.7, 773.4 32 M741.4 0 C761.09 -1.55, 775.12 11.23, 773.4 32 M773.4 32 C774.29 106.49, 773.41 177.47, 773.4 286.46 M773.4 32 C771.9 84.54, 772.34 137.38, 773.4 286.46 M773.4 286.46 C771.69 307.74, 763.21 320.24, 741.4 318.46 M773.4 286.46 C775.17 306.35, 761.52 316.21, 741.4 318.46 M741.4 318.46 C504.62 321.44, 268.25 320.57, 32 318.46 M741.4 318.46 C500.58 321.05, 258.87 320.71, 32 318.46 M32 318.46 C8.76 318.44, -0.46 309.27, 0 286.46 M32 318.46 C11.81 319.88, 1.55 305.94, 0 286.46 M0 286.46 C0.76 200.78, -0.56 113.95, 0 32 M0 286.46 C1.31 205.31, 0.36 123.92, 0 32 M0 32 C1.5 9.75, 11.13 -0.14, 32 0 M0 32 C0.91 10.19, 10.36 -0.69, 32 0" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(3200.976547873861 794.963242904703) rotate(0 189.85433959960938 23.270623926985195)"><text x="189.85433959960938" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Action / Harm occurs</text></g><g stroke-linecap="round" transform="translate(3004.1307641042513 1110.9852956573382) rotate(0 386.700123369219 159.22946256379666)"><path d="M32 0 C181.08 -1.71, 329.44 -2.7, 741.4 0 M32 0 C294.88 -0.11, 556.75 0.04, 741.4 0 M741.4 0 C761.31 -1.35, 774.9 11.15, 773.4 32 M741.4 0 C762.43 1.42, 771.18 10.12, 773.4 32 M773.4 32 C770.31 130.41, 770.52 231.84, 773.4 286.46 M773.4 32 C774.31 97.41, 775.2 163.58, 773.4 286.46 M773.4 286.46 C774.94 306.54, 761.68 316.5, 741.4 318.46 M773.4 286.46 C774.16 308.3, 764.53 317.09, 741.4 318.46 M741.4 318.46 C461.32 318.58, 181.31 318.7, 32 318.46 M741.4 318.46 C511.61 316.71, 282.5 317.01, 32 318.46 M32 318.46 C11.66 319.69, 1.35 306.18, 0 286.46 M32 318.46 C11.57 318.26, -0.89 308.61, 0 286.46 M0 286.46 C1.25 199.64, 0.98 114.99, 0 32 M0 286.46 C2.3 209.15, 1.88 132.53, 0 32 M0 32 C0.79 10.25, 10.4 -0.6, 32 0 M0 32 C0.73 11.08, 12.25 -2.3, 32 0" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(3265.272751487142 1246.9441342941495) rotate(0 125.55813598632812 23.27062392698518)"><text x="125.55813598632812" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Actor located</text></g><g stroke-linecap="round" transform="translate(3004.1307641042513 2073.216952057423) rotate(0 386.700123369219 159.2294625637967)"><path d="M32 0 C204.81 -3.03, 378.62 -2.91, 741.4 0 M32 0 C196.97 -0.44, 361.66 -0.79, 741.4 0 M741.4 0 C764.57 -1.56, 772.75 8.82, 773.4 32 M741.4 0 C760.85 -1.82, 773.93 9.68, 773.4 32 M773.4 32 C772.33 128.56, 773.81 225.58, 773.4 286.46 M773.4 32 C772.59 92.52, 772.95 152.21, 773.4 286.46 M773.4 286.46 C775.31 306.46, 762.46 319.26, 741.4 318.46 M773.4 286.46 C774.89 309.81, 764.55 319, 741.4 318.46 M741.4 318.46 C576.69 315.57, 412.58 316.15, 32 318.46 M741.4 318.46 C484.96 316.14, 228.05 316.32, 32 318.46 M32 318.46 C11.43 317.54, 0.1 308.17, 0 286.46 M32 318.46 C9.52 318.51, 0.8 307.85, 0 286.46 M0 286.46 C-0.2 231.44, 0.43 176.32, 0 32 M0 286.46 C0.53 215.54, 0.83 143.52, 0 32 M0 32 C0.86 9.59, 10.04 -0.68, 32 0 M0 32 C1.25 12.44, 8.91 0.79, 32 0" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(3199.692124045736 2209.1757906942344) rotate(0 191.13876342773438 23.270623926985195)"><text x="191.13876342773438" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#39994b" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Intervention possible</text></g><g stroke-linecap="round"><g transform="translate(1963.9421079869026 984.7030790616582) rotate(0 -0.6667206635775074 60.93989490163985)"><path d="M0.43 0.83 C0.53 21.14, -0.56 101.53, -0.58 121.65 M-0.8 0.23 C-0.8 20.22, -1.86 100.06, -1.77 119.95" stroke="#cdd0d2" stroke-width="4" fill="none"></path></g><g transform="translate(1963.9421079869026 984.7030790616582) rotate(0 -0.6667206635775074 60.93989490163985)"><path d="M-0.51 118.64 L-9.72 108.26 L5.2 107.4 L-2.6 120.51" stroke="none" stroke-width="0" fill="#cdd0d2" fill-rule="evenodd"></path><path d="M-1.77 119.95 C-1.98 116.64, -3.28 114.95, -8.03 106.32 M-1.77 119.95 C-3.97 114.32, -6.58 110.38, -8.03 106.32 M-8.03 106.32 C-5.27 106.19, -2.32 106.49, 4.65 106.39 M-8.03 106.32 C-3.13 106.71, 1.71 106.03, 4.65 106.39 M4.65 106.39 C2.61 109.67, -0.91 117.02, -1.77 119.95 M4.65 106.39 C2.75 110.77, 0.47 114.4, -1.77 119.95 M-1.77 119.95 C-1.77 119.95, -1.77 119.95, -1.77 119.95 M-1.77 119.95 C-1.77 119.95, -1.77 119.95, -1.77 119.95" stroke="#cdd0d2" stroke-width="4" fill="none"></path></g></g><mask></mask><g stroke-linecap="round"><g transform="translate(1963.9771246092132 1438.4894904493476) rotate(0 -1.0222672108384359 59.55668809854487)"><path d="M1.08 0 C0.9 20.06, -1.81 100.3, -2.16 120.17 M0.18 -1.05 C-0.05 18.65, -2.89 97.98, -3.12 118.17" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(1963.9771246092132 1438.4894904493476) rotate(0 -1.0222672108384359 59.55668809854487)"><path d="M-4.11 117.12 L-7.17 105.64 L4.68 105.68 L-1.74 117.7" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M-3.12 118.17 C-4.34 115.35, -5.28 113.93, -9.12 104.42 M-3.12 118.17 C-4.7 114.63, -5.98 111.17, -9.12 104.42 M-9.12 104.42 C-5.12 103.88, -0.66 105.46, 3.55 104.73 M-9.12 104.42 C-5.28 104.71, -0.99 104.52, 3.55 104.73 M3.55 104.73 C1.07 110.96, -0.33 115.07, -3.12 118.17 M3.55 104.73 C1.96 108.33, 1.45 110.56, -3.12 118.17 M-3.12 118.17 C-3.12 118.17, -3.12 118.17, -3.12 118.17 M-3.12 118.17 C-3.12 118.17, -3.12 118.17, -3.12 118.17" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g mask="url(#mask-r60g8LwggdqgBdYgbVCWK)" stroke-linecap="round"><g transform="translate(1962.7945407994066 1882.019324248568) rotate(0 1.5897376885250196 98.50253962037738)"><path d="M0.63 0.4 C0.93 33.04, 1 163.37, 1.45 196.17 M-0.49 -0.43 C0.2 32.34, 3.09 164.84, 3.67 197.44" stroke="#16842a" stroke-width="4" fill="none"></path></g><g transform="translate(1962.7945407994066 1882.019324248568) rotate(0 1.5897376885250196 98.50253962037738)"><path d="M3.96 198.16 L-3.8 183.23 L8.38 183.83 L3.78 197.04" stroke="none" stroke-width="0" fill="#16842a" fill-rule="evenodd"></path><path d="M3.67 197.44 C2.32 192.62, -0.64 191.23, -2.94 183.97 M3.67 197.44 C1.88 193.53, -0.1 188.4, -2.94 183.97 M-2.94 183.97 C1.63 183.45, 3.8 182.84, 9.74 183.72 M-2.94 183.97 C1.14 183.86, 5.61 184.2, 9.74 183.72 M9.74 183.72 C8.21 189.09, 5.89 193.39, 3.67 197.44 M9.74 183.72 C8.59 188.12, 6.32 191.77, 3.67 197.44 M3.67 197.44 C3.67 197.44, 3.67 197.44, 3.67 197.44 M3.67 197.44 C3.67 197.44, 3.67 197.44, 3.67 197.44" stroke="#16842a" stroke-width="4" fill="none"></path></g></g><mask id="mask-r60g8LwggdqgBdYgbVCWK"><rect x="0" y="0" fill="#fff" width="2065.164231559183" height="2178.711143007816"></rect><rect x="1837.4346550391583" y="1933.8239857742215" fill="#000" width="253.08946228027344" height="93.08249570794077" opacity="1"></rect></mask><g transform="translate(1837.4346550391583 1933.8239857742215) rotate(0 126.94962344877331 46.69787809472365)"><text x="126.54473114013672" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#16842a" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Moral comfort</text><text x="126.54473114013672" y="79.34351934144871" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#16842a" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">generated</text></g><g stroke-linecap="round"><g transform="translate(3391.1925673993283 984.7030790616582) rotate(0 -0.052313206399048795 63.871241210571)"><path d="M-0.04 -0.99 C0.09 20.5, 1.15 107.28, 1.42 128.74 M-1.52 1.1 C-1.63 22.29, -0.08 105.73, 0.28 127.05" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(3391.1925673993283 984.7030790616582) rotate(0 -0.052313206399048795 63.871241210571)"><path d="M-1.72 126.31 L-8.2 111.67 L5.83 113.64 L-1.08 126.69" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M0.28 127.05 C-3.26 121.84, -3.3 117.24, -6.3 113.57 M0.28 127.05 C-0.91 123.69, -3.32 118.81, -6.3 113.57 M-6.3 113.57 C-2.29 112.9, 1.49 113.39, 6.38 113.35 M-6.3 113.57 C-0.7 113.69, 3.99 113.8, 6.38 113.35 M6.38 113.35 C5.93 118.23, 3.05 120.06, 0.28 127.05 M6.38 113.35 C3.72 117.41, 2.66 122.26, 0.28 127.05 M0.28 127.05 C0.28 127.05, 0.28 127.05, 0.28 127.05 M0.28 127.05 C0.28 127.05, 0.28 127.05, 0.28 127.05" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g transform="translate(1683.668951220283 3311.2338757548137) rotate(0 1006.5752056434349 82.93655358283854)"><text x="1006.5752056434346" y="58.45368296518463" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="66.34924286627087px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Does your system stop at blame — or continue to</text><text x="1006.5752056434346" y="141.3902365480232" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="66.34924286627087px" fill="#d3d3d3" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">prevention?</text></g><g stroke-linecap="round"><g transform="translate(4060.3087281850803 605.9080746486907) rotate(0 1.6889624853993155 464.54755487538824)"><path d="M0.61 0.82 C1.45 155.76, 3.29 774.21, 3.9 928.89 M-0.53 0.21 C0.26 154.86, 2.31 772.68, 3.03 927.12" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(4060.3087281850803 605.9080746486907) rotate(0 1.6889624853993155 464.54755487538824)"><path d="M15.61 0.77 C13.52 1.04, 10.24 1.56, 0.61 0.82 M15.61 0.77 C9.71 1.15, 4.48 0.87, 0.61 0.82" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(4060.3087281850803 605.9080746486907) rotate(0 1.6889624853993155 464.54755487538824)"><path d="M-14.39 0.88 C-10.24 0.97, -7.29 1.47, 0.61 0.82 M-14.39 0.88 C-9.64 1.39, -4.22 1.07, 0.61 0.82" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(4060.3087281850803 605.9080746486907) rotate(0 1.6889624853993155 464.54755487538824)"><path d="M-11.97 927.18 C-7.82 927.28, -4.87 927.77, 3.03 927.12 M-11.97 927.18 C-7.22 927.7, -1.8 927.38, 3.03 927.12" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(4060.3087281850803 605.9080746486907) rotate(0 1.6889624853993155 464.54755487538824)"><path d="M18.03 927.07 C15.95 927.34, 12.66 927.86, 3.03 927.12 M18.03 927.07 C12.13 927.45, 6.9 927.17, 3.03 927.12" stroke="#b86200" stroke-width="4" fill="none"></path></g></g><mask></mask><g transform="translate(3724.5531679476117 1856.428032319766) rotate(88.78112476486874 255.3592264722347 27.238363004563553)"><text x="0" y="38.395196491232824" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="43.58138080730173px" fill="#39994b" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Future harm interrupted</text></g><g transform="translate(3695.8121108520354 1844.1209852139982) rotate(89.19067966280568 459.2093775989242 39.5454101103316)"><text x="0" y="55.74321009152341" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="63.27265617653054px" fill="#39994b" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Structural analysis permitted </text></g><g stroke-linecap="round"><g transform="translate(1278.8469217464517 622.989270889012) rotate(0 -2.6462171276016306 1319.2770251481402)"><path d="M-0.93 0.87 C-1.9 440.36, -4.64 2197.76, -5.38 2637.17 M0.79 0.28 C-0.34 439.88, -4.97 2198.61, -6.08 2638.27" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1278.8469217464517 622.989270889012) rotate(0 -2.6462171276016306 1319.2770251481402)"><path d="M14.07 0.9 C10.08 1.36, 2.87 1.35, -0.93 0.87 M14.07 0.9 C9.91 1.14, 6.24 0.36, -0.93 0.87" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1278.8469217464517 622.989270889012) rotate(0 -2.6462171276016306 1319.2770251481402)"><path d="M-15.93 0.84 C-9.76 1.56, -6.81 1.56, -0.93 0.87 M-15.93 0.84 C-12.79 1.35, -9.16 0.57, -0.93 0.87" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1278.8469217464517 622.989270889012) rotate(0 -2.6462171276016306 1319.2770251481402)"><path d="M-21.08 2638.23 C-14.91 2638.95, -11.96 2638.96, -6.08 2638.27 M-21.08 2638.23 C-17.95 2638.74, -14.32 2637.97, -6.08 2638.27" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1278.8469217464517 622.989270889012) rotate(0 -2.6462171276016306 1319.2770251481402)"><path d="M8.92 2638.31 C4.93 2638.77, -2.29 2638.76, -6.08 2638.27 M8.92 2638.31 C4.75 2638.55, 1.09 2637.77, -6.08 2638.27" stroke="#b86200" stroke-width="4" fill="none"></path></g></g><mask></mask><g transform="translate(891.3146637887257 1856.428032319766) rotate(88.78112476486874 316.23063425274813 27.238363004563553)"><text x="0" y="38.395196491232824" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="43.58138080730173px" fill="#b86200" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Future harm scales with delay</text></g><g transform="translate(958.8211425684403 1844.1209852139982) rotate(89.19067966280568 414.1013966618975 39.5454101103316)"><text x="0" y="55.74321009152341" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="63.27265617653054px" fill="#b86200" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Structural analysis delayed</text></g><g stroke-linecap="round" transform="translate(1575.2286859504547 2507.9814224393904) rotate(0 386.700123369219 159.2294625637967)"><path d="M32 0 C247.28 0.6, 463.92 1.5, 741.4 0 M32 0 C251.02 2.7, 469.42 3.01, 741.4 0 M741.4 0 C763.13 -0.8, 771.94 9.48, 773.4 32 M741.4 0 C764.82 -1.72, 771.53 10.63, 773.4 32 M773.4 32 C775.33 115.02, 776.83 195.22, 773.4 286.46 M773.4 32 C772.86 128.63, 772.41 227.12, 773.4 286.46 M773.4 286.46 C773.21 307.44, 763.26 316.68, 741.4 318.46 M773.4 286.46 C771.72 306.15, 763.74 318.27, 741.4 318.46 M741.4 318.46 C564.11 321.85, 387.24 321.78, 32 318.46 M741.4 318.46 C597.56 319.13, 454.39 318.71, 32 318.46 M32 318.46 C11.64 319.81, 1.47 309.17, 0 286.46 M32 318.46 C10.15 316.39, 1.42 305.81, 0 286.46 M0 286.46 C-0.62 192.44, 1.04 100.49, 0 32 M0 286.46 C0.1 229.99, 1.32 172.85, 0 32 M0 32 C0.45 12.22, 8.81 -0.85, 32 0 M0 32 C-0.92 8.91, 11.54 -0.89, 32 0" stroke="#b86200" stroke-width="4" fill="none"></path></g><g transform="translate(1768.0722571956503 2643.9402610762018) rotate(0 193.85655212402344 23.270623926985195)"><text x="193.85655212402344" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#b86200" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Conditions unchanged</text></g><g stroke-linecap="round"><g transform="translate(1962.0061493443463 2398.9156268511897) rotate(0 -0.5969595054621095 50.888378823020275)"><path d="M0.13 -0.04 C-0.01 17.24, 0.05 85.92, 0.18 102.88 M-1.27 -1.1 C-1.63 15.93, -0.99 83.96, -0.67 101.31" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(1962.0061493443463 2398.9156268511897) rotate(0 -0.5969595054621095 50.888378823020275)"><path d="M-0.68 101.4 L-8.82 87.62 L5.43 87.76 L-0.64 101.12" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M-0.67 101.31 C-3.12 96.38, -4.25 92.11, -7.18 87.8 M-0.67 101.31 C-3.2 97.12, -5.02 93.25, -7.18 87.8 M-7.18 87.8 C-3.52 88.34, 1.55 88.09, 5.49 87.64 M-7.18 87.8 C-4.6 87.51, -1.49 87.94, 5.49 87.64 M5.49 87.64 C3.68 92.77, 0.68 98.95, -0.67 101.31 M5.49 87.64 C3.69 91.89, 2.33 95.34, -0.67 101.31 M-0.67 101.31 C-0.67 101.31, -0.67 101.31, -0.67 101.31 M-0.67 101.31 C-0.67 101.31, -0.67 101.31, -0.67 101.31" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g stroke-linecap="round" transform="translate(3004.1307641042513 1565.6600272750618) rotate(0 386.700123369219 159.2294625637967)"><path d="M32 0 C277.89 -1.16, 521.87 0.32, 741.4 0 M32 0 C213.92 0.41, 396.3 0.59, 741.4 0 M741.4 0 C761.64 1.62, 773.87 11.35, 773.4 32 M741.4 0 C761.79 1.21, 774.75 9.84, 773.4 32 M773.4 32 C770.64 106.89, 770.62 182.51, 773.4 286.46 M773.4 32 C775.75 117.91, 775.67 204.49, 773.4 286.46 M773.4 286.46 C772.18 307.36, 761.62 317.61, 741.4 318.46 M773.4 286.46 C773.39 309.14, 764.06 320.7, 741.4 318.46 M741.4 318.46 C584.8 320.72, 427.33 321.01, 32 318.46 M741.4 318.46 C589.3 319.66, 438.24 320.01, 32 318.46 M32 318.46 C9.29 317, -0.18 306.46, 0 286.46 M32 318.46 C12.59 318.61, -2.23 306.75, 0 286.46 M0 286.46 C1.34 192.51, 1.91 96.07, 0 32 M0 286.46 C1.28 234.59, 1.17 182.33, 0 32 M0 32 C1.7 10.21, 10.31 -1.66, 32 0 M0 32 C-1.92 11.21, 11.07 -2.18, 32 0" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(3128.0430456765953 1701.6188659118734) rotate(0 262.787841796875 23.270623926985195)"><text x="262.787841796875" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#39994b" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Structural analysis permitted</text></g><g mask="url(#mask-s7f4O-1gPBGrigJF9c5O3)" stroke-linecap="round"><g transform="translate(3390.9082274981447 1891.3587020688283) rotate(0 -0.1673762324207928 87.29870576390135)"><path d="M0.56 -1.06 C0.63 28.13, 0.19 146.43, 0.03 175.66 M-0.6 0.99 C-0.66 29.83, -0.77 145.01, -0.9 174.08" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(3390.9082274981447 1891.3587020688283) rotate(0 -0.1673762324207928 87.29870576390135)"><path d="M-0.53 174.08 L-7.74 161.67 L7.37 158.7 L-1.72 175.5" stroke="none" stroke-width="0" fill="#39994b" fill-rule="evenodd"></path><path d="M-0.9 174.08 C-3.98 170.5, -3.03 166.31, -7.21 160.47 M-0.9 174.08 C-2.41 170.99, -5.16 166.29, -7.21 160.47 M-7.21 160.47 C-2.58 161.58, 1.15 160.09, 5.47 160.51 M-7.21 160.47 C-3.24 160.9, -0.04 160.39, 5.47 160.51 M5.47 160.51 C3.83 166.59, 0.69 169.99, -0.9 174.08 M5.47 160.51 C4.18 165.02, 1.49 168.52, -0.9 174.08 M-0.9 174.08 C-0.9 174.08, -0.9 174.08, -0.9 174.08 M-0.9 174.08 C-0.9 174.08, -0.9 174.08, -0.9 174.08" stroke="#39994b" stroke-width="4" fill="none"></path></g></g><mask id="mask-s7f4O-1gPBGrigJF9c5O3"><rect x="0" y="0" fill="#fff" width="3490.9082274981447" height="2165.9772023912496"></rect><rect x="3209.8029418536134" y="1955.3973283030537" fill="#000" width="362.2105712890625" height="46.54124785397038" opacity="1"></rect></mask><g transform="translate(3209.8029418536134 1955.3973283030539) rotate(0 180.93790941211046 23.260079529675863)"><text x="181.10528564453125" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#39994b" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Conditions examined</text></g><g stroke-linecap="round"><g transform="translate(3390.9082274981447 1436.6839704511049) rotate(0 0.632267618613696 60.24945774140903)"><path d="M1.17 -0.37 C1.33 19.99, 0.74 101.92, 0.67 122.11 M0.32 -1.61 C0.41 18.38, 0.07 99.65, 0.07 120.18" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(3390.9082274981447 1436.6839704511049) rotate(0 0.632267618613696 60.24945774140903)"><path d="M-1.13 120.35 L-6.72 104.98 L6.1 106.04 L0.99 119.61" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M0.07 120.18 C-2.1 117.37, -2.9 113.7, -6.24 106.57 M0.07 120.18 C-1.58 117.58, -2.68 114.08, -6.24 106.57 M-6.24 106.57 C-2.33 106.34, 2.89 106.11, 6.44 106.6 M-6.24 106.57 C-2.94 107, 1.47 106.48, 6.44 106.6 M6.44 106.6 C5.77 110.41, 4.83 111.37, 0.07 120.18 M6.44 106.6 C5.05 109.39, 3.48 113.09, 0.07 120.18 M0.07 120.18 C0.07 120.18, 0.07 120.18, 0.07 120.18 M0.07 120.18 C0.07 120.18, 0.07 120.18, 0.07 120.18" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g stroke-linecap="round" transform="translate(3004.1307641042513 2507.9814224393904) rotate(0 386.700123369219 159.2294625637967)"><path d="M32 0 C246.3 0.25, 460.62 1.27, 741.4 0 M32 0 C193.76 2.37, 355.43 2.28, 741.4 0 M741.4 0 C764.17 -1.88, 774.57 12.65, 773.4 32 M741.4 0 C762.53 -1.18, 773.51 8.4, 773.4 32 M773.4 32 C773.84 121.74, 774 213.38, 773.4 286.46 M773.4 32 C772.78 86.45, 771.78 139.96, 773.4 286.46 M773.4 286.46 C771.78 305.91, 760.77 318.7, 741.4 318.46 M773.4 286.46 C774.32 308.47, 761.26 320.12, 741.4 318.46 M741.4 318.46 C459.96 317.94, 179.56 317.12, 32 318.46 M741.4 318.46 C463.86 320.95, 186.03 320.73, 32 318.46 M32 318.46 C10.89 318.12, -1.03 308.68, 0 286.46 M32 318.46 C11.77 319.67, 1.67 307.72, 0 286.46 M0 286.46 C-1.92 217.36, -3.06 150.76, 0 32 M0 286.46 C0.4 194.23, 0.18 100.45, 0 32 M0 32 C-0.04 10.51, 10.1 -0.26, 32 0 M0 32 C-1.3 10.99, 9.03 -1.32, 32 0" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(3209.5208441385093 2643.9402610762018) rotate(0 181.31004333496094 23.270623926985195)"><text x="181.31004333496094" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#39994b" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Conditions changed </text></g><g stroke-linecap="round"><g transform="translate(3390.9082274981447 2398.9156268511897) rotate(0 -0.37211135684265173 50.81386524847039)"><path d="M0.27 0.42 C0.39 17.44, 0.1 85.04, 0.03 102.03 M-1.04 -0.4 C-1.03 16.24, -0.91 83.23, -0.91 100.02" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(3390.9082274981447 2398.9156268511897) rotate(0 -0.37211135684265173 50.81386524847039)"><path d="M-2.4 100.64 L-7.99 87.53 L4.96 87.35 L0.3 101.52" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M-0.91 100.02 C-1.93 96.74, -3.75 93.15, -7.26 86.43 M-0.91 100.02 C-3.32 95.54, -4.67 90.72, -7.26 86.43 M-7.26 86.43 C-2.62 87.58, -0.76 85.98, 5.42 86.42 M-7.26 86.43 C-3.2 87.01, -1.03 86.28, 5.42 86.42 M5.42 86.42 C3.73 90.23, 2.92 96.05, -0.91 100.02 M5.42 86.42 C4.32 89.27, 2.2 92.1, -0.91 100.02 M-0.91 100.02 C-0.91 100.02, -0.91 100.02, -0.91 100.02 M-0.91 100.02 C-0.91 100.02, -0.91 100.02, -0.91 100.02" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g stroke-linecap="round" transform="translate(3004.1307641042513 2913.0314591471333) rotate(0 386.700123369219 159.22946256379657)"><path d="M32 0 C196.51 1.88, 362.59 1.86, 741.4 0 M32 0 C264.62 -1.06, 497.86 -1.08, 741.4 0 M741.4 0 C763.46 1.53, 771.65 9.7, 773.4 32 M741.4 0 C764.31 1.35, 774.09 9.81, 773.4 32 M773.4 32 C773.28 127.6, 774.11 223.28, 773.4 286.46 M773.4 32 C772.76 114.71, 772.97 198.24, 773.4 286.46 M773.4 286.46 C774.58 308.53, 764.64 317.98, 741.4 318.46 M773.4 286.46 C771.72 307.8, 762.46 318.43, 741.4 318.46 M741.4 318.46 C562.98 316.79, 384.91 317.68, 32 318.46 M741.4 318.46 C559.96 318.05, 378.45 318.23, 32 318.46 M32 318.46 C9.1 316.9, 0.73 308.65, 0 286.46 M32 318.46 C9.28 316.17, 1.61 305.86, 0 286.46 M0 286.46 C-0.57 214.89, -1.39 143.26, 0 32 M0 286.46 C1.74 198.87, 1.59 111.53, 0 32 M0 32 C-1.98 11.43, 11.29 -0.04, 32 0 M0 32 C1.19 11.05, 12.95 1.16, 32 0" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(3193.7911688455406 3048.9902977839447) rotate(0 197.0397186279297 23.270623926985195)"><text x="197.0397186279297" y="32.80227148747833" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="37.23299828317631px" fill="#39994b" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Next victim prevented</text></g><g stroke-linecap="round"><g transform="translate(1962.1353990070293 2833.680097233157) rotate(0 -0.12477430370199727 36.09220856177956)"><path d="M-0.97 0.56 C-0.94 12.64, 0.3 60.36, 0.71 72.38 M0.72 -0.2 C0.5 11.51, -0.56 58.59, -0.54 70.4" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(1962.1353990070293 2833.680097233157) rotate(0 -0.12477430370199727 36.09220856177956)"><path d="M-2.32 71.3 L-6.71 54.83 L7.86 56.7 L0.84 68.82" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M-0.54 70.4 C-1.95 64.94, -4.43 61.21, -6.71 56.73 M-0.54 70.4 C-2.28 65.59, -4.72 60.41, -6.71 56.73 M-6.71 56.73 C-2.19 57.19, 3.7 55.64, 5.96 56.88 M-6.71 56.73 C-4.59 57.15, -1.13 56.59, 5.96 56.88 M5.96 56.88 C4.92 60.25, 1.27 63.66, -0.54 70.4 M5.96 56.88 C4.21 60.43, 2.88 64.14, -0.54 70.4 M-0.54 70.4 C-0.54 70.4, -0.54 70.4, -0.54 70.4 M-0.54 70.4 C-0.54 70.4, -0.54 70.4, -0.54 70.4" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g stroke-linecap="round"><g transform="translate(3390.9082274981447 2833.680097233157) rotate(0 -0.07804093287904834 35.7774190134171)"><path d="M0.96 0.2 C1.1 12.24, -0.09 59.27, -0.12 71.23 M0.01 -0.74 C0.06 11.51, -1.2 59.98, -1.13 72.3" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g><g transform="translate(3390.9082274981447 2833.680097233157) rotate(0 -0.07804093287904834 35.7774190134171)"><path d="M-1.07 73.3 L-9.01 58.45 L7.13 58.16 L-0.1 70.83" stroke="none" stroke-width="0" fill="#d3d3d3" fill-rule="evenodd"></path><path d="M-1.13 72.3 C-2.13 69.18, -4.85 67.31, -7.31 58.63 M-1.13 72.3 C-2.53 68.99, -4.39 65.2, -7.31 58.63 M-7.31 58.63 C-2.82 57.85, 0.72 59.6, 5.37 58.78 M-7.31 58.63 C-1.87 58.65, 3.06 58.79, 5.37 58.78 M5.37 58.78 C3.48 63.2, 0.74 69.76, -1.13 72.3 M5.37 58.78 C4.14 61.84, 2.69 64.96, -1.13 72.3 M-1.13 72.3 C-1.13 72.3, -1.13 72.3, -1.13 72.3 M-1.13 72.3 C-1.13 72.3, -1.13 72.3, -1.13 72.3" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></g><mask></mask><g stroke-linecap="round"><g transform="translate(4063.6843836640564 1534.7747949383188) rotate(0 8.238838143214707 853.8809635887106)"><path d="M0.69 1.01 C3.54 285.52, 14.28 1421.72, 16.89 1706.02 M-0.41 0.49 C2.37 285.26, 13.63 1422.64, 16.31 1707.27" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(4063.6843836640564 1534.7747949383188) rotate(0 8.238838143214707 853.8809635887106)"><path d="M15.69 0.87 C12.75 1.88, 6.6 1.26, 0.69 1.01 M15.69 0.87 C10.85 1.49, 5.58 0.48, 0.69 1.01" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(4063.6843836640564 1534.7747949383188) rotate(0 8.238838143214707 853.8809635887106)"><path d="M-14.31 1.15 C-8.85 1.91, -6.59 1.21, 0.69 1.01 M-14.31 1.15 C-9.57 1.57, -5.27 0.48, 0.69 1.01" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(4063.6843836640564 1534.7747949383188) rotate(0 8.238838143214707 853.8809635887106)"><path d="M1.31 1707.41 C6.78 1708.17, 9.03 1707.47, 16.31 1707.27 M1.31 1707.41 C6.05 1707.83, 10.36 1706.74, 16.31 1707.27" stroke="#39994b" stroke-width="4" fill="none"></path></g><g transform="translate(4063.6843836640564 1534.7747949383188) rotate(0 8.238838143214707 853.8809635887106)"><path d="M31.31 1707.12 C28.37 1708.14, 22.23 1707.52, 16.31 1707.27 M31.31 1707.12 C26.47 1707.74, 21.2 1706.74, 16.31 1707.27" stroke="#39994b" stroke-width="4" fill="none"></path></g></g><mask></mask><g transform="translate(1994.6853670795172 147.23049057548633) rotate(0 684.3856910596214 74.98312154250789)"><text x="0" y="105.69620812631912" font-family="Excalifont, Xiaolai, sans-serif, Segoe UI Emoji" font-size="119.97299446801263px" fill="#d3d3d3" text-anchor="start" style="white-space: pre;" direction="ltr" dominant-baseline="alphabetic">Two responses to harm</text></g><g stroke-linecap="round" transform="translate(10 10) rotate(0 2642.8572845458984 1791.4288330078125)"><path d="M32 0 C1104.71 -14.06, 2176.91 -14.17, 5253.71 0 M32 0 C2105.12 0.96, 4178.48 0.65, 5253.71 0 M5253.71 0 C5276.42 1.39, 5287.61 8.67, 5285.71 32 M5253.71 0 C5276.25 0.31, 5286.99 12.95, 5285.71 32 M5285.71 32 C5289.04 903.67, 5288.67 1774.47, 5285.71 3550.86 M5285.71 32 C5295.38 1083.46, 5295.07 2135.23, 5285.71 3550.86 M5285.71 3550.86 C5285.92 3573.84, 5275.01 3584.73, 5253.71 3582.86 M5285.71 3550.86 C5284.08 3571.76, 5273.93 3583.66, 5253.71 3582.86 M5253.71 3582.86 C3560.11 3575.75, 1867.09 3575.36, 32 3582.86 M5253.71 3582.86 C3755.73 3602.42, 2257.89 3602.09, 32 3582.86 M32 3582.86 C9.08 3583.82, -1.58 3572.92, 0 3550.86 M32 3582.86 C9.02 3581.04, 0.46 3572.09, 0 3550.86 M0 3550.86 C4.8 2615.24, 4.82 1678.68, 0 32 M0 3550.86 C5.21 2326.95, 4.88 1103.3, 0 32 M0 32 C-0.91 9.3, 9.86 -1.77, 32 0 M0 32 C-1.8 12.96, 9.26 0.06, 32 0" stroke="#d3d3d3" stroke-width="4" fill="none"></path></g></svg>
+    <div class="diagram-caption">Fig. 1 — Two responses to harm: the condemnation path vs the prevention path</div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <span class="section-anchor" id="s3"></span>
+  <div class="section">
+    <div class="section-label">// 03</div>
+    <h2>Case Studies</h2>
+
+    <p>The mechanism described in Section 2 is not domain specific. It operates wherever harm produces moral condemnation as the primary institutional or social response. Three cases are examined here, chosen for their variety of context and the clarity with which the foreclosure mechanism can be observed in each.</p>
+
+    <h3>Case One: Institutional Failure and Individual Blame</h3>
+
+    <p>The Post Office Horizon scandal resulted in over 700 wrongful prosecutions of subpostmasters across more than a decade. Throughout that period, the Post Office pursued individual prosecutions with institutional vigour, locating fault in the actors — the subpostmasters — rather than in the system producing the anomalies they were accused of causing.</p>
+
+    <p>The moral framing was pervasive. These were people who had stolen from a trusted national institution. The condemnation was socially legitimate, legally pursued, and institutionally convenient. What it foreclosed was the structural question that would have unravelled the entire edifice. Not <em>did this person steal</em>, but <em>what does it mean that the same fault pattern appeared across hundreds of independent operators in identical circumstances</em>.</p>
+
+    <p>That question — the systems question — was available throughout. It was not asked, not because it was technically inaccessible, but because the moral framing of individual culpability had rendered it unnecessary. The system had already located the agent. Analysis was over.</p>
+
+    <p>The conditions that produced the harm — a defective system, an institutional culture that suppressed dissent, a prosecution function operating without adequate oversight — survived every individual conviction entirely intact. They were not examined because examination had been foreclosed. The next subpostmaster prosecuted was paying the cost of the comfort generated by the previous conviction.</p>
+
+    <h3>Case Two: Sexual Violence and Behavioural Prevention</h3>
+
+    <p>Public discourse around sexual violence is often organised around moral condemnation of perpetrators and increasingly elaborate frameworks of perpetrator education and consent instruction. These responses are not wrong in their moral content. They are wrong in their claimed preventative function.</p>
+
+    <p>The structural question — under what conditions does sexual violence most commonly occur, what environmental parameters make it more or less likely, what role do intoxication, opportunity, and ambiguity play in many cases that are not premeditated predatory assault — is systematically foreclosed by the moral framing that surrounds it. To ask about conditions is to be heard as locating fault in victims. To examine opportunity is to be heard as excusing perpetrators. The analytical question cannot be asked in the social environment the condemnation has created without triggering the reframing described in Section 2.</p>
+
+    <p>The result is a prevention landscape dominated by moral instruction directed at perpetrators who, in many non-premeditated cases, do not experience the moment of action as a clearly recognised decision point of the kind assumed by prevention messaging. The instruction does not reach the decision point because the decision point does not present itself as a decision. The conditions that make the harm likely remain unexamined and intact.</p>
+
+    <p>This does not reduce perpetrator culpability. It argues that culpability and prevention operate at different analytical levels, and that the first is routinely allowed to block the second. Locating culpability answers <em>who is responsible</em>. It does not answer <em>what made the event likely</em>.</p>
+
+    <p>The next victim pays the cost of the comfort generated by the condemnation of the last perpetrator.</p>
+
+    <h3>Case Three: The Opioid Crisis and the Swiss Experiment</h3>
+
+    <p>For decades, the dominant policy response to opioid addiction in most western countries combined criminalisation with moral framing. Addicts were condemned as weak, criminal, or morally deficient. That framing was socially legitimate and politically rewarding in many jurisdictions. It was also structurally catastrophic.</p>
+
+    <p>The moral framing crowded out the structural questions that might have produced earlier prevention. What incentive architecture allowed dependency-forming compounds to be marketed while regulators failed to intervene effectively. What prescribing structures created the conditions under which addiction became the statistically probable outcome for patients in pain. What environmental and economic conditions made certain populations systematically more vulnerable. These questions were not merely deprioritised. They were rendered suspect by the prior moral framing. To ask why people became addicted was to be heard as excusing the addiction.</p>
+
+    <p>The conditions that produced the harm remained intact. The next wave of victims moved through the same unexamined system toward the same structurally predictable outcome.</p>
+
+    <p>Switzerland ran a different experiment. Beginning in the 1990s and expanding through subsequent decades, the Swiss response to heroin addiction was deliberately de-moralised. Addiction was reframed not as a moral failure requiring condemnation but as a structural and medical condition requiring environmental analysis. The intervention that followed was structural rather than punitive: heroin assisted treatment, supervised consumption facilities, reduction of the criminal penalty as the primary policy tool.</p>
+
+    <p>The outcomes documented over subsequent decades were unusually clear. Street crime associated with addiction fell sharply. HIV transmission rates among users collapsed. The black market contracted as the structural conditions sustaining it were addressed directly. Users stabilised, many entering employment and housing. The moral framework had promised justice. The structural framework delivered prevention.</p>
+
+    <p>The Swiss case is not an argument for moral permissiveness. It is a demonstration that when moral framing is suspended long enough to allow structural analysis, the questions that produce prevention can finally be asked.</p>
+
+    <p>The contrast with countries where moral condemnation remained the primary response provides the comparative condition the paper's thesis requires. Same substance, similar human vulnerability, different analytical permission. Radically different outcomes. The next victim in the moralised system paid the cost of the comfort generated by the condemnation of the last one. In Switzerland, the next victim became the recoverable case the structural intervention was designed to reach.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <span class="section-anchor" id="s4"></span>
+  <div class="section">
+    <div class="section-label">// 04</div>
+    <h2>The Prescription</h2>
+
+    <p>The argument made in the preceding sections is not that moral condemnation is wrong. It is that moral condemnation has been assigned a preventative function it cannot perform, and that this misassignment carries a cost that is invisible to those generating the comfort and paid in full by those who come next.</p>
+
+    <p>The prescription is not a call for moral silence. It is a call for epistemic permission.</p>
+
+    <p>Structural analysis needs permission to follow evidence before narrative judgment closes the case — which is especially important when the stakes are high and the harm is emotionally charged. This is not a radical proposition. It is the standard operating condition of every functioning engineering discipline.</p>
+
+    <p>When a bridge fails, no one suggests that examining the load calculations is an act of sympathy for the collapse. When software produces an unexpected output, no one argues that tracing the logic constitutes a defence of the error. In engineering domains, the analytical question is treated as legitimate by default.</p>
+
+    <p>Human systems have not extended this permission to themselves. The reasons are understandable. Human harm involves human actors, and human actors have intentions, choices, and culpability in ways that steel and code do not. The moral instinct to locate and condemn is not pathological. It is ancient, functional, and in limited application, appropriate.</p>
+
+    <p>The problem is scope creep. What began as a legitimate tool for norm enforcement has expanded to occupy the entire response to harm, crowding out the analytical function that norm enforcement was never equipped to perform. The moral framework has expanded into the prevention space without the tools to do that work.</p>
+
+    <p>The methodology that follows from this paper operates on four analytical permissions.</p>
+
+    <p><strong>The first permission</strong> is to analyse systems rather than people. Actors in any system usually behave in ways that are locally rational within their constraints and perceptions. When behaviour appears dysfunctional, the productive question is not <em>what is wrong with this person</em> but <em>what in the system makes this behaviour the most rational available option</em>. The first productive answer is usually structural.</p>
+
+    <p><strong>The second permission</strong> is to assume rational behaviour. This is not moral absolution. It is analytical precision. If an actor behaves in a way that produces harm, and that behaviour was the logical response to the incentive environment they operated in, then condemning the actor while leaving the incentive environment intact makes the same behaviour likely from the next actor in the same position. Rationality assumed is prevention enabled.</p>
+
+    <p><strong>The third permission</strong> is to avoid blame narratives in analysis. This is not the same as avoiding accountability in law or governance. It means that during the analytical phase, explanations that locate cause in individual character, laziness, negligence, or malice are treated as analysis-stoppers rather than analysis. They close the door. The structural question reopens it.</p>
+
+    <p><strong>The fourth permission</strong> is to think like a systems engineer. When an unexpected output occurs, ask what rule produced it, what feedback loops exist, what signals the actors were responding to. Treat the organisation as a constraint field through which rational actors move. If the geometry of that field contains a path to harm, that path is not just a risk to be managed. It is a recurrent structural outcome to be corrected.</p>
+
+    <p>These permissions do not replace moral frameworks. They precede them. The sequence matters. Analysis first, conducted without narrative constraint, produces the structural understanding from which genuine prevention can be designed. Moral response second, applied to the findings of honest analysis, can then serve its legitimate function of norm enforcement with the full picture rather than a convenient fragment of it.</p>
+
+    <p>The alternative is the current arrangement. Moral response first, immediate, total, and socially rewarded. Analysis foreclosed before it begins. Structural conditions intact. Next victim already in the system, moving along the path the geometry permits, toward the outcome the structure guarantees.</p>
+
+    <blockquote>
+      <p>Moral condemnation is necessary for norm-setting. It is insufficient for prevention. And when it is deployed as prevention, it does not merely fail to prevent. It actively ensures that prevention cannot happen.</p>
+      <p style="margin-top:16px;">The comfort is not free. It never was. The question is only who pays for it, and whether we are willing to look at them.</p>
+    </blockquote>
+  </div>
+
+  <div class="doc-rule"></div>
+  <a href="index.html#outputs" class="back-link">← Return to Output</a>
+
+</div><!-- /doc-wrap -->
+
+<footer>
+  <span>N-OUGHT</span>
+  <span>STRUCTURAL ANALYSIS // EST. BEFORE DISCOVERY</span>
+</footer>
+
+<script>
+// ── PARTICLES — identical to index, single canvas only ──────────────────────
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts;
+let pSY = 0;
+
+function resize() {
+  W = pCv.width = window.innerWidth;
+  H = pCv.height = window.innerHeight;
+}
+
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save();
+    pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+
+function loop(){ drawParts(); requestAnimationFrame(loop); }
+
+function init(){ resize(); mkParts(); loop(); }
+
+window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
+init();
+</script>
+</body>
+</html>
