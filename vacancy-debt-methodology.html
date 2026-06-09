@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Vacancy Debt - Methodology - N-ought</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
+    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
+    --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;line-height:1.6;letter-spacing:.04em;overflow-x:hidden; }
+
+  #particles { position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none; }
+  #surface-light { position:fixed;top:-20%;left:30%;width:50%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);pointer-events:none;z-index:2; }
+
+  nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--text-faint);background:rgba(7,8,16,.88);backdrop-filter:blur(4px); }
+  .nav-mark { display:inline-block;width:28px;height:28px;cursor:pointer;text-decoration:none;flex-shrink:0; }
+  .nav-mark svg { display:block;width:28px;height:28px; }
+  .nav-links { display:flex;gap:48px;list-style:none; }
+  .nav-links a { color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s; }
+  .nav-links a:hover { color:var(--accent); }
+
+  .doc-wrap {
+    position:relative;
+    z-index:10;
+    max-width:800px;
+    margin:0 auto;
+    padding:140px 48px 120px;
+  }
+
+  .paper-meta { font-size:9px;letter-spacing:.25em;color:var(--text-faint);text-transform:uppercase;margin-bottom:40px; }
+
+  .paper-title {
+    font-family:var(--mono);
+    font-size:18px;
+    font-weight:normal;
+    color:var(--accent);
+    opacity:.9;
+    letter-spacing:.12em;
+    line-height:1.5;
+    margin-bottom:16px;
+  }
+
+  .paper-subtitle { font-size:12px;color:var(--text-dim);letter-spacing:.06em;font-style:italic;margin-bottom:48px; }
+  .paper-rule { width:100%;height:.5px;background:var(--text-faint);margin-bottom:56px; }
+
+  .toc {
+    position:fixed;top:80px;right:24px;width:230px;
+    max-height:calc(100vh - 120px);overflow-y:auto;
+    padding:20px;border:.5px solid var(--text-faint);
+    background:rgba(7,8,16,.92);z-index:50;
+    scrollbar-width:thin;scrollbar-color:var(--text-faint) transparent;
+  }
+  .toc::-webkit-scrollbar { width:3px; }
+  .toc::-webkit-scrollbar-track { background:transparent; }
+  .toc::-webkit-scrollbar-thumb { background:var(--text-faint);border-radius:2px; }
+  .toc-label { font-size:9px;letter-spacing:.25em;color:var(--text-faint);text-transform:uppercase;margin-bottom:20px; }
+  .toc ol { list-style:none;counter-reset:toc; }
+  .toc li { counter-increment:toc;font-size:11px;color:var(--text-dim);letter-spacing:.05em;padding:5px 0;border-bottom:.5px solid var(--text-faint);display:flex;gap:12px; }
+  .toc li:last-child { border-bottom:none; }
+  .toc li::before { content:counter(toc,decimal-leading-zero);color:var(--text-faint);font-size:9px;letter-spacing:.1em;flex-shrink:0;padding-top:1px; }
+  .toc a { color:var(--text-dim);text-decoration:none;transition:color .2s; }
+  .toc a:hover { color:var(--accent); }
+
+  .section { margin-bottom:64px; }
+  .section-anchor { display:block;height:80px;margin-top:-80px;visibility:hidden; }
+  .section-label { font-size:9px;letter-spacing:.25em;color:var(--accent);opacity:.7;text-transform:uppercase;margin-bottom:16px; }
+  .section h2 { font-family:var(--mono);font-size:12px;font-weight:normal;letter-spacing:.25em;color:var(--accent);opacity:.88;text-transform:uppercase;margin-bottom:28px;padding-bottom:14px;border-bottom:.5px solid var(--text-faint); }
+  .section h3 { font-family:var(--mono);font-size:11px;font-weight:normal;letter-spacing:.2em;color:var(--accent);opacity:.7;text-transform:uppercase;margin:36px 0 16px; }
+  .section p { font-size:12px;color:#7a8faa;line-height:1.9;letter-spacing:.04em;margin-bottom:20px; }
+
+  .section blockquote { margin:32px 0;padding:22px 28px;border-left:1px solid var(--accent-mid);background:rgba(13,16,51,.15); }
+  .section blockquote p { font-size:12px;color:var(--text);opacity:.78;letter-spacing:.05em;line-height:1.9;margin-bottom:0;font-style:italic; }
+
+  /* FORMULA BLOCKS */
+  .formula-block { margin:32px 0;padding:24px 28px;border-left:1px solid var(--accent-mid);background:rgba(13,16,51,.15); }
+  .formula-label { font-size:9px;letter-spacing:.22em;color:var(--text-faint);text-transform:uppercase;margin-bottom:14px; }
+  .formula { font-family:var(--mono);font-size:14px;color:var(--accent);opacity:.8;letter-spacing:.1em;margin-bottom:10px;line-height:1.7; }
+  .formula-note { font-size:11px;color:var(--text-dim);line-height:1.8;letter-spacing:.04em;margin-top:10px; }
+
+  /* DATA TABLE */
+  .data-table { width:100%;border-collapse:collapse;margin:28px 0;font-size:11px; }
+  .data-table tr { border-bottom:.5px solid var(--text-faint); }
+  .data-table tr:last-child { border-bottom:none; }
+  .data-table th { padding:10px 12px 10px 0;text-align:left;font-size:9px;letter-spacing:.18em;color:var(--text-faint);text-transform:uppercase;font-weight:normal; }
+  .data-table td { padding:12px 12px 12px 0;vertical-align:top;line-height:1.7;letter-spacing:.04em;color:#5a7a9a; }
+  .data-table td:first-child { color:var(--accent);opacity:.75;letter-spacing:.08em;white-space:nowrap;padding-right:24px; }
+
+  /* SOURCE BLOCK */
+  .source-block { margin:12px 0;padding:14px 20px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.3); }
+  .source-block p { font-size:10px;color:var(--text-dim);line-height:1.7;letter-spacing:.04em;margin-bottom:6px; }
+  .source-block p:last-child { margin-bottom:0;color:var(--text-faint); }
+
+  /* STAGE SEQUENCE */
+  .stage-block { margin:28px 0; }
+  .stage-row { display:grid;grid-template-columns:120px 1fr;border-bottom:.5px solid var(--text-faint);padding:16px 0;gap:24px; }
+  .stage-row:last-child { border-bottom:none; }
+  .stage-label { font-size:9px;letter-spacing:.2em;color:var(--accent);opacity:.65;text-transform:uppercase;padding-top:2px; }
+  .stage-content { font-size:11px;color:#5a7a9a;line-height:1.8;letter-spacing:.04em; }
+  .stage-content strong { color:#7a8faa;font-weight:normal; }
+
+  strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.55; }
+  em { color:var(--text-dim);font-style:italic; }
+
+  .doc-rule { width:100%;height:.5px;background:var(--text-faint);margin:56px 0; }
+
+  .back-link { display:inline-block;font-size:10px;letter-spacing:.2em;color:var(--text-dim);text-decoration:none;text-transform:uppercase;margin-bottom:64px;transition:color .2s; }
+  .back-link:hover { color:var(--accent); }
+
+  .note { margin-top:48px;padding:20px 24px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .note p { font-size:10px;color:var(--text-dim);line-height:1.8;letter-spacing:.05em;margin-bottom:0; }
+
+  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
+
+  @media(max-width:860px){
+    nav { padding:20px 24px; }
+    .nav-links { gap:20px; }
+    .doc-wrap { padding:110px 24px 80px; }
+    footer { padding:20px 24px;flex-direction:column;gap:8px; }
+    .toc { display:none; }
+    .stage-row { grid-template-columns:1fr; gap:8px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="n-oughts-law.html">N-ought's Law</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="index.html#fees">Fees</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="doc-wrap">
+
+  <a href="services.html" class="back-link">← Services</a>
+
+  <div class="paper-meta">N-ought // Vacancy Debt Calculator // Methodology</div>
+  <h1 class="paper-title">The Vacancy Debt</h1>
+  <p class="paper-subtitle">Why unfilled positions are a compounding liability, not a saving</p>
+  <div class="paper-rule"></div>
+
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-label">Contents</div>
+    <ol>
+      <li><a href="#s1">The Accounting Error</a></li>
+      <li><a href="#s2">The Structural Gap</a></li>
+      <li><a href="#s3">The Presenteeism Gap</a></li>
+      <li><a href="#s4">The Liability Mechanism</a></li>
+      <li><a href="#s5">The Cascade Sequence</a></li>
+      <li><a href="#s6">The Sick Pay Structure</a></li>
+      <li><a href="#s7">The Closed Loop</a></li>
+      <li><a href="#s8">The Model</a></li>
+      <li><a href="#s9">Sources</a></li>
+    </ol>
+  </nav>
+
+  <!-- S1 -->
+  <span class="section-anchor" id="s1"></span>
+  <div class="section">
+    <div class="section-label">// 01</div>
+    <h2>The Accounting Error</h2>
+
+    <p>When an organisation leaves a position unfilled, it records a saving. The salary is no longer being paid. The budget line clears. By the only metric the accounting system tracks, the decision looks correct.</p>
+
+    <p>The work does not disappear. The patients still arrive. The caseload does not reduce. The remaining team absorbs what the absent member was doing, and the institution continues to record this as a neutral event because the cost of that absorption does not appear on any line it is measuring.</p>
+
+    <p>This is not a failure of attention. It is a structural feature of how organisations account for labour. Direct costs are visible. Distributed costs are not. The vacancy debt accumulates in the gap between what the organisation is measuring and what is actually happening to the people doing the work.</p>
+
+    <blockquote>
+      <p>A vacancy is not a saving. It is a loan taken against the remaining team's capacity, at an interest rate that compounds with time.</p>
+    </blockquote>
+
+    <p>The calculator this methodology supports quantifies that loan. Three components determine the total: the structural gap, the presenteeism gap, and the cascade cost. Each is grounded in published research. Each operates independently of the others. Together they produce a figure that is reliably larger, often by a factor of three or more, than the salary the organisation believes it is saving.</p>
+  </div>
+
+  <!-- S2 -->
+  <span class="section-anchor" id="s2"></span>
+  <div class="section">
+    <div class="section-label">// 02</div>
+    <h2>The Structural Gap</h2>
+
+    <p>The first component requires no research citation. It is arithmetic.</p>
+
+    <p>A team of five people produces the output of five people. When one leaves, four remain. Four people cannot produce the output of five people. The maximum possible output of the remaining team, assuming perfect productivity from every member, is four fifths of what the team previously produced. One fifth of the team's total output is structurally unavailable regardless of effort, goodwill, or overtime.</p>
+
+    <div class="formula-block">
+      <div class="formula-label">Structural Gap</div>
+      <div class="formula">Gap(s) = Absences / Team Size</div>
+      <div class="formula-note">
+        For a team of 5 with 1 absence: Gap(s) = 1/5 = 20%<br>
+        For a team of 5 with 2 absences: Gap(s) = 2/5 = 40%<br>
+        This is the floor. Actual loss is always higher.
+      </div>
+    </div>
+
+    <p>Organisations frequently assume that remaining staff will compensate through additional effort. This assumption is wrong in two ways. First, there is a physical limit to how much additional output any individual can produce. A nurse who is assigned seven patients instead of four is not producing 75% more nursing care per hour. The time required for each task is largely fixed by clinical necessity. Second, even where output can be increased in volume, quality degrades under load in ways that create downstream costs the structural gap calculation does not capture. That is the work of the second component.</p>
+  </div>
+
+  <!-- S3 -->
+  <span class="section-anchor" id="s3"></span>
+  <div class="section">
+    <div class="section-label">// 03</div>
+    <h2>The Presenteeism Gap</h2>
+
+    <p>The remaining team shows up. They are physically present. They complete their hours. The organisation records their attendance and concludes that productivity is being maintained. This conclusion is systematically wrong.</p>
+
+    <p>Presenteeism is the condition of being physically present at work while operating at materially reduced cognitive and operational capacity. It is caused by stress, fatigue, moral distress, and the sustained psychological load of covering work that exceeds safe capacity. It is invisible to any system that tracks attendance rather than output, and it is the primary mechanism by which understaffing destroys individual productivity while appearing not to.</p>
+
+    <p>The evidence on the scale of this effect is consistent across sources:</p>
+
+    <table class="data-table">
+      <tr>
+        <th>Worker State</th>
+        <th>Estimated Individual Productivity Loss</th>
+        <th>Primary Drivers</th>
+      </tr>
+      <tr>
+        <td>Early stress / high load</td>
+        <td>13-20% below baseline</td>
+        <td>Fatigue, reduced confidence, increased idle time as cognitive load peaks</td>
+      </tr>
+      <tr>
+        <td>Chronic burnout / disengagement</td>
+        <td>20-50% below baseline</td>
+        <td>Cognitive exhaustion, error-correction loops consuming output capacity, slowed task execution</td>
+      </tr>
+      <tr>
+        <td>Severe stress with clinical presentation</td>
+        <td>35% below baseline</td>
+        <td>Presenteeism, decision paralysis, high cognitive overhead on routine tasks</td>
+      </tr>
+    </table>
+
+    <div class="source-block">
+      <p>Sources: Gallup workforce analytics (disengaged worker output equivalent to 18% salary loss); Mental Health UK Burnout Report 2024 (21% of workers report performance severely impacted by high pressure while continuing to work regular hours); American Psychiatric Association (35% individual productivity drop in workers with stress-related clinical conditions); workforce monitoring platform data showing focused time declining and idle time rising from 12% baseline to 30% under burnout conditions.</p>
+    </div>
+
+    <p>The error correction loop deserves particular attention. When staff are operating under sustained overload, error rates rise. Each error triggers an audit, correction, and logging process that redirects capacity from forward patient care into fixing avoidable mistakes caused by the original overload. The output of an exhausted team is therefore being consumed in two directions simultaneously: by the reduced throughput of individual workers, and by the remediation of the errors that reduced throughput produces.</p>
+
+    <p>In clinical environments, this compounds further through what the Health Foundation describes as moral distress: the sustained psychological cost of knowing that the standard of care being delivered falls below the standard the clinician knows is required. Moral distress does not reduce effort. It increases cognitive load, slows decision-making, and in some staff produces decision paralysis that further reduces throughput. The clinician is working harder to produce less while knowing they are producing less. That knowledge is its own productivity drain.</p>
+
+    <div class="formula-block">
+      <div class="formula-label">Presenteeism Gap</div>
+      <div class="formula">Gap(p) = Structural Output x Productivity Decline</div>
+      <div class="formula-note">
+        Where Structural Output = Remaining Team / Team Size<br>
+        And Productivity Decline scales with workload intensity and duration of exposure.<br>
+        The calculator allows this input to be set by the user within the evidence range (13-50%).
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <span class="section-anchor" id="s4"></span>
+  <div class="section">
+    <div class="section-label">// 04</div>
+    <h2>The Liability Mechanism</h2>
+
+    <p>In clinical settings, a third force acts on the remaining team that has no equivalent in most other service environments. Individual professional liability for patient harm outcomes creates a consequence-coupling mechanism that is entirely absent at the institutional level.</p>
+
+    <p>A nurse who makes a clinical error that harms a patient faces professional investigation, potential loss of registration, and in serious cases criminal liability. The institution faces an inquiry. These are not equivalent consequences. The institution continues. The nurse's career may not.</p>
+
+    <p>This asymmetry produces a specific and rational response in clinical staff operating under overload. The awareness that error under pressure could end a career, not merely cause a complaint, produces deliberate deceleration. Staff check and recheck. They slow documentation. They seek confirmation for decisions they would ordinarily make with confidence. This is not timidity. It is the entirely rational behaviour of someone who has correctly identified that speed under these conditions increases personal liability exposure.</p>
+
+    <p>From the institution's perspective, this manifests as productivity decline. From the clinician's perspective, it is professional survival. Both descriptions are accurate.</p>
+
+    <p>Institutions have discovered, without necessarily naming it, that this individual liability is a load-bearing resource. When risk assessments are conducted and mitigations identified, "clinical professionalism" appears as the answer to a significant proportion of identified risks. In practice, this means that the institution has offloaded the consequence of structural underinvestment onto individual practitioners, whose professional obligation to their patients requires them to absorb risks the institution should be bearing through staffing, training, and systems.</p>
+
+    <blockquote>
+      <p>Individual professional liability is a finite resource. It can be used as a structural mitigation, but it degrades under sustained load. The institution that depends on it most is the same institution creating the conditions under which it fails.</p>
+    </blockquote>
+
+    <p>The liability mechanism accelerates the progression from Stage 1 to Stage 3 of the cascade sequence. It adds a specific psychological weight to overload that generic service sector research does not fully capture. Nurses and doctors do not merely experience stress. They experience the particular stress of knowing that a mistake made under impossible conditions could end the professional identity they have spent years building.</p>
+  </div>
+
+  <!-- S5 -->
+  <span class="section-anchor" id="s5"></span>
+  <div class="section">
+    <div class="section-label">// 05</div>
+    <h2>The Cascade Sequence</h2>
+
+    <p>The cascade is the point at which a staffing problem becomes a staffing crisis. It is the mechanism by which one absence becomes two, two becomes three, and a team that was managing under pressure becomes a team that cannot function safely.</p>
+
+    <p>The research base for this sequence is strong and consistent. Aiken et al. (JAMA, 2002), in a landmark study of 168 hospitals that has been replicated across multiple countries, found that each additional patient assigned to a nurse is associated with a 23% increase in the odds of burnout and a 15% increase in the odds of job dissatisfaction. Burnout and job dissatisfaction are the direct precursors to exit. The chain from understaffing to cascade is empirically closed.</p>
+
+    <p>The cascade unfolds in a predictable sequence:</p>
+
+    <div class="stage-block">
+      <div class="stage-row">
+        <div class="stage-label">Stage 1 - Deceleration</div>
+        <div class="stage-content"><strong>Weeks to months.</strong> Remaining staff slow down to manage liability exposure and cognitive load. Output declines. Errors begin to increase. Morale deteriorates. Staff begin to consider alternatives but have not yet acted.</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-label">Stage 2 - Presenteeism</div>
+        <div class="stage-content"><strong>Months.</strong> Staff continue to attend but operate at materially reduced capacity. The productivity decline documented in section 03 is now fully operational. Error rates are elevated. Sickness absence begins to increase as stress becomes a clinical condition for some individuals.</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-label">Stage 3 - Sick Leave</div>
+        <div class="stage-content"><strong>The rational exit.</strong> In an environment of sustained overload and personal liability exposure, sick leave becomes the structurally correct response. It removes the individual from a situation that is damaging them personally and exposing them professionally. For many NHS staff, this entitlement is substantial. The institution pays full salary during this absence.</div>
+      </div>
+      <div class="stage-row">
+        <div class="stage-label">Stage 4 - Cascade</div>
+        <div class="stage-content"><strong>The remaining team is now smaller.</strong> The workload per remaining person increases. The liability exposure of each remaining person increases. The probability of Stage 3 occurring for another team member rises sharply. The sequence repeats at higher intensity.</div>
+      </div>
+    </div>
+
+    <p>The probability of cascade increases with both time and workload intensity. The base probabilities below reflect a team operating at 125% workload (one absence from a five-person team). Higher workload intensity accelerates these timelines proportionally.</p>
+
+    <table class="data-table">
+      <tr>
+        <th>Duration of Understaffing</th>
+        <th>Cascade Probability (125% workload)</th>
+        <th>Basis</th>
+      </tr>
+      <tr>
+        <td>3 months</td>
+        <td>15%</td>
+        <td>Early stress, resilience factors still active</td>
+      </tr>
+      <tr>
+        <td>6 months</td>
+        <td>45%</td>
+        <td>Chronic stress threshold reached for significant proportion of staff</td>
+      </tr>
+      <tr>
+        <td>12 months</td>
+        <td>68%</td>
+        <td>Sustained overwork; burnout now more likely than not for exposed individuals</td>
+      </tr>
+      <tr>
+        <td>18 months</td>
+        <td>85%</td>
+        <td>Chronic burnout state; professional exit becomes rational survival strategy</td>
+      </tr>
+      <tr>
+        <td>24+ months</td>
+        <td>95%+</td>
+        <td>Team collapse highly probable; structural crisis</td>
+      </tr>
+    </table>
+
+    <div class="source-block">
+      <p>Probability estimates are modelled from: Aiken et al. JAMA 2002 (burnout and dissatisfaction scaling with workload); Workhuman UK Human Workplace Index 2023 (68% would consider leaving due to feeling undervalued, 65% due to burnout); RCN 2025 survey of 20,000+ nursing staff (burnout and sickness absence directly linked to understaffing); BMJ Open 2023 (work stress and understaffing identified as primary exit drivers in NHS health professionals). These figures represent stated intent. Actual exit rates are lower, with probability estimates adjusted to reflect the gap between stated intent and action.</p>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <span class="section-anchor" id="s6"></span>
+  <div class="section">
+    <div class="section-label">// 06</div>
+    <h2>The Sick Pay Structure</h2>
+
+    <p>When cascade occurs and a team member takes sick leave, the institution does not save the salary it thought it was saving. It continues to pay the absent member under the NHS Agenda for Change sick pay entitlement, while simultaneously absorbing the productivity loss of the remaining team working under even higher load.</p>
+
+    <p>The entitlement scales with service length:</p>
+
+    <table class="data-table">
+      <tr>
+        <th>Service Length</th>
+        <th>Full Pay Entitlement</th>
+        <th>Half Pay Entitlement</th>
+      </tr>
+      <tr>
+        <td>First year</td>
+        <td>1 month</td>
+        <td>2 months</td>
+      </tr>
+      <tr>
+        <td>Second year</td>
+        <td>2 months</td>
+        <td>2 months</td>
+      </tr>
+      <tr>
+        <td>Third year</td>
+        <td>4 months</td>
+        <td>4 months</td>
+      </tr>
+      <tr>
+        <td>Fourth and fifth years</td>
+        <td>5 months</td>
+        <td>5 months</td>
+      </tr>
+      <tr>
+        <td>Over 5 years</td>
+        <td>6 months</td>
+        <td>6 months</td>
+      </tr>
+    </table>
+
+    <p>A nurse with more than five years service who takes stress-related sick leave will receive six months at full pay and six months at half pay before the institution can begin any process of formal review. During this period, the team absorbs additional load, accelerating the cascade probability for remaining members. The institution is paying two salary costs simultaneously: the absent member and, invisibly, the output loss of the team covering their absence.</p>
+
+    <p>The sick pay structure was designed to protect workers from financial hardship during genuine illness. In the context of understaffing-driven burnout, it also functions as the rational calculation that makes Stage 3 viable. Staff who would continue to absorb overload if sick leave were unpaid make a different calculation when it is fully paid. This is not malingering. It is the correct response to an incentive structure that has made absence genuinely preferable to continued exposure.</p>
+
+    <p>The institution created both the conditions that make absence rational and the financial structure that makes it viable. The closed loop is its own design.</p>
+  </div>
+
+  <!-- S7 -->
+  <span class="section-anchor" id="s7"></span>
+  <div class="section">
+    <div class="section-label">// 07</div>
+    <h2>The Closed Loop</h2>
+
+    <p>The vacancy debt mechanism is self-reinforcing. Each stage of the cascade increases the probability of the next stage. Each absence increases the workload and liability exposure of remaining staff. Each increase in liability exposure accelerates the deceleration and presenteeism that reduce effective output. Each reduction in effective output increases the pressure on the team. Each increase in pressure raises the probability of further sick leave.</p>
+
+    <p>The institution's response to each stage of this sequence is typically to manage the immediate symptom: cover rota gaps with agency staff, ask remaining permanent staff to take additional shifts, defer recruitment decisions to the next budget cycle. None of these responses address the structural cause. Agency staff are more expensive, less embedded in team workflows, and create their own productivity drag through the absence of institutional knowledge. Additional shifts accelerate burnout in permanent staff. Deferred recruitment extends the duration of understaffing, which advances the cascade timeline.</p>
+
+    <p>The loop closes when the cascade has progressed to the point where the team cannot sustain safe operation, which is the point at which the institution's dependency on individual professional liability as a structural mitigation finally fails. At that point the cost of correction is a multiple of what correction would have cost at the outset.</p>
+
+    <blockquote>
+      <p>The institution designed a system in which absence is rational, paid for the conditions that make it inevitable, and then recorded the salary of the original vacancy as a saving.</p>
+    </blockquote>
+  </div>
+
+  <!-- S8 -->
+  <span class="section-anchor" id="s8"></span>
+  <div class="section">
+    <div class="section-label">// 08</div>
+    <h2>The Model</h2>
+
+    <p>The Vacancy Debt Calculator operationalises the three-component model described in this paper. The inputs are: team size, number of absences, median salary, output value per person, productivity decline (user-set within the evidence range), sick pay duration applicable to the team, and recruitment cost if cascade produces exit rather than sick leave.</p>
+
+    <p>The outputs are three cost trajectories over 36 months: the salary the organisation believes it is saving, the productivity loss in the no-cascade scenario, and the cascade scenario triggered at the probability thresholds documented in Section 05. The gap between the first and second lines is the minimum cost of the vacancy. The gap between the first and third is the expected cost once cascade probability is factored in.</p>
+
+    <p>The model makes conservative assumptions throughout. The productivity decline default is set at the lower bound of the evidence range. The cascade probability curve reflects stated intent adjusted for the gap between intent and action. The error-correction loop and moral distress mechanisms are not separately quantified, meaning the model underestimates the true cost in clinical environments relative to generic service sector contexts.</p>
+
+    <p>The model's purpose is directional accuracy rather than false precision. The specific figures it produces will vary with input assumptions. The relationship between the figures is structurally stable: the cost of a vacancy is always substantially larger than the salary being saved, and it grows with time in a non-linear way that linear budget thinking does not capture.</p>
+
+    <div class="formula-block">
+      <div class="formula-label">Total Output Gap</div>
+      <div class="formula">Gap(total) = Gap(s) + Gap(p)</div>
+      <div class="formula-note">
+        Annual Productivity Loss = Gap(total) x Team Size x Output Value per Person<br>
+        Net Loss = Annual Productivity Loss - Salary Saved<br>
+        Cascade Cost adds: sick pay during absence + recruitment cost on exit + compounding productivity loss on reduced team
+      </div>
+    </div>
+
+    <a href="services.html#calculator" style="display:inline-block;margin-top:28px;font-size:10px;letter-spacing:.2em;color:var(--accent);text-decoration:none;opacity:.8;text-transform:uppercase;border-bottom:.5px solid var(--accent-mid);padding-bottom:4px;">Run the Calculator →</a>
+  </div>
+
+  <!-- S9 -->
+  <span class="section-anchor" id="s9"></span>
+  <div class="section">
+    <div class="section-label">// 09</div>
+    <h2>Sources</h2>
+
+    <div class="source-block">
+      <p>Aiken LH, Clarke SP, Sloane DM, Sochalski J, Silber JH. Hospital nurse staffing and patient mortality, nurse burnout, and job dissatisfaction. <em>JAMA.</em> 2002;288(16):1987-1993.</p>
+      <p>Each additional patient per nurse associated with 7% increase in 30-day mortality, 23% increase in burnout odds, 15% increase in job dissatisfaction odds. Replicated across multiple countries and health systems.</p>
+    </div>
+
+    <div class="source-block">
+      <p>Royal College of Nursing. Working in understaffed services is making nurses sick. RCN Press Release, 2025.</p>
+      <p>Survey of 20,000+ UK nursing staff. RCN advice line receiving average 6 calls per day on staffing issues, projected to reach 2,175 calls in 2025, up from 2,026 in 2024 and 1,837 in 2023. Burnout, panic attacks, and stress-related sick leave directly linked to understaffing.</p>
+    </div>
+
+    <div class="source-block">
+      <p>Workhuman. UK Human Workplace Index 2023. Survey of 1,000 full-time UK employees.</p>
+      <p>72% report taking on additional work due to staff shortages. 68% would consider leaving due to feeling undervalued. 65% would consider leaving due to burnout or being overworked.</p>
+    </div>
+
+    <div class="source-block">
+      <p>BMJ Open / Bath, Sheffield and Leicester Universities. Work stress, workload, understaffing driving out health professionals from NHS. 2023. Survey of 1,958 NHS health professionals.</p>
+      <p>Work stress, high workload, and understaffing identified as primary factors driving NHS exit. Applies across professional groups and settings.</p>
+    </div>
+
+    <div class="source-block">
+      <p>Mental Health UK. Burnout Report 2024.</p>
+      <p>21% of workers report performance severely impacted by high pressure while continuing to work regular hours. Presenteeism documented as primary productivity mechanism under sustained overload.</p>
+    </div>
+
+    <div class="source-block">
+      <p>Health and Safety Executive. Work-Related Stress, Depression and Anxiety Statistics in Great Britain 2024.</p>
+      <p>17.1 million working days lost annually to work-related stress, depression and anxiety.</p>
+    </div>
+
+    <div class="source-block">
+      <p>Leary A, Maxwell E, Myers R et al. Why are healthcare professionals leaving NHS roles? A secondary analysis of routinely collected data. <em>Human Resources for Health.</em> 2024;22:65.</p>
+      <p>Healthcare workers who feel highly valued have 8.3x lower odds of burnout and 10.2x lower odds of intent to leave than those who do not feel valued.</p>
+    </div>
+
+    <div class="source-block">
+      <p>NHS Agenda for Change. Sick Pay Entitlement Schedule.</p>
+      <p>Full and half-pay entitlements by service length, as documented in Section 06 of this paper.</p>
+    </div>
+
+    <div class="source-block">
+      <p>Statista / NHS England Workforce Statistics. NHS Staff Shortages, 2024/25 Q3.</p>
+      <p>Over 106,000 vacancies across NHS workforce, 27,000 in nursing. Number of doctors and nurses leaving the workforce increasing despite some improvement in vacancy rates.</p>
+    </div>
+
+    <div class="note">
+      <p>This methodology paper supports the Vacancy Debt Calculator available on the N-ought Services page. It is not published as a primary research output and does not claim to generate new empirical data. It synthesises existing research into a coherent cost model and documents the assumptions and sources underlying each component of that model. The liability mechanism described in Section 04 is an original analytical contribution derived from the application of the Incentive Primacy Framework to clinical workforce dynamics.</p>
+    </div>
+  </div>
+
+  <div class="doc-rule"></div>
+  <a href="services.html" class="back-link">← Return to Services</a>
+
+</div>
+
+<footer>
+  <span>N-OUGHT</span>
+  <span>STRUCTURAL ANALYSIS // EST. BEFORE DISCOVERY</span>
+</footer>
+
+<script>
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts, pSY = 0;
+function resize() { W = pCv.width = window.innerWidth; H = pCv.height = window.innerHeight; }
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save(); pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+function loop(){ drawParts(); requestAnimationFrame(loop); }
+function init(){ resize(); mkParts(); loop(); }
+window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
+init();
+</script>
+</body>
+</html>
