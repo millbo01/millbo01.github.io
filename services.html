@@ -56,7 +56,8 @@
   .input-group { margin-bottom:28px; }
   .input-label { display:block;font-size:9px;letter-spacing:.22em;color:#2a3860;text-transform:uppercase;margin-bottom:10px; }
   .input-sublabel { display:block;font-size:10px;color:#2a3860;letter-spacing:.05em;margin-bottom:10px;line-height:1.6; }
-  .calc-input { display:block;width:100%;background:rgba(13,16,51,.4);border:.5px solid var(--text-faint);color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:.08em;padding:10px 14px;outline:none;transition:border-color .2s; }
+  .calc-input { display:block;width:100%;background:rgba(13,16,51,.4);border:.5px solid var(--text-faint);color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:.08em;padding:10px 14px;outline:none;transition:border-color .2s;-moz-appearance:textfield; }
+  .calc-input::-webkit-outer-spin-button,.calc-input::-webkit-inner-spin-button { -webkit-appearance:none;margin:0; }
   .calc-input:focus { border-color:var(--accent-mid); }
   .calc-input::placeholder { color:var(--text-faint); }
 
