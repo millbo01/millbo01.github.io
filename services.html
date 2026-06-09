@@ -139,6 +139,10 @@
   .share-btn:hover { border-color:var(--accent);color:var(--text); }
   .share-confirm { font-size:10px;color:#4a9eff;letter-spacing:.12em;opacity:0;transition:opacity .3s; }
   .share-confirm.visible { opacity:1; }
+  .referral-banner { margin-bottom:32px;padding:20px 24px;border:.5px solid var(--accent-mid);background:rgba(13,16,51,.15); }
+  .referral-banner p { font-size:11px;color:#4a5a7a;line-height:1.8;letter-spacing:.06em;margin-bottom:0; }
+  .referral-banner-close { float:right;background:none;border:none;color:var(--text-faint);font-family:var(--mono);font-size:11px;cursor:pointer;letter-spacing:.1em;padding:0;margin-left:16px;line-height:1; }
+  .referral-banner-close:hover { color:var(--accent); }
 
   @media(max-width:860px){
     nav { padding:20px 24px; }
@@ -212,6 +216,10 @@
     <p class="calc-intro">When a position goes unfilled, the organisation records a saving. The work continues. The remaining team absorbs it. The cost accumulates in the gap between what the accounting system tracks and what is actually happening to the people doing the work.</p>
     <p class="calc-intro">The calculator below quantifies that gap across three trajectories: the salary the organisation believes it is saving, the productivity loss without cascade, and the cascade scenario — the point at which one absence becomes two.</p>
 
+    <div class="referral-banner" id="referralBanner" style="display:none">
+  <button class="referral-banner-close" onclick="document.getElementById('referralBanner').style.display='none'">✕</button>
+  <p>Someone ran this scenario and wanted you to see the numbers. The values are already set. The calculation has already run.</p>
+</div>
     <div class="calc-shell">
 
       <div class="calc-columns">
@@ -401,7 +409,7 @@ function loadFromURL() {
     }
   });
   if (params.get('autorun') === '1') {
-    // Scroll to calculator then run
+    document.getElementById('referralBanner').style.display = 'block';
     document.getElementById('calculator').scrollIntoView({ behavior: 'smooth', block: 'start' });
     setTimeout(run, 400);
   }
