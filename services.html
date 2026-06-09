@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — N-ought</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
+    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
+    --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;line-height:1.6;letter-spacing:.04em;overflow-x:hidden; }
+
+  #particles { position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none; }
+  #surface-light { position:fixed;top:-20%;left:30%;width:50%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);pointer-events:none;z-index:2; }
+
+  /* NAV */
+  nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--text-faint);background:rgba(7,8,16,.88);backdrop-filter:blur(4px); }
+  .nav-mark { display:inline-block;width:28px;height:28px;cursor:pointer;text-decoration:none;flex-shrink:0; }
+  .nav-mark svg { display:block;width:28px;height:28px; }
+  .nav-links { display:flex;gap:48px;list-style:none; }
+  .nav-links a { color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s; }
+  .nav-links a:hover,.nav-links a.active { color:var(--accent); }
+
+  /* PAGE WRAP */
+  .page-wrap { position:relative;z-index:10;max-width:860px;margin:0 auto;padding:140px 48px 120px; }
+
+  /* PAGE HEADER */
+  .page-meta { font-size:9px;letter-spacing:.25em;color:#2a3860;text-transform:uppercase;margin-bottom:40px; }
+  .page-title { font-family:var(--mono);font-size:18px;font-weight:normal;color:var(--accent);opacity:.9;letter-spacing:.12em;line-height:1.5;margin-bottom:40px; }
+  .page-rule { width:100%;height:.5px;background:var(--text-faint);margin-bottom:72px; }
+
+  /* SERVICE BLOCK */
+  .service-block { margin-bottom:80px;padding-bottom:80px;border-bottom:.5px solid var(--text-faint); }
+  .service-block:last-of-type { border-bottom:none; }
+  .service-label { font-size:9px;letter-spacing:.25em;color:var(--accent);opacity:.7;text-transform:uppercase;margin-bottom:16px; }
+  .service-block h2 { font-family:var(--mono);font-size:12px;font-weight:normal;letter-spacing:.25em;color:var(--accent);opacity:.88;text-transform:uppercase;margin-bottom:28px;padding-bottom:14px;border-bottom:.5px solid var(--text-faint); }
+  .service-block p { font-size:12px;color:#7a8faa;line-height:1.9;letter-spacing:.04em;margin-bottom:20px; }
+
+  /* PLACEHOLDER */
+  .placeholder-box { margin:32px 0;padding:32px;border:.5px dashed var(--text-faint);background:rgba(7,8,16,.3);text-align:center; }
+  .placeholder-box p { font-size:10px;color:#2a3860;letter-spacing:.15em;text-transform:uppercase;margin-bottom:0; }
+  .enquire-link { display:inline-block;margin-top:24px;font-size:10px;letter-spacing:.2em;color:var(--accent);text-decoration:none;text-transform:uppercase;opacity:.7;border-bottom:.5px solid var(--accent-mid);padding-bottom:4px;transition:opacity .2s; }
+  .enquire-link:hover { opacity:1; }
+
+  /* CALCULATOR */
+  .calc-intro { font-size:12px;color:#7a8faa;line-height:1.9;letter-spacing:.04em;margin-bottom:32px; }
+
+  .calc-shell { border:.5px solid var(--text-faint);background:rgba(7,8,16,.5);padding:40px; }
+
+  .calc-columns { display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px; }
+
+  .input-group { margin-bottom:28px; }
+  .input-label { display:block;font-size:9px;letter-spacing:.22em;color:#2a3860;text-transform:uppercase;margin-bottom:10px; }
+  .input-sublabel { display:block;font-size:10px;color:#2a3860;letter-spacing:.05em;margin-bottom:10px;line-height:1.6; }
+  .calc-input { display:block;width:100%;background:rgba(13,16,51,.4);border:.5px solid var(--text-faint);color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:.08em;padding:10px 14px;outline:none;transition:border-color .2s; }
+  .calc-input:focus { border-color:var(--accent-mid); }
+  .calc-input::placeholder { color:var(--text-faint); }
+
+  /* SLIDER */
+  .slider-wrap { margin-top:4px; }
+  .slider-row { display:flex;align-items:center;gap:16px; }
+  input[type=range] { flex:1;-webkit-appearance:none;height:1px;background:var(--text-faint);outline:none;cursor:pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;width:14px;height:14px;background:var(--accent);border-radius:0;cursor:pointer;opacity:.8; }
+  input[type=range]::-moz-range-thumb { width:14px;height:14px;background:var(--accent);border-radius:0;cursor:pointer;opacity:.8;border:none; }
+  .slider-val { font-size:13px;color:var(--accent);letter-spacing:.1em;min-width:36px;text-align:right; }
+  .slider-range-label { font-size:9px;color:#2a3860;letter-spacing:.08em;margin-top:8px; }
+
+  /* SELECT */
+  .calc-select { display:block;width:100%;background:rgba(13,16,51,.4);border:.5px solid var(--text-faint);color:var(--accent);font-family:var(--mono);font-size:12px;letter-spacing:.06em;padding:10px 14px;outline:none;cursor:pointer;-webkit-appearance:none;transition:border-color .2s; }
+  .calc-select:focus { border-color:var(--accent-mid); }
+  .select-wrap { position:relative; }
+  .select-wrap::after { content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-faint);pointer-events:none;font-size:10px; }
+
+  /* DIVIDER */
+  .calc-divider { width:100%;height:.5px;background:var(--text-faint);margin:8px 0 36px; }
+
+  /* RUN BUTTON */
+  .calc-run { display:block;width:100%;padding:16px;background:transparent;border:.5px solid var(--accent-mid);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;margin-bottom:40px; }
+  .calc-run:hover { border-color:var(--accent);color:var(--text); }
+
+  /* OUTPUT */
+  .output-panel { display:none;border-top:.5px solid var(--text-faint);padding-top:40px; }
+  .output-panel.visible { display:block; }
+
+  .output-summary { display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px; }
+  .summary-cell { padding:20px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .summary-cell-label { font-size:9px;letter-spacing:.2em;color:#2a3860;text-transform:uppercase;margin-bottom:12px; }
+  .summary-cell-val { font-size:16px;color:var(--accent);letter-spacing:.08em;line-height:1.3; }
+  .summary-cell-val.warn { color:#e07a5f; }
+  .summary-cell-sub { font-size:9px;color:#2a3860;letter-spacing:.1em;margin-top:6px; }
+
+  /* CHART */
+  .chart-label { font-size:9px;letter-spacing:.22em;color:#2a3860;text-transform:uppercase;margin-bottom:20px; }
+  .chart-area { position:relative;width:100%;height:280px;margin-bottom:16px; }
+  canvas#chart { width:100%;height:100%; }
+
+  .chart-legend { display:flex;gap:32px;margin-bottom:36px;flex-wrap:wrap; }
+  .legend-item { display:flex;align-items:center;gap:10px;font-size:10px;color:#2a3860;letter-spacing:.1em; }
+  .legend-swatch { width:24px;height:1.5px;flex-shrink:0; }
+  .legend-swatch.blue { background:#4a9eff; }
+  .legend-swatch.red-solid { background:#e07a5f; }
+  .legend-swatch.red-dash { background:repeating-linear-gradient(90deg,#c0504a 0,#c0504a 6px,transparent 6px,transparent 10px);height:1.5px; }
+
+  /* CASCADE MARKERS */
+  .cascade-row { margin-bottom:12px;display:grid;grid-template-columns:80px 60px 1fr;gap:16px;align-items:center;padding:12px 0;border-bottom:.5px solid var(--text-faint); }
+  .cascade-row:last-child { border-bottom:none; }
+  .cascade-month { font-size:10px;color:#4a5a7a;letter-spacing:.1em; }
+  .cascade-prob { font-size:12px;color:var(--accent);letter-spacing:.08em; }
+  .cascade-prob.elevated { color:#e07a5f; }
+  .cascade-bar-wrap { height:3px;background:var(--text-faint);position:relative; }
+  .cascade-bar { height:100%;background:var(--accent);transition:width .6s ease; }
+  .cascade-bar.elevated { background:#e07a5f; }
+
+  .cascade-label { font-size:9px;letter-spacing:.2em;color:#2a3860;text-transform:uppercase;margin-bottom:20px; }
+
+  /* NOTE BOX */
+  .calc-note { margin-top:32px;padding:20px 24px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .calc-note p { font-size:10px;color:#2a3860;line-height:1.8;letter-spacing:.05em;margin-bottom:0; }
+  .calc-note a { color:var(--accent);text-decoration:none;opacity:.8; }
+  .calc-note a:hover { opacity:1; }
+
+  /* METHODOLOGY LINK */
+  .method-link-row { margin-top:28px;padding-top:28px;border-top:.5px solid var(--text-faint); }
+  .method-link-row p { font-size:10px;color:#2a3860;letter-spacing:.08em;line-height:1.8;margin-bottom:10px; }
+  .method-link { font-size:10px;letter-spacing:.2em;color:var(--accent);text-decoration:none;text-transform:uppercase;opacity:.75;border-bottom:.5px solid var(--accent-mid);padding-bottom:3px;transition:opacity .2s; }
+  .method-link:hover { opacity:1; }
+
+  /* FOOTER */
+  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
+
+  /* SHARE BUTTON */
+  .share-row { margin-top:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap; }
+  .share-btn { background:transparent;border:.5px solid var(--accent-mid);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;padding:12px 24px;cursor:pointer;transition:border-color .2s,color .2s; }
+  .share-btn:hover { border-color:var(--accent);color:var(--text); }
+  .share-confirm { font-size:10px;color:#4a9eff;letter-spacing:.12em;opacity:0;transition:opacity .3s; }
+  .share-confirm.visible { opacity:1; }
+
+  @media(max-width:860px){
+    nav { padding:20px 24px; }
+    .nav-links { gap:20px; }
+    .page-wrap { padding:110px 24px 80px; }
+    footer { padding:20px 24px;flex-direction:column;gap:8px; }
+    .calc-columns { grid-template-columns:1fr; gap:0; }
+    .output-summary { grid-template-columns:1fr; }
+    .calc-shell { padding:24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="n-oughts-law.html">N-ought's Law</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li><a href="services.html" class="active">Services</a></li>
+    <li><a href="index.html#fees">Fees</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-meta">N-ought // Services</div>
+  <h1 class="page-title">Applied Work</h1>
+  <div class="page-rule"></div>
+
+  <!-- ── SERVICE 01: SYSTEMS THINKING WORKSHOP ── -->
+  <div class="service-block">
+    <div class="service-label">// 01</div>
+    <h2>Systems Thinking Workshop</h2>
+    <p>Details to follow. The workshop applies the theoretical foundations of the Incentive Primacy Framework and N-ought's Law to organisational behaviour, workforce dynamics, and institutional structure. Designed for teams that want to examine what their systems actually select for, rather than what they intend.</p>
+    <p>Target audience: HR leadership, people teams, senior management, board-level governance functions.</p>
+    <div class="placeholder-box">
+      <p>// Content in development — enquire for availability</p>
+    </div>
+    <a href="index.html#contact" class="enquire-link">Enquire →</a>
+  </div>
+
+  <!-- ── SERVICE 02: CONSULTANCY ── -->
+  <div class="service-block">
+    <div class="service-label">// 02</div>
+    <h2>Structural Consultancy</h2>
+    <p>Beyond the diagnostic engine, N-ought is available for broader structural consultancy engagements. This covers the application of incentive-based analysis to organisational design, process architecture, and governance reform — where the question is not only what is currently happening but what a different structure would produce.</p>
+    <div class="placeholder-box">
+      <p>// Scope and terms available on request</p>
+    </div>
+    <a href="index.html#contact" class="enquire-link">Enquire →</a>
+  </div>
+
+  <!-- ── SERVICE 03: VACANCY DEBT CALCULATOR ── -->
+  <div class="service-block" id="calculator">
+    <div class="service-label">// 03</div>
+    <h2>Vacancy Debt Calculator</h2>
+
+    <p class="calc-intro">When a position goes unfilled, the organisation records a saving. The work continues. The remaining team absorbs it. The cost accumulates in the gap between what the accounting system tracks and what is actually happening to the people doing the work.</p>
+    <p class="calc-intro">The calculator below quantifies that gap across three trajectories: the salary the organisation believes it is saving, the productivity loss without cascade, and the cascade scenario — the point at which one absence becomes two.</p>
+
+    <div class="calc-shell">
+
+      <div class="calc-columns">
+        <!-- LEFT COLUMN: Team inputs -->
+        <div>
+          <div class="input-group">
+            <label class="input-label" for="teamSize">Team size</label>
+            <span class="input-sublabel">Total headcount including the vacant role</span>
+            <input class="calc-input" type="number" id="teamSize" min="2" max="200" value="10" placeholder="10">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="vacancies">Vacant positions</label>
+            <span class="input-sublabel">Unfilled roles — no salary paid, no sick pay liability</span>
+            <input class="calc-input" type="number" id="vacancies" min="0" max="50" value="1" placeholder="0">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="sickLeave">Staff on sick leave</label>
+            <span class="input-sublabel">Currently absent on paid sick leave — salary continues</span>
+            <input class="calc-input" type="number" id="sickLeave" min="0" max="50" value="0" placeholder="0">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="salary">Median annual salary (£)</label>
+            <span class="input-sublabel">Gross salary of a typical team member</span>
+            <input class="calc-input" type="number" id="salary" min="10000" max="500000" value="35000" placeholder="35000">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="outputVal">Annual output value per person (£)</label>
+            <span class="input-sublabel">Revenue, billable value, or cost-equivalent generated per FTE</span>
+            <input class="calc-input" type="number" id="outputVal" min="10000" max="1000000" value="50000" placeholder="50000">
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Productivity + cascade -->
+        <div>
+          <div class="input-group">
+            <label class="input-label" for="prodDecline">Productivity decline per affected worker</label>
+            <span class="input-sublabel">Presenteeism effect on remaining staff under sustained overload</span>
+            <div class="slider-wrap">
+              <div class="slider-row">
+                <input type="range" id="prodDecline" min="13" max="50" value="20" step="1">
+                <span class="slider-val" id="prodDeclineVal">20%</span>
+              </div>
+              <div class="slider-range-label">Evidence range: 13% (early stress) — 50% (chronic burnout). Sources: Gallup, Mental Health UK, APA.</div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="fullPayMonths">Full pay sick leave entitlement (months)</label>
+            <span class="input-sublabel">NHS AfC: 1–6 months depending on service length. Default 3. Set 0 for no contractual sick pay.</span>
+            <input class="calc-input" type="number" id="fullPayMonths" min="0" max="12" value="3" placeholder="3">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="halfPayMonths">Half pay entitlement (months) <span style="opacity:.5;font-size:9px">optional</span></label>
+            <span class="input-sublabel">Typically matches full pay duration. Drop to half pay is the primary return-to-work lever.</span>
+            <input class="calc-input" type="number" id="halfPayMonths" min="0" max="12" value="3" placeholder="3">
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="recruitCost">Recruitment cost on exit (£)</label>
+            <span class="input-sublabel">Agency fees, onboarding, and productivity drag on replacement</span>
+            <input class="calc-input" type="number" id="recruitCost" min="0" max="200000" value="8000" placeholder="8000">
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-divider"></div>
+      <button class="calc-run" id="runBtn">// Run Calculation</button>
+
+      <!-- OUTPUT PANEL -->
+      <div class="output-panel" id="outputPanel">
+
+        <div class="output-summary" id="summaryGrid">
+          <!-- populated by JS -->
+        </div>
+
+        <div class="chart-label">36-month cost projection</div>
+        <div class="chart-area">
+          <canvas id="chart"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-swatch blue"></div>Salary saved (recorded)</div>
+          <div class="legend-item"><div class="legend-swatch red-solid"></div>Productivity loss — no cascade</div>
+          <div class="legend-item"><div class="legend-swatch red-dash"></div>Cascade branches — each line shows cost if cascade fires at that point</div>
+        </div>
+
+        <div class="cascade-label">Cascade probability at duration</div>
+        <div id="cascadeRows">
+          <!-- populated by JS -->
+        </div>
+
+        <div class="calc-note">
+          <p>The model makes conservative assumptions throughout. Productivity decline is set at the user-specified value within the evidence range. Cascade probability is derived from Aiken et al. (JAMA 2002), RCN 2025, Workhuman UK 2023, and BMJ Open 2023, adjusted downward to reflect the gap between stated intent and observed exit rates. The cascade scenario assumes one additional absence following cascade onset; actual outcomes compound. Figures are directional, not actuarial.</p>
+        </div>
+
+        <div class="method-link-row">
+          <p>The theoretical basis for each component of this model — the structural gap, presenteeism gap, liability mechanism, cascade sequence, and sick pay structure — is documented in full in the methodology paper.</p>
+          <a href="vacancy-debt-methodology.html" class="method-link">Read the methodology →</a>
+        </div>
+
+        <div class="share-row">
+          <button class="share-btn" id="shareBtn">// Share this scenario</button>
+          <span class="share-confirm" id="shareConfirm">Link copied to clipboard</span>
+        </div>
+
+      </div><!-- /output-panel -->
+
+    </div><!-- /calc-shell -->
+
+  </div><!-- /service-block calculator -->
+
+</div><!-- /page-wrap -->
+
+<footer>
+  <span>N-OUGHT</span>
+  <span>STRUCTURAL ANALYSIS // EST. BEFORE DISCOVERY</span>
+</footer>
+
+<script>
+/* ─── PARTICLES ─── */
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts, pSY = 0;
+function resize() { W = pCv.width = window.innerWidth; H = pCv.height = window.innerHeight; }
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save(); pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+function loop(){ drawParts(); requestAnimationFrame(loop); }
+function init(){ resize(); mkParts(); loop(); }
+window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
+init();
+
+/* ─── SLIDER LIVE VALUE ─── */
+const slider = document.getElementById('prodDecline');
+const sliderVal = document.getElementById('prodDeclineVal');
+slider.addEventListener('input', () => { sliderVal.textContent = slider.value + '%'; });
+
+/* ─── URL PARAM HELPERS ─── */
+const PARAM_KEYS = ['teamSize','vacancies','sickLeave','salary','outputVal','prodDecline','fullPayMonths','halfPayMonths','recruitCost'];
+
+function encodeScenarioURL() {
+  const base = window.location.href.split('?')[0].split('#')[0];
+  const params = new URLSearchParams();
+  PARAM_KEYS.forEach(k => {
+    const el = document.getElementById(k);
+    if (el) params.set(k, el.value);
+  });
+  params.set('autorun', '1');
+  return base + '#calculator?' + params.toString();
+}
+
+function loadFromURL() {
+  const hash = window.location.hash;
+  if (!hash.includes('calculator?')) return;
+  const queryStr = hash.split('calculator?')[1];
+  if (!queryStr) return;
+  const params = new URLSearchParams(queryStr);
+  PARAM_KEYS.forEach(k => {
+    const el = document.getElementById(k);
+    if (el && params.has(k)) {
+      el.value = params.get(k);
+      // Sync slider display
+      if (k === 'prodDecline') {
+        document.getElementById('prodDeclineVal').textContent = params.get(k) + '%';
+      }
+    }
+  });
+  if (params.get('autorun') === '1') {
+    // Scroll to calculator then run
+    document.getElementById('calculator').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(run, 400);
+  }
+}
+
+// Share button handler
+document.addEventListener('DOMContentLoaded', () => {
+  loadFromURL();
+  const shareBtn = document.getElementById('shareBtn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      const url = encodeScenarioURL();
+      navigator.clipboard.writeText(url).then(() => {
+        const confirm = document.getElementById('shareConfirm');
+        confirm.classList.add('visible');
+        setTimeout(() => confirm.classList.remove('visible'), 2500);
+      }).catch(() => {
+        // Fallback for clipboard API failure
+        prompt('Copy this link:', url);
+      });
+    });
+  }
+});
+
+/* ─── FORMAT HELPERS ─── */
+function fmt(n) {
+  if (n >= 1000000) return '£' + (n/1000000).toFixed(2) + 'm';
+  if (n >= 1000) return '£' + Math.round(n/1000) + 'k';
+  return '£' + Math.round(n);
+}
+function fmtFull(n) {
+  return '£' + Math.round(n).toLocaleString('en-GB');
+}
+
+/* ─── CASCADE PROBABILITY ─── */
+// Base probabilities at 125% workload (1 absence from 5-person team).
+// Scale with workload intensity (each 5pp above 125% adds ~10pp to probability, capped at 97%).
+function cascadeProb(months, workloadRatio) {
+  // Base probabilities apply at any understaffing (ratio >= 1.0).
+  // Above 125% workload, probabilities scale up proportionally, capped at 0.97.
+  const base = { 3:0.15, 6:0.45, 12:0.68, 18:0.85, 24:0.95 };
+  const excess = Math.max(0, workloadRatio - 1.25);
+  const scale = 1 + excess * 2;
+  const result = {};
+  for (const [m, p] of Object.entries(base)) {
+    result[m] = Math.min(0.97, p * scale);
+  }
+  return result;
+}
+
+/* ─── MAIN CALCULATION ─── */
+document.getElementById('runBtn').addEventListener('click', run);
+
+function run() {
+  const teamSize    = Math.max(2, parseInt(document.getElementById('teamSize').value) || 10);
+  const vacancies   = Math.max(0, parseInt(document.getElementById('vacancies').value) || 0);
+  const sickLeave   = Math.max(0, parseInt(document.getElementById('sickLeave').value) || 0);
+  const absences    = Math.min(teamSize - 1, vacancies + sickLeave) || 1;
+  const salary      = parseFloat(document.getElementById('salary').value) || 35000;
+  const outputVal   = parseFloat(document.getElementById('outputVal').value) || 50000;
+  const prodPct     = parseFloat(document.getElementById('prodDecline').value) / 100;
+  const fullPayMo   = parseFloat(document.getElementById('fullPayMonths').value) || 0;
+  const halfPayMo   = parseFloat(document.getElementById('halfPayMonths').value) || 0;
+  const recruitCost = parseFloat(document.getElementById('recruitCost').value) || 0;
+
+  const remaining = teamSize - absences;
+  const workloadRatio = teamSize / remaining;
+
+  // Structural gap: fraction of output structurally unavailable
+  const structGap = absences / teamSize;
+
+  // Presenteeism gap: on remaining staff
+  const presentGap = (remaining / teamSize) * prodPct;
+
+  // Total annual output gap (no cascade)
+  const totalGap = structGap + presentGap;
+  const annualLossNoCascade = totalGap * teamSize * outputVal;
+  // Salary saved only from vacancies — sick leave salaries are still being paid
+  const annualSalarySaved = vacancies * salary;
+
+  // 36-month data (monthly)
+  const months = 36;
+  const salaryLine    = [];
+  const noCascadeLine = [];
+
+  // Cascade probability at key markers
+  const probs = cascadeProb(null, workloadRatio);
+
+  // Sick pay cost when cascade fires: one additional person on full pay then half pay
+  const cascadeSickPayCost = (fullPayMo / 12) * salary + (halfPayMo / 12) * salary * 0.5;
+
+  // Additional output lost per month once cascade fires (one more person absent)
+  const extraAbsences   = Math.min(teamSize - 1, absences + 1);
+  const extraRemaining  = Math.max(1, teamSize - extraAbsences);
+  const extraStructGap  = extraAbsences / teamSize;
+  const extraPresentGap = (extraRemaining / teamSize) * prodPct;
+  const extraTotalGap   = extraStructGap + extraPresentGap;
+  const extraMonthlyLoss = Math.max(0, (extraTotalGap * teamSize * outputVal - annualLossNoCascade) / 12);
+
+  // Build a separate branch line for each cascade trigger point.
+  // Branches follow no-cascade until trigger, then diverge with exponential compounding:
+  // each month after trigger costs 5% more than the previous month's increment (1.05^n),
+  // modelling accelerating degradation as the reduced team deteriorates further.
+  const cascadeTriggers = [3, 6, 12, 18, 24, 36];
+  const baseMonthlyIncrease = (annualLossNoCascade / 12) * 1.5; // 50% worse monthly rate post-cascade
+
+  const cascadeLines = cascadeTriggers.map(triggerMo => {
+    const prob = probs[triggerMo] !== undefined ? probs[triggerMo] : 0.97;
+    const line = new Array(months).fill(null);
+
+    // Up to trigger: follow no-cascade
+    for (let m = 1; m < triggerMo; m++) {
+      line[m - 1] = (annualLossNoCascade / 12) * m;
+    }
+
+    // At trigger month: jump to cascade cost (no-cascade up to here + one-time costs)
+    const triggerBase = (annualLossNoCascade / 12) * triggerMo;
+    const onceOff = cascadeSickPayCost + recruitCost;
+    line[triggerMo - 1] = triggerBase + onceOff;
+
+    // After trigger: exponential compounding — each month 5% worse than previous increment
+    for (let m = triggerMo + 1; m <= months; m++) {
+      const monthsSinceTrigger = m - triggerMo;
+      const degradationFactor = Math.pow(1.05, monthsSinceTrigger);
+      line[m - 1] = line[m - 2] + (baseMonthlyIncrease * degradationFactor);
+    }
+
+    return { line, prob, triggerMo };
+  });
+
+  for (let m = 1; m <= months; m++) {
+    salaryLine.push(annualSalarySaved * (m / 12));
+    noCascadeLine.push((annualLossNoCascade / 12) * m);
+  }
+
+  // Render summary cells
+  const net12 = noCascadeLine[11] - salaryLine[11];
+  const net36 = noCascadeLine[35] - salaryLine[35];
+  // Expected cascade cost at 36mo: probability-weighted across trigger points
+  const cascade36 = cascadeLines.reduce((sum, { line, prob }) => {
+    const val = line[35];
+    return val !== null ? sum + prob * val : sum;
+  }, 0) / cascadeLines.filter(({ line }) => line[35] !== null).length - salaryLine[35];
+
+  document.getElementById('summaryGrid').innerHTML = `
+    <div class="summary-cell">
+      <div class="summary-cell-label">Vacancy salary recorded as saved (12 mo)</div>
+      <div class="summary-cell-val">${fmtFull(salaryLine[11])}</div>
+      <div class="summary-cell-sub">What the budget shows</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-cell-label">Net productivity loss (12 mo)</div>
+      <div class="summary-cell-val warn">${fmtFull(net12)}</div>
+      <div class="summary-cell-sub">Output gap minus salary saved</div>
+    </div>
+    <div class="summary-cell">
+      <div class="summary-cell-label">Expected cascade cost (36 mo)</div>
+      <div class="summary-cell-val warn">${fmtFull(cascade36)}</div>
+      <div class="summary-cell-sub">Net loss under cascade scenario</div>
+    </div>
+  `;
+
+  // Render cascade probability rows
+  const cascadeData = [
+    [3,  probs[3],  'Early stress — resilience factors active'],
+    [6,  probs[6],  'Chronic stress threshold reached'],
+    [12, probs[12], 'Burnout more likely than not'],
+    [18, probs[18], 'Professional exit becomes rational'],
+  ];
+  document.getElementById('cascadeRows').innerHTML = cascadeData.map(([m, p, note]) => {
+    const pct = Math.round(p * 100);
+    const elevated = pct >= 45;
+    return `<div class="cascade-row">
+      <span class="cascade-month">${m} months</span>
+      <span class="cascade-prob ${elevated ? 'elevated' : ''}">${pct}%</span>
+      <div class="cascade-bar-wrap"><div class="cascade-bar ${elevated ? 'elevated' : ''}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  // Show output panel
+  const panel = document.getElementById('outputPanel');
+  panel.classList.add('visible');
+
+  // Draw chart
+  drawChart(months, salaryLine, noCascadeLine, cascadeLines);
+
+  // Scroll to panel
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+
+/* ─── CHART ─── */
+let _chartState = null; // store for hover re-render
+
+function drawChart(months, salaryLine, noCascadeLine, cascadeLines) {
+  const canvas = document.getElementById('chart');
+  const parent = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = parent.offsetWidth  * dpr;
+  canvas.height = parent.offsetHeight * dpr;
+  canvas.style.width  = parent.offsetWidth  + 'px';
+  canvas.style.height = parent.offsetHeight + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const W = parent.offsetWidth;
+  const H = parent.offsetHeight;
+  const pad = { top: 16, right: 32, bottom: 40, left: 72 };
+
+  // Store state for hover redraws
+  _chartState = { months, salaryLine, noCascadeLine, cascadeLines, W, H, pad, dpr };
+
+  renderChart(ctx, _chartState, -1);
+
+  // Remove old listener, add new
+  canvas._hoverHandler && canvas.removeEventListener('mousemove', canvas._hoverHandler);
+  canvas._leaveHandler && canvas.removeEventListener('mouseleave', canvas._leaveHandler);
+
+  canvas._hoverHandler = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = (e.clientX - rect.left);
+    const cW = W - pad.left - pad.right;
+    const rawIdx = Math.round((mouseX - pad.left) / cW * (months - 1));
+    const hoverIdx = Math.max(0, Math.min(months - 1, rawIdx));
+    const ctx2 = canvas.getContext('2d');
+    ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    renderChart(ctx2, _chartState, hoverIdx);
+  };
+  canvas._leaveHandler = function() {
+    const ctx2 = canvas.getContext('2d');
+    ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    renderChart(ctx2, _chartState, -1);
+  };
+  canvas.addEventListener('mousemove', canvas._hoverHandler);
+  canvas.addEventListener('mouseleave', canvas._leaveHandler);
+}
+
+function renderChart(ctx, state, hoverIdx) {
+  const { months, salaryLine, noCascadeLine, cascadeLines, W, H, pad } = state;
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+
+  const allVals = [
+    ...salaryLine, ...noCascadeLine,
+    ...cascadeLines.flatMap(({ line }) => line.filter(v => v !== null))
+  ];
+  const maxVal = Math.max(...allVals) * 1.08;
+
+  function xPos(i) { return pad.left + (i / (months - 1)) * cW; }
+  function yPos(v) { return pad.top + cH - (v / maxVal) * cH; }
+  function fmt(n) {
+    if (n >= 1000000) return '£' + (n/1000000).toFixed(2) + 'm';
+    if (n >= 1000) return '£' + Math.round(n/1000) + 'k';
+    return '£' + Math.round(n);
+  }
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  const gridCount = 5;
+  ctx.strokeStyle = 'rgba(26,34,64,0.8)';
+  ctx.lineWidth = 0.5;
+  for (let g = 0; g <= gridCount; g++) {
+    const y = pad.top + (g / gridCount) * cH;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke();
+    const val = maxVal * (1 - g / gridCount);
+    ctx.fillStyle = '#2a3860';
+    ctx.font = `9px 'Courier New', monospace`;
+    ctx.textAlign = 'right';
+    ctx.fillText(fmt(val), pad.left - 8, y + 3);
+  }
+
+  // X axis labels
+  ctx.fillStyle = '#2a3860';
+  ctx.font = `9px 'Courier New', monospace`;
+  ctx.textAlign = 'center';
+  for (let m = 0; m <= months; m += 6) {
+    const x = xPos(Math.min(m, months - 1));
+    ctx.fillText(m + 'mo', x, H - pad.bottom + 16);
+  }
+
+  // Hover vertical line (behind everything)
+  if (hoverIdx >= 0) {
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(74,158,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+    ctx.moveTo(xPos(hoverIdx), pad.top);
+    ctx.lineTo(xPos(hoverIdx), pad.top + cH);
+    ctx.stroke();
+  }
+
+  // Cascade branches (drawn first, behind solid lines)
+  const cascadeColors = ['#f0b0a0','#e8906c','#e07060','#c85040','#a83020','#882010'];
+  cascadeLines.forEach(({ line, prob, triggerMo }, i) => {
+    const color = cascadeColors[Math.min(i, cascadeColors.length - 1)];
+    const firstIdx = line.findIndex(v => v !== null);
+    if (firstIdx === -1) return;
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+
+    // Join cleanly from no-cascade at trigger point
+    ctx.moveTo(xPos(triggerMo - 1), yPos(noCascadeLine[triggerMo - 1] || 0));
+    line.forEach((v, idx) => {
+      if (v === null) return;
+      ctx.lineTo(xPos(idx), yPos(v));
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dot at trigger point
+    if (hoverIdx < 0) {
+      ctx.beginPath();
+      ctx.arc(xPos(triggerMo - 1), yPos(noCascadeLine[triggerMo - 1]), 3, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+  });
+
+  // No-cascade solid red
+  ctx.beginPath();
+  ctx.strokeStyle = '#e07a5f';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+  noCascadeLine.forEach((v, i) => {
+    const x = xPos(i), y = yPos(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Salary saved solid blue
+  ctx.beginPath();
+  ctx.strokeStyle = '#4a9eff';
+  ctx.lineWidth = 2;
+  salaryLine.forEach((v, i) => {
+    const x = xPos(i), y = yPos(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Hover dots + tooltip
+  if (hoverIdx >= 0) {
+    const hx = xPos(hoverIdx);
+    const monthLabel = (hoverIdx + 1) + ' months';
+
+    // Collect tooltip rows
+    const rows = [];
+    rows.push({ label: 'Salary saved', val: salaryLine[hoverIdx], color: '#4a9eff' });
+    rows.push({ label: 'Productivity loss', val: noCascadeLine[hoverIdx], color: '#e07a5f' });
+    cascadeLines.forEach(({ line, triggerMo }, i) => {
+      const v = line[hoverIdx];
+      if (v !== null) {
+        const pct = Math.round(cascadeLines[i].prob * 100);
+        rows.push({
+          label: `Cascade @ ${triggerMo}mo (${pct}%)`,
+          val: v,
+          color: cascadeColors[Math.min(i, cascadeColors.length - 1)]
+        });
+      }
+    });
+
+    // Draw dots on each line
+    rows.forEach(({ val, color }) => {
+      if (val == null) return;
+      ctx.beginPath();
+      ctx.arc(hx, yPos(val), 4, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(7,8,16,0.8)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // Tooltip box
+    const tooltipW = 220;
+    const tooltipLineH = 18;
+    const tooltipH = 24 + rows.length * tooltipLineH + 8;
+    let tx = hx + 14;
+    if (tx + tooltipW > W - 8) tx = hx - tooltipW - 14;
+    const ty = Math.max(pad.top, Math.min(yPos(noCascadeLine[hoverIdx]) - 20, H - tooltipH - 8));
+
+    ctx.fillStyle = 'rgba(7,8,16,0.92)';
+    ctx.strokeStyle = '#1a2a7a';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.rect(tx, ty, tooltipW, tooltipH);
+    ctx.fill();
+    ctx.stroke();
+
+    // Title
+    ctx.fillStyle = '#4a9eff';
+    ctx.font = `bold 10px 'Courier New', monospace`;
+    ctx.textAlign = 'left';
+    ctx.fillText(monthLabel, tx + 12, ty + 16);
+
+    // Rows
+    rows.forEach(({ label, val, color }, i) => {
+      const ry = ty + 28 + i * tooltipLineH;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.rect(tx + 12, ry - 7, 8, 8);
+      ctx.fill();
+      ctx.fillStyle = '#c8d4e8';
+      ctx.font = `9px 'Courier New', monospace`;
+      ctx.fillText(label + ': ' + fmt(val), tx + 26, ry);
+    });
+  }
+
+}
+
+</script>
