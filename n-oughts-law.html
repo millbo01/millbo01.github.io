@@ -4,52 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>N-ought's Law of Structural Harm - N-ought</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
-    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
-    --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
-  }
-  html { scroll-behavior:smooth; }
-  body { background:var(--bg);color:var(--text);font-family:var(--mono);font-size:15px;line-height:1.6;letter-spacing:.04em;overflow-x:hidden; }
-
-  #particles { position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none; }
-  #surface-light { position:fixed;top:-20%;left:30%;width:50%;height:70%;background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);pointer-events:none;z-index:2; }
-
-  nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 48px;border-bottom:.5px solid var(--text-faint);background:rgba(7,8,16,.88);backdrop-filter:blur(4px); }
-  .nav-mark { display:inline-block;width:28px;height:28px;cursor:pointer;text-decoration:none;flex-shrink:0; }
-  .nav-mark svg { display:block;width:28px;height:28px; }
-  .nav-links { display:flex;gap:48px;list-style:none; }
-  .nav-links a { color:var(--text-dim);text-decoration:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:color .3s; }
-  .nav-links a:hover { color:var(--accent); }
-  .nav-links .nav-divider { width:.5px;height:14px;background:var(--text-faint);align-self:center;flex-shrink:0; }
-
-  .doc-wrap {
-    position:relative;
-    z-index:10;
-    max-width:760px;
-    margin:0 auto;
-    padding:140px 48px 120px;
-  }
-
-  .paper-meta { font-size:9px;letter-spacing:.25em;color:var(--text-faint);text-transform:uppercase;margin-bottom:40px; }
-
-  .paper-title {
-    font-family:var(--mono);
-    font-size:18px;
-    font-weight:normal;
-    color:var(--accent);
-    opacity:.9;
-    letter-spacing:.12em;
-    line-height:1.5;
-    margin-bottom:16px;
-  }
-
-  .paper-subtitle { font-size:12px;color:var(--text-dim);letter-spacing:.06em;font-style:italic;margin-bottom:48px; }
-  .paper-rule { width:100%;height:.5px;background:var(--text-faint);margin-bottom:56px; }
-
-  /* LAW BLOCK - the canonical statement */
+  <link rel="stylesheet" href="styles.css">
+  <style>
+/* LAW BLOCK - the canonical statement */
   .law-block {
     margin:0 0 64px;
     padding:36px 40px;
@@ -89,7 +46,7 @@
   .formula-label {
     font-size:9px;
     letter-spacing:.22em;
-    color:var(--text-faint);
+    color:#2a3860;
     text-transform:uppercase;
     margin-bottom:16px;
   }
@@ -106,14 +63,14 @@
 
   .formula-note {
     font-size:11px;
-    color:var(--text-dim);
+    color:#7a8faa;
     line-height:1.8;
     letter-spacing:.04em;
     margin-top:12px;
   }
 
   .formula-note span {
-    color:#5a7a9a;
+    color:#7a8faa;
   }
 
   /* VARIABLE TABLE */
@@ -149,14 +106,14 @@
 
   .var-table td:nth-child(2) {
     width:160px;
-    color:var(--text-dim);
+    color:#7a8faa;
     padding-right:24px;
     font-size:10px;
     letter-spacing:.08em;
   }
 
   .var-table td:last-child {
-    color:#5a7a9a;
+    color:#7a8faa;
     font-size:10.5px;
   }
 
@@ -237,7 +194,7 @@
     letter-spacing:.08em;
     line-height:1.7;
     border-right:.5px solid var(--text-faint);
-    color:#5a7a9a;
+    color:#7a8faa;
   }
 
   .proxy-cell:last-child { border-right:none; }
@@ -245,7 +202,7 @@
   .proxy-row.header .proxy-cell {
     font-size:9px;
     letter-spacing:.18em;
-    color:var(--text-faint);
+    color:#2a3860;
     text-transform:uppercase;
   }
 
@@ -258,25 +215,9 @@
     letter-spacing:.06em;
   }
 
-  strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.55; }
-  em { color:var(--text-dim);font-style:italic; }
-
-  .doc-rule { width:100%;height:.5px;background:var(--text-faint);margin:56px 0; }
-
-  .back-link { display:inline-block;font-size:10px;letter-spacing:.2em;color:var(--text-dim);text-decoration:none;text-transform:uppercase;margin-bottom:64px;transition:color .2s; }
-  .back-link:hover { color:var(--accent); }
-
-  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
-
-  @media(max-width:860px){
-    nav { padding:20px 24px; }
-    .nav-links { gap:20px; }
-    .doc-wrap { padding:110px 24px 80px; }
-    footer { padding:20px 24px;flex-direction:column;gap:8px; }
-    .proxy-row { grid-template-columns:1fr; }
-    .proxy-cell { border-right:none;border-bottom:.5px solid var(--text-faint); }
-  }
-</style>
+  strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.9; }
+  em { color:#7a8faa;font-style:italic; }
+  </style>
 </head>
 <body>
 
