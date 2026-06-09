@@ -159,6 +159,14 @@
 </head>
 <body>
 
+<div class="referral-overlay" id="referralBanner" style="display:none">
+  <div class="referral-modal">
+    <div class="referral-modal-rule"></div>
+    <p>Someone ran this scenario and wanted you to see the numbers. The values are already set. The calculation has already run.</p>
+    <button class="referral-modal-close" onclick="document.getElementById('referralBanner').style.display='none'">// Dismiss</button>
+  </div>
+</div>
+
 <canvas id="particles"></canvas>
 <div id="surface-light"></div>
 
@@ -218,13 +226,6 @@
     <p class="calc-intro">When a position goes unfilled, the organisation records a saving. The work continues. The remaining team absorbs it. The cost accumulates in the gap between what the accounting system tracks and what is actually happening to the people doing the work.</p>
     <p class="calc-intro">The calculator below quantifies that gap across three trajectories: the salary the organisation believes it is saving, the productivity loss without cascade, and the cascade scenario — the point at which one absence becomes two.</p>
 
-    <div class="referral-overlay" id="referralBanner" style="display:none">
-  <div class="referral-modal">
-    <div class="referral-modal-rule"></div>
-    <p>Someone ran this scenario and wanted you to see the numbers. The values are already set. The calculation has already run.</p>
-    <button class="referral-modal-close" onclick="document.getElementById('referralBanner').style.display='none'">// Dismiss</button>
-  </div>
-</div>
     <div class="calc-shell">
 
       <div class="calc-columns">
