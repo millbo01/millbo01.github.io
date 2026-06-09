@@ -361,6 +361,161 @@
     .doc-wrap { padding:110px 24px 80px; }
     footer { padding:20px 24px;flex-direction:column;gap:8px; }
     .toc { display:none; }
+     /* PRINT / SSRN EXPORT */
+  @media print {
+    nav,
+    .toc,
+    .back-link,
+    #particles,
+    #surface-light,
+    footer {
+      display: none !important;
+    }
+
+    html,
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-family: Georgia, "Times New Roman", serif !important;
+      font-size: 11pt !important;
+      line-height: 1.45 !important;
+      letter-spacing: normal !important;
+      overflow: visible !important;
+    }
+
+    .doc-wrap {
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0.65in 0.75in !important;
+      position: static !important;
+      z-index: auto !important;
+    }
+
+    .paper-meta,
+    .paper-title,
+    .paper-subtitle,
+    .abstract-label,
+    .section-label,
+    .appendix-tag,
+    .section h2,
+    .section h3 {
+      font-family: Georgia, "Times New Roman", serif !important;
+      letter-spacing: normal !important;
+      text-transform: none !important;
+    }
+
+    .paper-meta {
+      color: #666 !important;
+      font-size: 9pt !important;
+      margin-bottom: 18pt !important;
+    }
+
+    .paper-title {
+      color: #000 !important;
+      font-size: 20pt !important;
+      font-weight: bold !important;
+      margin-bottom: 8pt !important;
+      opacity: 1 !important;
+    }
+
+    .paper-subtitle {
+      color: #333 !important;
+      font-size: 12pt !important;
+      margin-bottom: 12pt !important;
+    }
+
+    .print-source {
+      display: block !important;
+      color: #666 !important;
+      font-size: 9pt !important;
+      margin-bottom: 24pt !important;
+    }
+
+    .paper-rule,
+    .doc-rule {
+      background: #cccccc !important;
+      height: 1px !important;
+      margin: 24pt 0 !important;
+    }
+
+    .abstract,
+    .callout,
+    .formula,
+    .section blockquote {
+      background: #f7f7f7 !important;
+      border-color: #cccccc !important;
+      color: #000 !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .abstract p,
+    .section p,
+    .section ul li,
+    .section ol li,
+    .callout p,
+    .formula,
+    .formula-var,
+    .section blockquote p {
+      color: #000 !important;
+      font-size: 10.5pt !important;
+      line-height: 1.5 !important;
+      letter-spacing: normal !important;
+      max-width: none !important;
+    }
+
+    .section {
+      margin-bottom: 32pt !important;
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+
+    .section h2 {
+      color: #000 !important;
+      font-size: 14pt !important;
+      font-weight: bold !important;
+      border-bottom: 1px solid #cccccc !important;
+      margin-bottom: 16pt !important;
+      padding-bottom: 6pt !important;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .section h3 {
+      color: #000 !important;
+      font-size: 12pt !important;
+      font-weight: bold !important;
+      margin: 20pt 0 10pt !important;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    strong {
+      color: #000 !important;
+      font-weight: bold !important;
+      opacity: 1 !important;
+    }
+
+    em {
+      color: #333 !important;
+    }
+
+    a {
+      color: #000 !important;
+      text-decoration: none !important;
+    }
+
+    img {
+      max-width: 100% !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+  }
+
+  @media screen {
+    .print-source {
+      display: none;
+    }
   }
 </style>
 </head>
@@ -391,9 +546,10 @@
 
   <a href="index.html#outputs" class="back-link">← Output</a>
 
-  <div class="paper-meta">N-ought // Theoretical Framework // 2025</div>
+    <div class="paper-meta">N-ought // Theoretical Framework // 2025</div>
   <h1 class="paper-title">Beyond Nash</h1>
   <p class="paper-subtitle">A structural explanation for governance drift in systems with adaptive actors</p>
+  <p class="print-source">Originally hosted at n-ought.com/beyond-nash.html</p>
   <div class="paper-rule"></div>
 
   <!-- TOC -->
