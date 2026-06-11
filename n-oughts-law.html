@@ -217,6 +217,99 @@
 
   strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.9; }
   em { color:#7a8faa;font-style:italic; }
+
+  /* ── AMPLIFICATION RATIO TABLE (reuses proxy-block) ── */
+  .proxy-row.amp-row .proxy-cell:nth-child(2) { color:var(--accent);opacity:.8;font-family:var(--mono); }
+
+  /* ── HARM CALCULATOR ── */
+  .calc-shell { border:.5px solid var(--text-faint);background:rgba(7,8,16,.5);padding:40px;margin-top:32px; }
+  .calc-columns { display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:32px; }
+  .calc-divider { width:100%;height:.5px;background:var(--text-faint);margin:8px 0 32px; }
+  .calc-run { display:block;width:100%;padding:14px;background:transparent;border:.5px solid var(--accent-mid);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;margin-bottom:36px; }
+  .calc-run:hover { border-color:var(--accent);color:var(--text); }
+  .calc-note-box { margin-top:28px;padding:18px 22px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .calc-note-box p { font-size:10px;color:#4a5a7a;line-height:1.8;letter-spacing:.04em;margin-bottom:0; }
+
+  .h-group { margin-bottom:24px; }
+  .h-label { display:block;font-size:9px;letter-spacing:.22em;color:#4a5a7a;text-transform:uppercase;margin-bottom:6px; }
+  .h-sub { display:block;font-size:10px;color:#3a4a6a;letter-spacing:.03em;margin-bottom:8px;line-height:1.6; }
+  .h-input { display:block;width:100%;background:rgba(13,16,51,.4);border:.5px solid var(--text-faint);color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:.08em;padding:9px 13px;outline:none;transition:border-color .2s;box-sizing:border-box;-moz-appearance:textfield; }
+  .h-input::-webkit-outer-spin-button,.h-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .h-input:focus { border-color:var(--accent-mid); }
+
+  .h-live { display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;margin-top:12px;padding:10px 14px;border:.5px solid var(--text-faint);background:rgba(13,16,51,.2); }
+  .h-live-lbl { font-size:9px;letter-spacing:.16em;color:#3a4a6a;text-transform:uppercase; }
+  .h-live-val { font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.08em;min-width:44px; }
+
+  .h-slider-wrap { margin-top:4px; }
+  .h-slider-row { display:flex;align-items:center;gap:14px; }
+  .h-slider-wrap input[type=range]{flex:1;-webkit-appearance:none;height:1px;background:var(--text-faint);outline:none;cursor:pointer;}
+  .h-slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--accent);border-radius:0;cursor:pointer;opacity:.8;}
+  .h-slider-wrap input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--accent);border-radius:0;cursor:pointer;opacity:.8;border:none;}
+  .h-slider-val{font-size:13px;color:var(--accent);letter-spacing:.08em;min-width:38px;text-align:right;font-family:var(--mono);}
+  .h-slider-range{font-size:9px;color:#3a4a6a;letter-spacing:.05em;margin-top:6px;line-height:1.5;}
+
+  .h-out { display:none;border-top:.5px solid var(--text-faint);padding-top:36px; }
+  .h-out.visible { display:block; }
+
+  .h-summary { display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px; }
+  .h-cell { padding:18px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .h-cell-lbl { font-size:9px;letter-spacing:.18em;color:#4a5a7a;text-transform:uppercase;margin-bottom:10px; }
+  .h-cell-val { font-size:20px;color:var(--accent);letter-spacing:.06em;line-height:1.2;font-family:var(--mono); }
+  .h-cell-val.warn { color:#e07a5f; }
+  .h-cell-val.severe { color:#c03020; }
+  .h-cell-sub { font-size:9px;color:#4a5a7a;letter-spacing:.08em;margin-top:6px;line-height:1.5; }
+
+  .h-chart-lbl { font-size:9px;letter-spacing:.2em;color:#4a5a7a;text-transform:uppercase;margin-bottom:16px; }
+  .h-chart-area { position:relative;width:100%;height:260px;margin-bottom:12px; }
+  #hChart { width:100%;height:100%; }
+
+  .h-legend { display:flex;gap:28px;margin-bottom:32px;flex-wrap:wrap; }
+  .h-leg-item { display:flex;align-items:center;gap:8px;font-size:10px;color:#4a5a7a;letter-spacing:.08em; }
+  .h-leg-swatch { width:22px;height:1.5px;flex-shrink:0; }
+  .h-leg-swatch.blue { background:#4a9eff; }
+  .h-leg-swatch.red { background:#e07a5f;height:1.5px; }
+  .h-leg-diamond { width:10px;height:10px;flex-shrink:0;transform:rotate(45deg); }
+  .h-leg-diamond.green  { background:#2ecc71;opacity:.8; }
+  .h-leg-diamond.amber  { background:#f39c12;opacity:.8; }
+  .h-leg-diamond.orange { background:#e07a5f;opacity:.8; }
+  .h-leg-diamond.red-d  { background:#c0392b;opacity:.8; }
+
+  .h-breakdown { margin-bottom:28px; }
+  .h-brow { display:grid;grid-template-columns:160px 72px 1fr;gap:14px;align-items:center;padding:10px 0;border-bottom:.5px solid var(--text-faint); }
+  .h-brow:last-child { border-bottom:none; }
+  .h-brow-lbl { font-size:10px;color:#4a5a7a;letter-spacing:.08em; }
+  .h-brow-val { font-size:11px;color:var(--accent);letter-spacing:.06em;font-family:var(--mono); }
+  .h-bar-wrap { height:2px;background:var(--text-faint); }
+  .h-bar { height:100%;background:var(--accent);transition:width .5s ease; }
+  .h-bar.warn { background:#e07a5f; }
+
+  .h-share-row { margin-top:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap; }
+  .h-share-btn { background:transparent;border:.5px solid var(--accent-mid);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:10px 20px;cursor:pointer;transition:border-color .2s,color .2s; }
+  .h-share-btn:hover { border-color:var(--accent);color:var(--text); }
+  .h-share-confirm { font-size:10px;color:#4a9eff;letter-spacing:.1em;opacity:0;transition:opacity .3s; }
+  .h-share-confirm.visible { opacity:1; }
+
+  /* BURGER NAV */
+  .nav-burger { display:none;flex-direction:column;justify-content:center;gap:5px;width:28px;height:28px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0; }
+  .nav-burger span { display:block;width:100%;height:.5px;background:var(--text-dim);transition:transform .2s,opacity .2s; }
+  .nav-mobile { display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:190;background:rgba(7,8,16,.97);flex-direction:column;align-items:center;justify-content:center;gap:32px; }
+  .nav-mobile.open { display:flex; }
+  .nav-mobile a { color:var(--text-dim);text-decoration:none;font-size:13px;letter-spacing:.2em;text-transform:uppercase;transition:color .2s; }
+  .nav-mobile a:hover,.nav-mobile a.active { color:var(--accent); }
+  .nav-mobile-close { position:absolute;top:24px;right:24px;background:none;border:none;color:var(--text-dim);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:color .2s; }
+  .nav-mobile-close:hover { color:var(--accent); }
+
+  @media(max-width:680px){
+    .nav-links { display:none; }
+    .nav-burger { display:flex; }
+    .calc-columns { grid-template-columns:1fr;gap:0; }
+    .h-summary { grid-template-columns:1fr; }
+    .calc-shell { padding:20px; }
+    .h-live { flex-direction:column;align-items:flex-start;gap:6px; }
+    .h-brow { grid-template-columns:1fr 60px;gap:8px; }
+    .h-bar-wrap { display:none; }
+  }
   </style>
 </head>
 <body>
@@ -242,7 +335,20 @@
     <li><a href="services.html">Services</a></li>
     <li><a href="index.html#contact">Contact</a></li>
   </ul>
+  <button class="nav-burger" id="navBurger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="nav-mobile" id="navMobile">
+  <button class="nav-mobile-close" id="navMobileClose">// Close</button>
+  <a href="index.html#engine">The Engine</a>
+  <a href="n-oughts-law.html" class="active">N-ought's Law</a>
+  <a href="index.html#outputs">Output</a>
+  <a href="index.html#fees">Fees</a>
+  <a href="services.html">Services</a>
+  <a href="index.html#contact">Contact</a>
+</div>
 
 <div class="doc-wrap">
 
@@ -517,20 +623,232 @@
     <blockquote>
       <p>The opacity that generates So is the same opacity that suppresses accurate F measurement. The two are not coincidentally related. They are the same variable observed from different positions in the system.</p>
     </blockquote>
+
+    <p>This is not a measurement problem that better data collection resolves. It is a structural property of the system being measured. The same opacity that inflates So degrades the accuracy of any F measurement derived from institutional self-reporting. The practical implication is that F, as measured, should be treated as an upper bound in high-So institutions &#8212; the true value is likely to fall below the measured value in direct proportion to the So/S ratio. In the institutions where the law&#8217;s harm potential is highest, the F figure available for input is also the least reliable. The two errors compound in the same direction: measured H understates actual H wherever So is large. This is not a limitation of the law. It is a structural prediction of it.</p>
   </div>
 
-  <!-- SCOPE -->
+  <!-- AMPLIFICATION -->
+  <div class="section">
+    <div class="section-label">// Amplification</div>
+    <h2>Reputational Fabrication and the So Multiplier</h2>
+
+    <p>Reputation management expenditure is already classified within So: functions not directly involved in production or delivery of the institution&#8217;s stated output. But this classification understates its structural effect. Reputation management is not merely overhead. It is a load that compounds with the size of the gap it is maintaining.</p>
+
+    <p>For reputational consequence to function as a corrective mechanism, three structural prerequisites must hold: the behaviour must be visible to the relevant network; attribution must be clear and fast enough that reputation travels before the actor exits; and future interactions must remain possible so that reputational damage carries real cost. These prerequisites are cognitively bounded. Research on human social architecture establishes that individuals can maintain stable social relationships with approximately 150 others &#8212; the maximum number whose behaviour and reputation can be actively tracked and processed. Beyond that boundary, no authentic reputation can exist. Where one appears to, it has been fabricated.</p>
+
+    <p>Fabrication here is a structural description, not a moral one. At institutional scale, constructing reputation through signals, proxies, and managed perception is not a choice. It is a necessity imposed by scale. Every institution operating beyond that threshold is, by structural necessity, maintaining a fabricated reputational layer. And unlike load displacement, fabricated reputation has no release valve. Each signal emitted to sustain the fiction adds to the total fiction that must be maintained. The coordination burden grows faster than linearly with institutional size. Resources deployed to manage it are consumed without closing the gap between presented and actual performance &#8212; which is precisely what So represents.</p>
+
+    <p>The consequence is that So, as a raw figure, understates its own contribution to harm potential. As So grows relative to Sr, the reputational fabrication load grows non-linearly, consuming productive capacity and widening the gap that opacity was already sustaining. This is an amplification of the So term, not an independent variable. It operates within So, not alongside it. The amplification is formalised by replacing So with an adjusted term So*:</p>
+
+    <div class="formula-block">
+      <div class="formula-label">So Amplifier</div>
+      <div class="formula">So* = So &middot; e<sup>(So/Sr)</sup></div>
+      <div class="formula-note">
+        So* is the reputationally-adjusted opacity-enabled scale.<br>
+        The exponent So/Sr uses only variables already defined by the law &#8212; no external coefficient is required.<br>
+        When So is small relative to Sr, e<sup>(So/Sr)</sup> approaches 1 and So* &asymp; So. No meaningful amplification.<br>
+        As So exceeds Sr, the multiplier grows without ceiling, reflecting the non-linear coordination burden of fabricated reputation at scale.
+      </div>
+    </div>
+
+    <div class="formula-block">
+      <div class="formula-label">Amplified Relation</div>
+      <div class="formula">H &prop; (Sr + So*) / F</div>
+      <div class="formula-note">
+        The amplified form replaces So with So* in the scale term. Sr remains unaffected.<br>
+        H &prop; S / F remains the canonical statement of the law. The amplified form shows what correct measurement of So requires in large institutions.
+      </div>
+    </div>
+
+    <p>Network complexity research establishes that coordination burden grows at least exponentially with the number of relationships requiring coherent maintenance &#8212; the natural exponential is therefore a lower bound, not a calibrated claim. The effect at realistic So/Sr ratios is substantial even under the most conservative assumptions:</p>
+
+    <div class="proxy-block">
+      <div class="proxy-row header">
+        <div class="proxy-cell">So/Sr ratio</div>
+        <div class="proxy-cell">Multiplier e<sup>(So/Sr)</sup></div>
+        <div class="proxy-cell">Interpretation</div>
+      </div>
+      <div class="proxy-row amp-row">
+        <div class="proxy-cell">0.5</div>
+        <div class="proxy-cell">&times;1.6</div>
+        <div class="proxy-cell">So is half of real scale. Modest amplification. Fabrication burden present but contained.</div>
+      </div>
+      <div class="proxy-row amp-row">
+        <div class="proxy-cell">1.0</div>
+        <div class="proxy-cell">&times;2.7</div>
+        <div class="proxy-cell">So equals Sr. Fabrication load has more than doubled the effective So contribution to harm potential.</div>
+      </div>
+      <div class="proxy-row amp-row">
+        <div class="proxy-cell">2.0</div>
+        <div class="proxy-cell">&times;7.4</div>
+        <div class="proxy-cell">So is double Sr. So* is more than seven times the raw So figure. Likely range for large public institutions.</div>
+      </div>
+      <div class="proxy-row amp-row">
+        <div class="proxy-cell">3.0</div>
+        <div class="proxy-cell">&times;20</div>
+        <div class="proxy-cell">So is triple Sr. So* becomes the dominant term in the harm calculation by a wide margin.</div>
+      </div>
+    </div>
+
+    <blockquote>
+      <p>The So multiplier is not an optional refinement. It is a structural property of opacity-enabled scale beyond the authentic reputation threshold. Applying the primary relation without it to large institutions systematically underestimates the harm potential the law is designed to surface.</p>
+    </blockquote>
+
+    <p>The underlying mechanism is more precise than it first appears. What So accumulates is not the cost of maintaining a false reputation. Reputation, even false reputation, could theoretically stabilise &#8212; a sufficient fiction established, maintenance cost plateauing. What So actually accumulates is the cost of <em>familiarity signal manufacturing</em>: the sustained production of exposure, proximity, and recognition at sufficient volume and frequency to occupy relationship-adjacent space in the cognition of people who will never have first-degree contact with the institution. PR functions, brand expenditure, communications overhead &#8212; these are not reputation management. They are signal factories. And unlike reputation, familiarity signals have no stable state. They decay the moment production stops, because they were never anchored to first-degree experience. There is no equilibrium. The treadmill has no off switch. The institution must continuously reproduce the conditions of apparent trustworthiness because it cannot provide the thing that would make trustworthiness apparent without reproduction: provenance data. Show the working. Let people decide. The moment an institution can do that, the signal factory becomes unnecessary. The moment it cannot, the factory must run indefinitely and at increasing cost as the gap between declared and actual performance widens. This is why So* has no ceiling. It is not that the fiction gets larger. It is that the signal required to sustain it must be continuously reproduced just to hold still &#8212; and the resource cost of that reproduction is what the So multiplier is measuring.</p>
+  </div>
+
+  <!-- TECHNOLOGY DISTINCTION -->
+  <div class="section">
+    <div class="section-label">// Applied</div>
+    <h2>The Technology Distinction</h2>
+
+    <p>The technology sector is the most likely candidate for disproving the law. Large technology companies operate at extraordinary scale, yet their opacity-enabled overhead is visibly low relative to their output. Their harm potential appears to contradict the primary relation. It does not. The apparent exception is the law operating exactly as stated in conditions where feedback integrity is structurally enforced rather than structurally suppressed.</p>
+
+    <p>The critical correction: low So is not independent of high F. So is the scale that can only exist <em>because</em> feedback integrity is low. Where F is genuinely high, that scale cannot be sustained &#8212; the feedback eliminates it. Low So is therefore not a separate observation from high F. It is the observable structural consequence of it. An institution with low So has low So <em>because</em> its F is high. The variables are the same phenomenon observed from different positions in the system.</p>
+
+    <p>Technology produces this outcome structurally rather than by intention. Software output is immediately and precisely measurable. A product claim is falsified at point of use, at near-zero cost, by the user, with results that are trivially shareable. Attribution latency approaches zero &#8212; the code works or it does not, immediately, visibly, and without requiring institutional interpretation. Exit rights are high in most technology markets: switching costs are low, alternatives are accessible, and the technical capability to evaluate them is concentrated in the user base. Performance coupling follows from revenue conditionality in competitive markets where a product that fails benchmarks loses sales within the product cycle. All four F dimensions are structurally elevated by the nature of the output. The law predicts exactly the outcome observed: high F produces low So, and harm potential stays proportionally low despite large scale.</p>
+
+    <p>The broader economic implication is significant. Technology&#8217;s genuine productivity gains, produced under high-F conditions, appear in aggregate statistics alongside other sectors&#8217; opacity-enabled productivity claims, which are partly fabricated. The aggregate masks the deficit. Technology&#8217;s real output is partially compensating for other sectors&#8217; structural underperformance &#8212; not only in financial markets through index weighting, but in the real economy through infrastructure, logistics, communication, and coordination tools that extend the productive capacity of sectors that would otherwise be operating at lower efficiency still. The productivity statistics look disappointing outside technology precisely because they are: the F conditions that produce real productivity are absent in most other sectors, and their apparent output is partially So masquerading as Sr.</p>
+
+    <blockquote>
+      <p>Technology does not disprove the law. It demonstrates it. High feedback integrity produces low opacity-enabled scale as a structural consequence. The sector&#8217;s observable characteristics are what the law predicts for any institution operating under genuine feedback conditions.</p>
+    </blockquote>
+
+    <h3>Case Study: Valve Corporation</h3>
+
+    <p>Valve Corporation is the clearest large-scale demonstration of the law operating in the direction of low harm potential. The company generates annual revenue estimated above $10 billion, operates the dominant PC gaming distribution platform globally, and employs fewer than 400 people. The Sr/S ratio approaches 1. So is near zero. The law predicts exactly this structure for an institution that has maintained high F across all four dimensions simultaneously &#8212; and Valve has done this through deliberate structural choices at each level.</p>
+
+    <p><strong>Organisational structure.</strong> Valve operates without managers. Project attachment is voluntary &#8212; employees move between projects based on where they believe they can contribute most. There is no hierarchy to generate coordination overhead, no management layer to insulate decision-makers from product consequence, and no organisational distance between the people making decisions and the feedback those decisions generate. The Dunbar threshold problem &#8212; the point at which authentic reputation becomes impossible and fabrication becomes structurally necessary &#8212; is addressed not by building reputation management infrastructure around it, but by keeping the organisation small enough and flat enough that authentic reputation remains possible. So does not accumulate because the structure does not create the conditions for So to accumulate.</p>
+
+    <p><strong>The Steam review system.</strong> At platform scale, Valve confronted the standard problem of reputation beyond two degrees of separation: how does a user evaluate a product from a developer they have no direct relationship with, without requiring a trusted institutional intermediary? Most platforms solve this by creating centralised rating systems that are immediately gameable &#8212; fake purchases, coordinated reviews, competitor manipulation. Amazon and similar platforms illustrate the failure mode: at the price points of most consumer goods, the cost of a fake review is trivially low relative to the reputational benefit, and the purchase requirement offers no real protection.</p>
+
+    <p>Steam&#8217;s review system closes this structurally rather than procedurally. Reviews require a genuine purchase through the platform &#8212; login-bound, account-verified, impossible to separate from the purchasing record. But the mechanism that makes the system genuinely resistant to fabrication is the display of hours played alongside every review. A negative review from a user with two hours of playtime on a 60-hour game carries a completely different evidential weight to a negative review from a user with 200 hours. The credibility signal is embedded in the review itself, visible to any reader, without requiring institutional interpretation. Coordinated seeding fails because fake reviewers either have zero hours &#8212; immediately suspect &#8212; or must actually play the game to build hours, at which point they are generating genuine signal regardless of their original intent. The system does not require trust in the reviewer. It makes the reviewer&#8217;s conditions transparent.</p>
+
+    <p>This is a digital solution to the Dunbar reputation problem that does not require centralised trust intermediation. Reputation travels accurately beyond two degrees of separation not because an institution is vouching for it, but because the conditions that generated it are visible alongside it. The feedback loop remains intact at platform scale.</p>
+
+    <p><strong>The GPU ecosystem.</strong> Steam&#8217;s largest revenue category &#8212; high-performance PC gaming &#8212; is served by a hardware ecosystem with near-zero attribution latency and a customer base that is both technically capable of verification and culturally incentivised to perform it publicly. GPU performance claims are independently verifiable at point of use, using standardised benchmarking tools, with results shareable to an audience of technically literate peers who will replicate or contest them within days of any product launch. A manufacturer that overstates performance is falsified not by a regulator or a journalist but by the customers themselves, immediately, at near-zero cost, with results that propagate through the same networks the marketing claim was trying to reach. Opacity is structurally irrational in this environment. The cost of fabrication &#8212; the reputational destruction when benchmarks contradict the claim &#8212; exceeds any benefit within a single product cycle. F is therefore structurally high not by institutional choice but by the nature of the customer base and the measurability of the output.</p>
+
+    <p>Valve operates at the intersection of all three layers: an organisation that maintains high F internally through structural design; a platform that solves the Dunbar reputation problem digitally; and a hardware ecosystem where the customer base enforces feedback integrity independently of any institutional actor. The result is an institution with revenue at a scale that would typically generate enormous So, operating with So near zero, and harm potential proportionally low. It is not an exception to the law. It is the law&#8217;s predicted outcome for an institution that has successfully maintained genuine feedback integrity as it scaled.</p>
+  </div>
+
   <div class="section">
     <div class="section-label">// Scope</div>
     <h2>What the Law Claims and Does Not Claim</h2>
 
     <p>The law applies to systemic harm. It does not claim to explain all harm at the individual level, though the mechanism operates there too and the same structural logic applies wherever scale has separated action from observable consequence.</p>
 
+    <p>Systemic harm, as the term is used here, does not require physical injury or any single identifiable victim. It refers to four structural conditions, each of which produces real cost that lands somewhere in the system or beyond it. First: sustained divergence between declared and actual institutional behaviour, maintained without corrective intervention. Second: resources consumed by opacity-enabled functions that produce no output consistent with the institution&#8217;s stated purpose &#8212; scale that exists because consequence is hidden, not because value is created. Third: consequences externalised onto actors who had no part in generating them &#8212; counterparties, contractors, the public, or future participants who inherit the accumulated load. Fourth: the degradation of corrective capacity in the broader environment, as institutions operating beyond their feedback boundary progressively undermine the mechanisms that would otherwise constrain them. The financial crisis of 2008 is the clearest large-scale example: systemic harm in this framework was accumulating for years before any individual loss became visible. The harm was structural before it was personal.</p>
+
     <p>The law does not claim that large systems are inherently harmful. It claims that harm potential rises with scale and falls with feedback integrity, and that the relationship is not linear. A large system with high feedback integrity can be less harmful than a small system with near-zero feedback integrity. The ratio is what matters, not either variable in isolation.</p>
 
     <p>The law does not advocate for any particular scale of institution, any ownership model, or any political arrangement. It identifies the structural variable, feedback integrity, and the structural driver, opacity enabled by scale, and states their relationship to harm potential. What follows from that in terms of institutional design is a separate question, addressed by the applied frameworks built on this foundation.</p>
 
     <p>The law is falsified if a system can be identified in which systemic harm persists and compounds without opacity as a structural precondition, or in which opacity is present without scale as its driver. Both conditions would require a mechanism the law does not account for. Neither has been identified.</p>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div class="section" id="calculator">
+    <div class="section-label">// Applied</div>
+    <h2>Harm Potential Calculator</h2>
+
+    <p>The variables in the law are measurable by proxy. Enter values for your institution. The calculator derives So from your scale inputs, applies the So* amplifier, computes a composite F score from the four feedback dimensions, and returns H under both the primary and amplified relations. The chart shows where your institution sits on the So/Sr exponential curve.</p>
+    <p>Default values represent a mid-sized UK public body &#8212; a regional NHS trust, a large local authority, or a regulator with approximately 2,000 staff. Adjust to your institution.</p>
+
+    <div class="calc-shell">
+      <div class="calc-columns">
+
+        <!-- LEFT: Scale -->
+        <div>
+          <div class="h-group">
+            <label class="h-label" for="hS">Total headcount (S)</label>
+            <span class="h-sub">All staff, contracted personnel, and volunteers contributing to the institution&#8217;s operational footprint. Include support, governance, communications, and overhead &#8212; not frontline staff only. Default: 2,000 (mid-sized public body).</span>
+            <input class="h-input" type="number" id="hS" min="2" max="500000" value="2000">
+          </div>
+          <div class="h-group">
+            <label class="h-label" for="hSr">Production headcount (Sr)</label>
+            <span class="h-sub">Staff directly attributable to producing the institution&#8217;s stated output &#8212; clinical staff in a hospital, teachers in a school, caseworkers in a regulator. Exclude management, HR, communications, legal, and governance overhead. Default: 900 &#8212; approx. 45% of total, consistent with NHS Digital Workforce Statistics 2023 on direct care WTE as a share of total trust headcount.</span>
+            <input class="h-input" type="number" id="hSr" min="1" max="499999" value="900">
+          </div>
+          <div class="h-live" id="hLive">
+            <span class="h-live-lbl">So</span><span class="h-live-val" id="hSoVal">1,100</span>
+            <span class="h-live-lbl">So/Sr</span><span class="h-live-val" id="hRatioVal">1.22</span>
+            <span class="h-live-lbl">So* multiplier</span><span class="h-live-val" id="hMultVal">&times;3.4</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Feedback -->
+        <div>
+          <div class="h-group">
+            <label class="h-label" for="hExit">Exit rights</label>
+            <span class="h-sub">Percentage of output recipients with a credible alternative. A monopoly provider scores 0%. Default: 15% &#8212; reflecting low genuine exit availability in most public services; patients, benefit claimants, and regulated entities rarely have realistic alternatives (OECD Public Sector Accountability Framework, 2021).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hExit" min="0" max="100" value="15" step="1">
+                <span class="h-slider-val" id="hExitVal">15%</span>
+              </div>
+              <div class="h-slider-range">0% = monopoly provider &nbsp;&#8212;&nbsp; 100% = full market choice</div>
+            </div>
+          </div>
+          <div class="h-group">
+            <label class="h-label" for="hRev">Revenue conditionality</label>
+            <span class="h-sub">Percentage of revenue that would materially fall if output quality dropped. Block grants and formula funding score near 0%. Default: 10% &#8212; most public institutions receive the majority of funding regardless of output quality (NAO Accountability Landscape, 2022).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hRev" min="0" max="100" value="10" step="1">
+                <span class="h-slider-val" id="hRevVal">10%</span>
+              </div>
+              <div class="h-slider-range">0% = fully guaranteed income &nbsp;&#8212;&nbsp; 100% = fully output-conditional</div>
+            </div>
+          </div>
+          <div class="h-group">
+            <label class="h-label" for="hAttr">Attribution latency</label>
+            <span class="h-sub">Percentage of decisions whose consequences surface within the decision-maker&#8217;s tenure. Where most consequences arrive after the responsible person has left, F contribution falls toward zero. Default: 20% &#8212; consistent with long policy and service cycles in public institutions where structural decisions may take 3&#8211;10 years to surface (Institute for Government, Whitehall Monitor 2023).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hAttr" min="0" max="100" value="20" step="1">
+                <span class="h-slider-val" id="hAttrVal">20%</span>
+              </div>
+              <div class="h-slider-range">0% = all consequences arrive after actor has moved on &nbsp;&#8212;&nbsp; 100% = all attributable within tenure</div>
+            </div>
+          </div>
+          <div class="h-group">
+            <label class="h-label" for="hPerf">Performance coupling</label>
+            <span class="h-sub">Proportion of compensation and job security materially contingent on output quality rather than attendance or tenure. Guaranteed employment with no performance consequence scores near 0%. Default: 12% &#8212; reflects typical public sector arrangements where performance-related pay is limited and exits for sustained underperformance are rare (CIPD Public Sector Reward Report 2023; Institute for Government, Whitehall HR 2022).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hPerf" min="0" max="100" value="12" step="1">
+                <span class="h-slider-val" id="hPerfVal">12%</span>
+              </div>
+              <div class="h-slider-range">0% = no consequence for any output &nbsp;&#8212;&nbsp; 100% = fully outcome-contingent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-divider"></div>
+      <button class="calc-run" id="hRun">// Calculate Harm Potential</button>
+
+      <div class="h-out" id="hOut">
+        <div class="h-summary" id="hSummary"></div>
+        <div class="h-chart-lbl">So/Sr ratio vs harm potential &#8212; your institution on the curve</div>
+        <div class="h-chart-area"><canvas id="hChart"></canvas></div>
+        <div class="h-legend">
+          <div class="h-leg-item"><div class="h-leg-diamond green"></div>Valve &mdash; Low So reference</div>
+          <div class="h-leg-item"><div class="h-leg-diamond amber"></div>Royal Mail ~2023</div>
+          <div class="h-leg-item"><div class="h-leg-diamond orange"></div>Carillion / Thomas Cook</div>
+          <div class="h-leg-item"><div class="h-leg-diamond red-d"></div>Post Office Horizon / Enron</div>
+        </div>
+        <p style="font-size:10px;color:#3a4a6a;letter-spacing:.06em;line-height:1.7;margin-bottom:28px;">Reference institutions are plotted at estimated So/Sr ratios derived from publicly available data. They share the same F-scaled curve as your institution &#8212; their positions are fixed on the So/Sr axis, not recalculated per run. They exist to contextualise your result, not to provide precise comparative scores.</p>
+        <div class="h-breakdown" id="hBreakdown"></div>
+        <div class="calc-note-box">
+          <p>All inputs are user-supplied. Defaults are anchored to publicly available benchmarks &#8212; NHS Digital, NAO, CIPD, OECD, and Institute for Government. The So* amplifier applies e<sup>(So/Sr)</sup>, the minimum amplification consistent with network complexity literature (Briscoe, Odlyzko &amp; Tilly 2006; Metcalfe 1995). H values are dimensionless ratios indicating relative harm potential &#8212; directional and comparative, not absolute.</p>
+        </div>
+        <div class="h-share-row">
+          <button class="h-share-btn" id="hShare">// Share this scenario</button>
+          <span class="h-share-confirm" id="hShareConfirm">Link copied</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="doc-rule"></div>
@@ -544,50 +862,334 @@
 </footer>
 
 <script>
+/* ── PARTICLES ── */
 const pCv = document.getElementById('particles');
 const pCx = pCv.getContext('2d');
-let W, H, parts;
-let pSY = 0;
-
-function resize() {
-  W = pCv.width = window.innerWidth;
-  H = pCv.height = window.innerHeight;
-}
-
-function mkParts() {
+let W, H, parts, pSY = 0;
+function resize(){ W = pCv.width = window.innerWidth; H = pCv.height = window.innerHeight; }
+function mkParts(){
   parts = [];
   const n = Math.floor(W * H / 6500);
-  for (let i = 0; i < n; i++) parts.push({
-    x: Math.random()*W, y: Math.random()*H*8,
-    r: Math.random()*1.8+0.2,
+  for(let i=0;i<n;i++) parts.push({
+    x:Math.random()*W, y:Math.random()*H*8,
+    r:Math.random()*1.8+0.2,
     vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
     op:Math.random()*.2+.04,
     blue:Math.random()<.08, blur:Math.random()<.3
   });
 }
-
-function drawParts() {
+function drawParts(){
   pCx.clearRect(0,0,W,H);
   pSY += (window.scrollY - pSY)*.08;
   const off = pSY*1.65, span = H*8;
-  for (const p of parts) {
+  for(const p of parts){
     let sy = ((p.y-off)%span+span)%span;
     p.x+=p.vx; p.y+=p.vy;
     if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
     if(sy>H+20||sy<-20) continue;
-    pCx.save();
-    pCx.globalAlpha=p.op;
+    pCx.save(); pCx.globalAlpha=p.op;
     if(p.blur) pCx.filter='blur(1px)';
     pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
     pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
     pCx.fill(); pCx.restore();
   }
 }
-
 function loop(){ drawParts(); requestAnimationFrame(loop); }
 function init(){ resize(); mkParts(); loop(); }
 window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
 init();
+
+/* ── BURGER NAV ── */
+const burger = document.getElementById('navBurger');
+const mobileNav = document.getElementById('navMobile');
+const mobileClose = document.getElementById('navMobileClose');
+if(burger) burger.addEventListener('click', () => mobileNav.classList.add('open'));
+if(mobileClose) mobileClose.addEventListener('click', () => mobileNav.classList.remove('open'));
+mobileNav && mobileNav.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => mobileNav.classList.remove('open'));
+});
+
+/* ── SLIDER LIVE VALUES ── */
+[['hExit','hExitVal'],['hRev','hRevVal'],['hAttr','hAttrVal'],['hPerf','hPerfVal']].forEach(([id,vid])=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', ()=>{ document.getElementById(vid).textContent = el.value+'%'; });
+});
+
+/* ── LIVE So/Sr DISPLAY ── */
+function updateLive(){
+  const S  = parseFloat(document.getElementById('hS').value)  || 2000;
+  const Sr = parseFloat(document.getElementById('hSr').value) || 900;
+  const So = Math.max(0, S - Sr);
+  const ratio = Sr > 0 ? So/Sr : 0;
+  const mult  = Math.exp(ratio);
+  document.getElementById('hSoVal').textContent    = Math.round(So).toLocaleString('en-GB');
+  document.getElementById('hRatioVal').textContent = ratio.toFixed(2);
+  document.getElementById('hMultVal').textContent  = '×'+mult.toFixed(1);
+}
+['hS','hSr'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', updateLive);
+});
+updateLive();
+
+/* ── URL HELPERS ── */
+const H_KEYS = ['hS','hSr','hExit','hRev','hAttr','hPerf'];
+function hEncodeURL(){
+  const base = window.location.href.split('?')[0].split('#')[0];
+  const p = new URLSearchParams();
+  H_KEYS.forEach(k=>{ const el=document.getElementById(k); if(el) p.set(k,el.value); });
+  p.set('autorun','1');
+  return base+'#calculator?'+p.toString();
+}
+function hLoadURL(){
+  const hash = window.location.hash;
+  if(!hash.includes('calculator?')) return;
+  const p = new URLSearchParams(hash.split('calculator?')[1]||'');
+  H_KEYS.forEach(k=>{
+    const el=document.getElementById(k);
+    if(el && p.has(k)){
+      el.value = p.get(k);
+      const vid = k+'Val';
+      const vEl = document.getElementById(vid);
+      if(vEl) vEl.textContent = p.get(k)+'%';
+    }
+  });
+  updateLive();
+  if(p.get('autorun')==='1'){
+    document.getElementById('calculator').scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(hRun, 400);
+  }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  hLoadURL();
+  const shareBtn = document.getElementById('hShare');
+  if(shareBtn) shareBtn.addEventListener('click',()=>{
+    navigator.clipboard.writeText(hEncodeURL()).then(()=>{
+      const c = document.getElementById('hShareConfirm');
+      c.classList.add('visible');
+      setTimeout(()=>c.classList.remove('visible'),2500);
+    }).catch(()=>prompt('Copy this link:',hEncodeURL()));
+  });
+});
+
+/* ── MAIN CALCULATION ── */
+document.getElementById('hRun').addEventListener('click', hRun);
+
+function hRun(){
+  const S   = Math.max(2, parseFloat(document.getElementById('hS').value)   || 2000);
+  const Sr  = Math.max(1, parseFloat(document.getElementById('hSr').value)  || 900);
+  const So  = Math.max(0, S - Sr);
+  const exitPct  = parseFloat(document.getElementById('hExit').value) / 100;
+  const revPct   = parseFloat(document.getElementById('hRev').value)  / 100;
+  const attrPct  = parseFloat(document.getElementById('hAttr').value) / 100;
+  const perfPct  = parseFloat(document.getElementById('hPerf').value) / 100;
+
+  const F     = (exitPct + revPct + attrPct + perfPct) / 4;
+  const Fsafe = Math.max(0.001, F);
+  const ratio = Sr > 0 ? So/Sr : 0;
+  const soStar = So * Math.exp(ratio);
+
+  // H values normalised by Sr so they're comparable across institution sizes
+  const H_p = S / Fsafe / Sr;
+  const H_a = (Sr + soStar) / Fsafe / Sr;
+  const amplF = So > 0 ? soStar/So : 1;
+
+  function rate(h){ if(h<5)return{l:'Low',c:''}; if(h<15)return{l:'Elevated',c:'warn'}; if(h<40)return{l:'High',c:'warn'}; return{l:'Severe',c:'severe'}; }
+  const rP = rate(H_p), rA = rate(H_a);
+
+  document.getElementById('hSummary').innerHTML = `
+    <div class="h-cell">
+      <div class="h-cell-lbl">H — Primary relation</div>
+      <div class="h-cell-val ${rP.c}">${H_p.toFixed(1)}</div>
+      <div class="h-cell-sub">H &prop; S / F &nbsp;&#8212;&nbsp; unamplified<br>Rating: ${rP.l}</div>
+    </div>
+    <div class="h-cell">
+      <div class="h-cell-lbl">H* — Amplified relation</div>
+      <div class="h-cell-val ${rA.c}">${H_a.toFixed(1)}</div>
+      <div class="h-cell-sub">H &prop; (Sr + So*) / F &nbsp;&#8212;&nbsp; with So* multiplier<br>Rating: ${rA.l}</div>
+    </div>
+    <div class="h-cell">
+      <div class="h-cell-lbl">So* amplification factor</div>
+      <div class="h-cell-val ${amplF>3?'warn':''}">&times;${amplF.toFixed(1)}</div>
+      <div class="h-cell-sub">e<sup>(${ratio.toFixed(2)})</sup> &nbsp;&#8212;&nbsp; So/Sr ratio: ${ratio.toFixed(2)}<br>Feedback integrity (F): ${Math.round(F*100)}%</div>
+    </div>`;
+
+  const rows = [
+    ['Total scale (S)',            S.toLocaleString('en-GB'),            false, S/(S*2)],
+    ['Real scale (Sr)',            Sr.toLocaleString('en-GB'),           false, Sr/S],
+    ['Opacity-enabled (So)',       Math.round(So).toLocaleString('en-GB'), So/S>0.6, So/S],
+    ['Amplified So*',             Math.round(soStar).toLocaleString('en-GB'), true, Math.min(1,soStar/(S*3))],
+    ['Feedback integrity (F)',     Math.round(F*100)+'%',                F<0.25, F],
+    ['Exit rights',                Math.round(exitPct*100)+'%',          exitPct<0.2, exitPct],
+    ['Revenue conditionality',     Math.round(revPct*100)+'%',           revPct<0.2, revPct],
+    ['Attribution latency',        Math.round(attrPct*100)+'%',          attrPct<0.2, attrPct],
+    ['Performance coupling',       Math.round(perfPct*100)+'%',          perfPct<0.2, perfPct],
+  ];
+  document.getElementById('hBreakdown').innerHTML = rows.map(([lbl,val,warn,bw])=>`
+    <div class="h-brow">
+      <span class="h-brow-lbl">${lbl}</span>
+      <span class="h-brow-val">${val}</span>
+      <div class="h-bar-wrap"><div class="h-bar ${warn?'warn':''}" style="width:${Math.min(100,Math.round(bw*100))}%"></div></div>
+    </div>`).join('');
+
+  const out = document.getElementById('hOut');
+  out.classList.add('visible');
+  hDrawChart(Sr, So, F, ratio, H_p, H_a);
+  setTimeout(()=>out.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+/* ── CHART ── */
+function hDrawChart(Sr, So, F, instRatio, H_p, H_a){
+  const canvas = document.getElementById('hChart');
+  const par = canvas.parentElement;
+  const dpr = window.devicePixelRatio||1;
+  canvas.width  = par.offsetWidth  * dpr;
+  canvas.height = par.offsetHeight * dpr;
+  canvas.style.width  = par.offsetWidth  + 'px';
+  canvas.style.height = par.offsetHeight + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  const W=par.offsetWidth, Ht=par.offsetHeight;
+  const pad={top:24,right:80,bottom:44,left:64};
+  const cW=W-pad.left-pad.right, cH=Ht-pad.top-pad.bottom;
+
+  const steps=200, maxR=4, Fsafe=Math.max(0.001,F);
+  const pVals=[], aVals=[];
+  for(let i=0;i<=steps;i++){
+    const r=i/steps*maxR, so=r*Sr, s=Sr+so, soS=so*Math.exp(r);
+    pVals.push(s/Fsafe/Sr);
+    aVals.push((Sr+soS)/Fsafe/Sr);
+  }
+
+  const maxVal = Math.max(...aVals.slice(0,Math.round(steps*0.9)))*1.15;
+  const xP=i=>pad.left+(i/steps)*cW;
+  const yP=v=>pad.top+cH-Math.min(1,v/maxVal)*cH;
+  const rToStep=r=>Math.min(steps,Math.round((Math.min(r,maxR)/maxR)*steps));
+  const fmtY=v=>v>=1000?Math.round(v/100)*100:v>=100?Math.round(v):v.toFixed(1);
+
+  // Reference institutions: [So/Sr ratio, label, year note, colour]
+  const refs = [
+    { ratio:0.05,  label:'VALVE',        sub:'Low So / High F',     col:'#2ecc71' },
+    { ratio:0.33,  label:'ROYAL MAIL',   sub:'~2023',               col:'#f39c12' },
+    { ratio:1.8,   label:'CARILLION',    sub:'Pre-collapse 2017',   col:'#e07a5f' },
+    { ratio:2.4,   label:'THOMAS COOK',  sub:'Pre-collapse 2018',   col:'#e8845a' },
+    { ratio:2.85,  label:'POST OFFICE',  sub:'Horizon ~2013',       col:'#c0392b' },
+    { ratio:3.6,   label:'ENRON',        sub:'Peak opacity 2000',   col:'#8e1010' },
+  ];
+
+  ctx.clearRect(0,0,W,Ht);
+
+  // Grid lines
+  for(let g=0;g<=5;g++){
+    const y=pad.top+(g/5)*cH, val=maxVal*(1-g/5);
+    ctx.strokeStyle='rgba(26,34,64,0.8)'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(pad.left+cW,y); ctx.stroke();
+    ctx.fillStyle='#2a3860'; ctx.font=`9px 'Courier New',monospace`; ctx.textAlign='right';
+    ctx.fillText(fmtY(val), pad.left-6, y+3);
+  }
+
+  // X axis labels
+  ctx.fillStyle='#2a3860'; ctx.textAlign='center';
+  for(let r=0;r<=maxR;r++){
+    const x=pad.left+(r/maxR)*cW;
+    ctx.fillText(r+'x', x, Ht-pad.bottom+16);
+  }
+  ctx.fillText('So / Sr ratio', pad.left+cW/2, Ht-pad.bottom+32);
+
+  // Primary H — red dashed, labelled at right end
+  ctx.beginPath(); ctx.strokeStyle='#c0604a'; ctx.lineWidth=1.2; ctx.setLineDash([4,5]);
+  pVals.forEach((v,i)=>{ const x=xP(i),y=yP(v); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke(); ctx.setLineDash([]);
+  // End label for primary curve
+  const pEndY = yP(pVals[steps]);
+  ctx.fillStyle='#c0604a'; ctx.globalAlpha=0.7;
+  ctx.font=`8px 'Courier New',monospace`; ctx.textAlign='left';
+  ctx.fillText('H (primary)', pad.left+cW+4, pEndY+3);
+  ctx.globalAlpha=1;
+
+  // Amplified H* — blue solid, labelled at right end
+  ctx.beginPath(); ctx.strokeStyle='#4a9eff'; ctx.lineWidth=2;
+  aVals.forEach((v,i)=>{ const x=xP(i),y=yP(v); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.stroke();
+  // End label for amplified curve
+  const aEndY = yP(aVals[Math.round(steps*0.88)]);
+  ctx.fillStyle='#4a9eff'; ctx.globalAlpha=0.8;
+  ctx.font=`8px 'Courier New',monospace`; ctx.textAlign='left';
+  ctx.fillText('H* (amplified)', pad.left+cW+4, Math.max(pad.top+10, aEndY-20));
+  ctx.globalAlpha=1;
+
+  // Reference markers — drawn before user dot
+  refs.forEach(ref => {
+    const step = rToStep(ref.ratio);
+    if(step > steps) return;
+    const rx = pad.left + (Math.min(ref.ratio,maxR)/maxR)*cW;
+    const ry = yP(aVals[step]);
+
+    // Faint vertical tick
+    ctx.beginPath();
+    ctx.strokeStyle = ref.col;
+    ctx.globalAlpha = 0.12;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2,4]);
+    ctx.moveTo(rx, pad.top+cH); ctx.lineTo(rx, ry);
+    ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+
+    // Diamond
+    ctx.save();
+    ctx.translate(rx, ry); ctx.rotate(Math.PI/4);
+    ctx.beginPath(); ctx.rect(-4,-4,8,8);
+    ctx.fillStyle=ref.col; ctx.globalAlpha=0.85; ctx.fill();
+    ctx.strokeStyle='rgba(7,8,16,0.6)'; ctx.lineWidth=0.8; ctx.stroke();
+    ctx.restore(); ctx.globalAlpha=1;
+
+    // Label — always below the diamond, in a small pill so it's legible over curve
+    const lblY = Math.min(ry+14, pad.top+cH-24);
+    const lblX = Math.max(pad.left+2, Math.min(rx, pad.left+cW-48));
+    ctx.textAlign='center';
+
+    // Background pill for legibility
+    ctx.font=`bold 7.5px 'Courier New',monospace`;
+    const tw = ctx.measureText(ref.label).width;
+    ctx.fillStyle='rgba(7,8,16,0.75)';
+    ctx.fillRect(lblX-tw/2-3, lblY-9, tw+6, 11);
+
+    ctx.fillStyle=ref.col; ctx.globalAlpha=0.95;
+    ctx.fillText(ref.label, lblX, lblY);
+    ctx.globalAlpha=0.5;
+    ctx.font=`6.5px 'Courier New',monospace`;
+    ctx.fillText(ref.sub, lblX, lblY+9);
+    ctx.globalAlpha=1;
+  });
+
+  // User institution — vertical dashed line with rotated label
+  const mX = pad.left+(Math.min(instRatio,maxR)/maxR)*cW;
+  const instStep = Math.min(steps, Math.round((Math.min(instRatio,maxR)/maxR)*steps));
+  const dotY = yP(aVals[instStep]);
+
+  // Dashed vertical line full height
+  ctx.beginPath();
+  ctx.strokeStyle='rgba(74,158,255,0.4)'; ctx.lineWidth=1; ctx.setLineDash([3,5]);
+  ctx.moveTo(mX, pad.top); ctx.lineTo(mX, pad.top+cH);
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Rotated vertical label along the dashed line
+  ctx.save();
+  ctx.translate(mX-11, pad.top+cH-8);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillStyle='rgba(74,158,255,0.6)';
+  ctx.font=`bold 8px 'Courier New',monospace`;
+  ctx.textAlign='left';
+  ctx.fillText('YOUR INSTITUTION', 0, 0);
+  ctx.restore();
+
+  // Glow ring + dot
+  ctx.beginPath(); ctx.arc(mX,dotY,9,0,Math.PI*2);
+  ctx.fillStyle='rgba(74,158,255,0.12)'; ctx.fill();
+  ctx.beginPath(); ctx.arc(mX,dotY,5,0,Math.PI*2);
+  ctx.fillStyle='#4a9eff'; ctx.fill();
+  ctx.strokeStyle='rgba(7,8,16,0.9)'; ctx.lineWidth=1.5; ctx.stroke();
+}
 </script>
 </body>
 </html>
