@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-ought's Law of Structural Harm - N-ought</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+/* LAW BLOCK - the canonical statement */
+  .law-block {
+    margin:0 0 64px;
+    padding:36px 40px;
+    border:.5px solid var(--accent-mid);
+    background:rgba(13,16,51,.25);
+  }
+
+  .law-label {
+    font-size:9px;
+    letter-spacing:.28em;
+    color:var(--accent);
+    opacity:.6;
+    text-transform:uppercase;
+    margin-bottom:24px;
+  }
+
+  .law-statement {
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text);
+    opacity:.85;
+    line-height:1.9;
+    letter-spacing:.05em;
+    margin-bottom:24px;
+  }
+
+  .law-statement:last-child { margin-bottom:0; }
+
+  /* FORMULA BLOCKS */
+  .formula-block {
+    margin:40px 0;
+    padding:28px 32px;
+    border-left:1px solid var(--accent-mid);
+    background:rgba(13,16,51,.15);
+  }
+
+  .formula-label {
+    font-size:9px;
+    letter-spacing:.22em;
+    color:#2a3860;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .formula {
+    font-family:var(--mono);
+    font-size:15px;
+    color:var(--accent);
+    opacity:.8;
+    letter-spacing:.12em;
+    margin-bottom:12px;
+    line-height:1.7;
+  }
+
+  .formula-note {
+    font-size:11px;
+    color:#7a8faa;
+    line-height:1.8;
+    letter-spacing:.04em;
+    margin-top:12px;
+  }
+
+  .formula-note span {
+    color:#7a8faa;
+  }
+
+  /* VARIABLE TABLE */
+  .var-table {
+    width:100%;
+    border-collapse:collapse;
+    margin:32px 0;
+    font-size:11px;
+  }
+
+  .var-table tr {
+    border-bottom:.5px solid var(--text-faint);
+  }
+
+  .var-table tr:last-child { border-bottom:none; }
+
+  .var-table td {
+    padding:12px 0;
+    vertical-align:top;
+    line-height:1.7;
+    letter-spacing:.04em;
+  }
+
+  .var-table td:first-child {
+    width:80px;
+    color:var(--accent);
+    opacity:.75;
+    letter-spacing:.12em;
+    font-size:12px;
+    padding-right:24px;
+    white-space:nowrap;
+  }
+
+  .var-table td:nth-child(2) {
+    width:160px;
+    color:#7a8faa;
+    padding-right:24px;
+    font-size:10px;
+    letter-spacing:.08em;
+  }
+
+  .var-table td:last-child {
+    color:#7a8faa;
+    font-size:10.5px;
+  }
+
+  /* SECTION */
+  .section { margin-bottom:64px; }
+
+  .section-anchor { display:block;height:80px;margin-top:-80px;visibility:hidden; }
+
+  .section-label {
+    font-size:9px;
+    letter-spacing:.25em;
+    color:var(--accent);
+    opacity:.7;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .section h2 {
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:normal;
+    letter-spacing:.25em;
+    color:var(--accent);
+    opacity:.85;
+    text-transform:uppercase;
+    margin-bottom:28px;
+    padding-bottom:14px;
+    border-bottom:.5px solid var(--text-faint);
+  }
+
+  .section p {
+    font-size:12px;
+    color:#7a8faa;
+    line-height:1.9;
+    letter-spacing:.04em;
+    margin-bottom:20px;
+  }
+
+  .section blockquote {
+    margin:32px 0;
+    padding:22px 28px;
+    border-left:1px solid var(--accent-mid);
+    background:rgba(13,16,51,.15);
+  }
+
+  .section blockquote p {
+    font-size:12px;
+    color:var(--text);
+    opacity:.75;
+    letter-spacing:.05em;
+    line-height:1.9;
+    margin-bottom:0;
+    font-style:italic;
+  }
+
+  /* PROXY TABLE */
+  .proxy-block {
+    margin:32px 0;
+    border:.5px solid var(--text-faint);
+  }
+
+  .proxy-row {
+    display:grid;
+    grid-template-columns:120px 1fr 1fr;
+    border-bottom:.5px solid var(--text-faint);
+    gap:0;
+  }
+
+  .proxy-row:last-child { border-bottom:none; }
+
+  .proxy-row.header {
+    background:rgba(13,16,51,.3);
+  }
+
+  .proxy-cell {
+    padding:12px 16px;
+    font-size:10px;
+    letter-spacing:.08em;
+    line-height:1.7;
+    border-right:.5px solid var(--text-faint);
+    color:#7a8faa;
+  }
+
+  .proxy-cell:last-child { border-right:none; }
+
+  .proxy-row.header .proxy-cell {
+    font-size:9px;
+    letter-spacing:.18em;
+    color:#2a3860;
+    text-transform:uppercase;
+  }
+
+  .proxy-cell strong {
+    display:block;
+    color:#7a8faa;
+    margin-bottom:3px;
+    font-weight:normal;
+    opacity:1;
+    letter-spacing:.06em;
+  }
+
+  /* ── HARM CALCULATOR ── */
+  .calc-shell { border:.5px solid var(--text-faint);background:rgba(7,8,16,.5);padding:40px; }
+  .calc-columns { display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px; }
+  .calc-divider { width:100%;height:.5px;background:var(--text-faint);margin:8px 0 36px; }
+  .calc-run { display:block;width:100%;padding:16px;background:transparent;border:.5px solid var(--accent-mid);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;margin-bottom:40px; }
+  .calc-run:hover { border-color:var(--accent);color:var(--text); }
+  .calc-note { margin-top:32px;padding:20px 24px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .calc-note p { font-size:10px;color:#7a8faa;line-height:1.8;letter-spacing:.05em;margin-bottom:0; }
+
+  .h-input-group { margin-bottom:28px; }
+  .h-input-label { display:block;font-size:9px;letter-spacing:.22em;color:#4a5a7a;text-transform:uppercase;margin-bottom:8px; }
+  .h-input-sub { display:block;font-size:10px;color:#4a5a7a;letter-spacing:.04em;margin-bottom:10px;line-height:1.6; }
+  .h-calc-input { display:block;width:100%;background:rgba(13,16,51,.4);border:.5px solid var(--text-faint);color:var(--accent);font-family:var(--mono);font-size:13px;letter-spacing:.08em;padding:10px 14px;outline:none;transition:border-color .2s;box-sizing:border-box;-moz-appearance:textfield; }
+  .h-calc-input::-webkit-outer-spin-button,.h-calc-input::-webkit-inner-spin-button { -webkit-appearance:none;margin:0; }
+  .h-calc-input:focus { border-color:var(--accent-mid); }
+
+  .h-live-row { display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 16px;border:.5px solid var(--text-faint);background:rgba(13,16,51,.2); }
+  .h-live-label { font-size:9px;letter-spacing:.18em;color:#4a5a7a;text-transform:uppercase; }
+  .h-live-val { font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.1em;min-width:48px; }
+
+  .h-slider-wrap { margin-top:4px; }
+  .h-slider-row { display:flex;align-items:center;gap:16px; }
+  .h-slider-wrap input[type=range] { flex:1;-webkit-appearance:none;height:1px;background:var(--text-faint);outline:none;cursor:pointer; }
+  .h-slider-wrap input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;width:14px;height:14px;background:var(--accent);border-radius:0;cursor:pointer;opacity:.8; }
+  .h-slider-wrap input[type=range]::-moz-range-thumb { width:14px;height:14px;background:var(--accent);border-radius:0;cursor:pointer;opacity:.8;border:none; }
+  .h-slider-val { font-size:13px;color:var(--accent);letter-spacing:.1em;min-width:40px;text-align:right; }
+  .h-slider-range { font-size:9px;color:#4a5a7a;letter-spacing:.06em;margin-top:8px;line-height:1.5; }
+
+  .h-output-panel { display:none;border-top:.5px solid var(--text-faint);padding-top:40px; }
+  .h-output-panel.visible { display:block; }
+
+  .h-output-summary { display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px; }
+  .h-summary-cell { padding:20px;border:.5px solid var(--text-faint);background:rgba(7,8,16,.4); }
+  .h-summary-cell-label { font-size:9px;letter-spacing:.2em;color:#7a8faa;text-transform:uppercase;margin-bottom:12px; }
+  .h-summary-cell-val { font-size:22px;color:var(--accent);letter-spacing:.08em;line-height:1.2; }
+  .h-summary-cell-val.warn { color:#e07a5f; }
+  .h-summary-cell-val.severe { color:#c03020; }
+  .h-summary-cell-sub { font-size:9px;color:#7a8faa;letter-spacing:.1em;margin-top:6px;line-height:1.5; }
+
+  .h-chart-label { font-size:9px;letter-spacing:.22em;color:#7a8faa;text-transform:uppercase;margin-bottom:20px; }
+  .h-chart-area { position:relative;width:100%;height:280px;margin-bottom:16px; }
+  canvas#hChart { width:100%;height:100%; }
+
+  .chart-legend { display:flex;gap:32px;margin-bottom:36px;flex-wrap:wrap; }
+  .legend-item { display:flex;align-items:center;gap:10px;font-size:10px;color:#7a8faa;letter-spacing:.1em; }
+  .legend-swatch { width:24px;height:1.5px;flex-shrink:0; }
+  .legend-swatch.blue { background:#4a9eff; }
+  .legend-swatch.red-solid { background:#e07a5f; }
+
+  .h-output-breakdown { margin-bottom:32px; }
+  .h-breakdown-row { display:grid;grid-template-columns:160px 80px 1fr;gap:16px;align-items:center;padding:12px 0;border-bottom:.5px solid var(--text-faint); }
+  .h-breakdown-row:last-child { border-bottom:none; }
+  .h-breakdown-label { font-size:10px;color:#7a8faa;letter-spacing:.1em; }
+  .h-breakdown-val { font-size:12px;color:var(--accent);letter-spacing:.08em;font-family:var(--mono); }
+  .h-breakdown-bar-wrap { height:3px;background:var(--text-faint);position:relative; }
+  .h-breakdown-bar { height:100%;background:var(--accent);transition:width .6s ease; }
+  .h-breakdown-bar.warn { background:#e07a5f; }
+
+  .share-row { margin-top:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap; }
+  .share-btn { background:transparent;border:.5px solid var(--accent-mid);color:var(--accent);font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;padding:12px 24px;cursor:pointer;transition:border-color .2s,color .2s; }
+  .share-btn:hover { border-color:var(--accent);color:var(--text); }
+  .share-confirm { font-size:10px;color:#4a9eff;letter-spacing:.12em;opacity:0;transition:opacity .3s; }
+  .share-confirm.visible { opacity:1; }
+
+  @media(max-width:860px){
+    .calc-columns { grid-template-columns:1fr;gap:0; }
+    .h-output-summary { grid-template-columns:1fr; }
+    .calc-shell { padding:24px; }
+    .h-live-row { flex-wrap:wrap; }
+    .h-breakdown-row { grid-template-columns:1fr 60px; }
+    .h-breakdown-bar-wrap { display:none; }
+  }
+
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+   <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="n-oughts-law.html">N-ought's Law</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li><a href="index.html#fees">Fees</a></li>
+    <li class="nav-divider"></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="doc-wrap">
+
+  <a href="index.html#outputs" class="back-link">← Output</a>
+
+  <div class="paper-meta">N-ought // Foundational Framework // 2025</div>
+  <h1 class="paper-title">N-ought's Law of Structural Harm</h1>
+  <p class="paper-subtitle">Scale, opacity, and the structural precondition for systemic harm</p>
+  <div class="paper-rule"></div>
+
+  <!-- THE LAW - canonical statement -->
+  <div class="law-block">
+    <div class="law-label">The Law</div>
+    <p class="law-statement">Scale enables opacity. Opacity permits the gap between declared and actual behaviour to persist and compound. That gap is the structural precondition for systemic harm.</p>
+    <p class="law-statement">Transparency acts on both variables simultaneously: it expands the zone in which action and consequence remain coupled, and it contracts the scale that opacity was sustaining. The harm potential of a system is therefore proportional to its scale and inversely proportional to its feedback integrity.</p>
+  </div>
+
+  <!-- PRIMARY FORMULA -->
+  <div class="formula-block">
+    <div class="formula-label">Primary Relation</div>
+    <div class="formula">H &prop; S / F</div>
+    <div class="formula-note">
+      Systemic harm potential is proportional to scale divided by feedback integrity.<br>
+      As S increases or F decreases, H increases. As T increases, F increases and S contracts toward Sr.
+    </div>
+  </div>
+
+  <!-- VARIABLE DEFINITIONS -->
+  <table class="var-table">
+    <tr>
+      <td>H</td>
+      <td>Harm potential</td>
+      <td>The capacity of a system to produce and sustain outcomes that diverge harmfully from its declared purpose, without corrective intervention</td>
+    </tr>
+    <tr>
+      <td>S</td>
+      <td>Scale</td>
+      <td>Total operational reach of the system. S = Sr + So. Proxy: total headcount and volunteer count, plus resource allocation</td>
+    </tr>
+    <tr>
+      <td>Sr</td>
+      <td>Real scale</td>
+      <td>The portion of scale supported by genuine value creation and accountable feedback. Proxy: headcount and resource percentage directly attributable to production or delivery of the institution's stated output</td>
+    </tr>
+    <tr>
+      <td>So</td>
+      <td>Opacity-enabled scale</td>
+      <td>The portion of scale that can only exist because consequences are hidden, delayed, diffused, or externalised. Proxy: headcount and resource allocation to functions not directly involved in production or delivery, including marketing, PR, governance overhead, and legal beyond compliance minimum. So = S minus Sr</td>
+    </tr>
+    <tr>
+      <td>F</td>
+      <td>Feedback integrity</td>
+      <td>The degree to which action and observable consequence remain coupled within the system. Ranges from 0 (fully decoupled) to 1 (fully coupled). Composite proxy: see below</td>
+    </tr>
+    <tr>
+      <td>T</td>
+      <td>Transparency</td>
+      <td>The structural condition under which consequence becomes visible and attributable to the actor who produced it. T acts on both F and So simultaneously</td>
+    </tr>
+    <tr>
+      <td>O</td>
+      <td>Opacity</td>
+      <td>The medium that fills the gap between declared and actual behaviour. Generated by scale, complexity, distance, and information asymmetry. O is the mechanism connecting S and F, not an independent input: O &prop; S / T</td>
+    </tr>
+  </table>
+
+  <div class="doc-rule"></div>
+
+  <!-- TRANSPARENCY EFFECT -->
+  <div class="section">
+    <div class="section-label">// Derivation</div>
+    <h2>The Effect of Transparency</h2>
+
+    <p>Transparency does not merely make large systems more accountable at their existing scale. It reveals which parts of their scale were only possible because accountability had failed. This is the critical distinction between a reform that manages opacity and one that dissolves it.</p>
+
+    <div class="formula-block">
+      <div class="formula-label">Transparency Effect</div>
+      <div class="formula">T &uarr; &nbsp;&rarr;&nbsp; F &uarr;, &nbsp;So &darr;, &nbsp;H &darr;</div>
+      <div class="formula-note">
+        As transparency increases, feedback integrity rises and opacity-enabled scale contracts.<br>
+        Harm potential falls as a function of both movements simultaneously.
+      </div>
+    </div>
+
+    <p>The contraction of So is not an intended consequence of transparency. It is a structural one. Once consequences become visible and attributable, the positions, functions, and resource allocations that depended on consequence remaining invisible can no longer be sustained by the system that was previously absorbing their cost. Some of what appeared as productive scale was the financial and operational expression of uncoupled consequence. Transparency does not reduce it. It reveals that it was never real.</p>
+
+    <blockquote>
+      <p>Scale is legitimate only up to the boundary where feedback remains intact. Beyond that boundary, what presents as productive capacity is opacity-supported overextension. Transparency does not shrink a healthy system. It removes the portion that was only healthy in appearance.</p>
+    </blockquote>
+  </div>
+
+  <!-- OPACITY AS MECHANISM -->
+  <div class="section">
+    <div class="section-label">// Mechanism</div>
+    <h2>Opacity as Structural Precondition</h2>
+
+    <p>Opacity is rarely fabricated. It emerges. Scale generates complexity. Complexity generates distance between actors and consequences. Distance generates information asymmetry. Information asymmetry generates the conditions under which rational actors can sustain behaviour that would be corrected if its consequences were visible. Each stage is the logical output of the previous one. No malice is required at any point.</p>
+
+    <p>The forms opacity takes are varied but structurally equivalent. Geographic distance between decision and consequence. Temporal displacement, where the outcome surfaces years after the actor has moved on. Diffuse attribution, where harm is distributed across so many actors that none can be held individually accountable. Complexity as opacity, where the system is too intricate for any participant to trace consequence even with full intent to do so. And the most durable form: the moral or institutional framing that renders the structural question illegitimate before it can be asked.</p>
+
+    <p>All of these are the same mechanism at different resolutions. All are downstream of scale. All are dissolved, in principle, by transparency. The relationship is not circular. Scale produces opacity as a structural output, not by design. Transparency dissolves opacity as a structural input, not by goodwill.</p>
+
+    <div class="formula-block">
+      <div class="formula-label">Opacity Relation</div>
+      <div class="formula">O &prop; S / T</div>
+      <div class="formula-note">
+        Opacity is proportional to scale and inversely proportional to transparency.<br>
+        O is the medium. S drives it. T dissolves it. F measures what remains when it is dissolved.
+      </div>
+    </div>
+  </div>
+
+  <!-- N-OUGHT'S LAW DIAGRAM -->
+  <div style="margin:48px -48px;padding:32px 48px;border-top:.5px solid var(--text-faint);border-bottom:.5px solid var(--text-faint);overflow-x:auto;">
+    <svg viewBox="0 0 690 470" width="100%" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>N-ought's Law: opacity-enabled scale versus transparency-constrained scale</title>
+  <desc>Two-state diagram. Left shows inflated scale, weak feedback integrity, and a wide opacity gap. Right shows transparency expanding feedback integrity outward while contracting opacity-enabled scale inward.</desc>
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="38%" r="58%">
+      <stop offset="0%" stop-color="#13204a" stop-opacity="0.50"/>
+      <stop offset="55%" stop-color="#0d1033" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#070810" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gapWide" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#070810" stop-opacity="0"/>
+      <stop offset="41%" stop-color="#070810" stop-opacity="0"/>
+      <stop offset="44%" stop-color="#4a9eff" stop-opacity="0.06"/>
+      <stop offset="72%" stop-color="#4a9eff" stop-opacity="0.17"/>
+      <stop offset="100%" stop-color="#070810" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gapNarrow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#070810" stop-opacity="0"/>
+      <stop offset="69%" stop-color="#070810" stop-opacity="0"/>
+      <stop offset="73%" stop-color="#4a9eff" stop-opacity="0.12"/>
+      <stop offset="86%" stop-color="#4a9eff" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#070810" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="faintGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M1 1 L7 4 L1 7" fill="none" stroke="#4a9eff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowDim" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M1 1 L7 4 L1 7" fill="none" stroke="#3a4a6a" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .bg{fill:#070810}.divider{stroke:#1a2240;stroke-width:.6;opacity:.8}.state{font-family:'Courier New',monospace;font-size:7.5px;letter-spacing:.2em;fill:#3a4a6a}.label{font-family:'Courier New',monospace;font-size:7.5px;letter-spacing:.14em;fill:#4a9eff}.dim{font-family:'Courier New',monospace;font-size:7.2px;letter-spacing:.11em;fill:#3a4a6a}.caption{font-family:'Courier New',monospace;font-size:8px;letter-spacing:.13em;fill:#4a9eff}.small{font-family:'Courier New',monospace;font-size:7.1px;letter-spacing:.1em;fill:#6f7f9d}.formula{font-family:'Courier New',monospace;font-size:10px;letter-spacing:.12em;fill:#4a9eff}.ringScale{fill:none;stroke:#1a2a7a;stroke-width:18;opacity:.62;filter:url(#softGlow)}.ringScaleLine{fill:none;stroke:#2a4aaa;stroke-width:1.4;stroke-dasharray:46 11 24 8;opacity:.72}.ringFeedback{fill:none;stroke:#4a9eff;stroke-width:14;opacity:.32;filter:url(#softGlow)}.ringFeedbackLine{fill:none;stroke:#4a9eff;stroke-width:1.4;stroke-dasharray:34 9 18 6;opacity:.76}.center{fill:#0d1033;opacity:.36}.node{fill:#4a9eff;opacity:.55;filter:url(#faintGlow)}.harm{fill:#b8c8e0;opacity:.20}.harmB{fill:#4a9eff;opacity:.24}
+    </style>
+  </defs>
+
+  <rect width="690" height="470" class="bg"/>
+  <rect width="690" height="470" fill="url(#bgGlow)" opacity="0.55"/>
+
+  <text x="345" y="24" text-anchor="middle" class="caption" opacity="0.82">N-OUGHT'S LAW // FEEDBACK BOUNDARY MODEL</text>
+  <text x="345" y="45" text-anchor="middle" class="dim" opacity="0.82">TRANSPARENCY EXPANDS COUPLING AND CONTRACTS OPACITY-ENABLED SCALE</text>
+  <line x1="345" y1="62" x2="345" y2="374" class="divider"/>
+
+  <g transform="translate(170 214)">
+    <circle r="166" fill="url(#gapWide)"/>
+    <circle r="149" class="ringScale"/>
+    <circle r="149" class="ringScaleLine"/>
+    <circle r="68" class="ringFeedback"/>
+    <circle r="68" class="ringFeedbackLine"/>
+    <circle r="64" class="center"/>
+    <circle r="7" class="node"/>
+    <circle cx="-112" cy="-32" r="2.1" class="harm"/>
+    <circle cx="-91" cy="57" r="1.7" class="harmB"/>
+    <circle cx="-31" cy="119" r="2.4" class="harm"/>
+    <circle cx="72" cy="104" r="1.8" class="harm"/>
+    <circle cx="122" cy="22" r="2.3" class="harmB"/>
+    <circle cx="91" cy="-91" r="1.6" class="harm"/>
+    <circle cx="8" cy="-129" r="2.0" class="harmB"/>
+    <circle cx="-72" cy="-99" r="1.8" class="harm"/>
+    <text y="-156" text-anchor="middle" class="label" opacity="0.74">INFLATED SCALE BOUNDARY</text>
+    <text y="89" text-anchor="middle" class="label" opacity="0.78">FEEDBACK INTEGRITY</text>
+    <text x="0" y="4" text-anchor="middle" class="dim" opacity="0.62">SYSTEM</text>
+    <text x="101" y="4" text-anchor="middle" class="dim" opacity="0.52">OPACITY</text>
+    <text x="-103" y="4" text-anchor="middle" class="dim" opacity="0.52">GAP</text>
+    <line x1="0" y1="-78" x2="0" y2="-137" stroke="#3a4a6a" stroke-width="1" stroke-dasharray="3 4" marker-end="url(#arrowDim)" opacity="0.62"/>
+    <text x="10" y="-107" text-anchor="start" class="dim" opacity="0.70">UNCOUPLED ZONE</text>
+  </g>
+
+  <text x="170" y="397" text-anchor="middle" class="caption" opacity="0.80">STATE 01 // OPACITY-ENABLED EXPANSION</text>
+  <text x="170" y="413" text-anchor="middle" class="small" opacity="0.85">S = Sr + So // F LOW // HARM ACCUMULATES</text>
+  <text x="170" y="428" text-anchor="middle" class="small" opacity="0.70">SCALE BEYOND THE FEEDBACK BOUNDARY</text>
+
+  <g transform="translate(520 214)">
+    <circle r="132" fill="url(#gapNarrow)"/>
+    <circle r="116" class="ringScale" opacity="0.52"/>
+    <circle r="116" class="ringScaleLine" opacity="0.78"/>
+    <circle r="99" class="ringFeedback" opacity="0.45"/>
+    <circle r="99" class="ringFeedbackLine" opacity="0.88"/>
+    <circle r="90" class="center" opacity="0.30"/>
+    <circle r="7" class="node"/>
+    <circle cx="-20" cy="-105" r="1.6" class="harmB" opacity="0.20"/>
+    <circle cx="83" cy="-34" r="1.5" class="harm" opacity="0.16"/>
+    <circle cx="-83" cy="42" r="1.4" class="harm" opacity="0.15"/>
+    <text y="-137" text-anchor="middle" class="label" opacity="0.80">CONSTRAINED SCALE BOUNDARY</text>
+    <text y="122" text-anchor="middle" class="label" opacity="0.86">FEEDBACK INTEGRITY EXPANDS</text>
+    <text x="0" y="4" text-anchor="middle" class="dim" opacity="0.62">SYSTEM</text>
+    <text x="105" y="4" text-anchor="middle" class="dim" opacity="0.46">GAP</text>
+    <path d="M 0 -78 A 78 78 0 0 1 68 -39" fill="none" stroke="#4a9eff" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrowBlue)" opacity="0.82"/>
+    <text x="18" y="-73" text-anchor="start" class="label" opacity="0.68">F OUT</text>
+    <line x1="-126" y1="-95" x2="-96" y2="-73" stroke="#4a9eff" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#arrowBlue)" opacity="0.72"/>
+    <text x="-142" y="-105" text-anchor="start" class="label" opacity="0.62">S IN</text>
+  </g>
+
+  <text x="520" y="397" text-anchor="middle" class="caption" opacity="0.84">STATE 02 // TRANSPARENCY-CONSTRAINED SCALE</text>
+  <text x="520" y="413" text-anchor="middle" class="small" opacity="0.88">F RISES // So FALLS // H FALLS</text>
+  <text x="520" y="428" text-anchor="middle" class="small" opacity="0.74">ONLY SCALE SUPPORTED BY FEEDBACK REMAINS</text>
+
+  <g transform="translate(345 454)">
+    <text x="0" y="0" text-anchor="middle" class="formula" opacity="0.86">H = k(S / F)     ·     S = Sr + So     ·     T up = F up, So down, H down</text>
+  </g>
+</svg>
+    <div style="font-family:'Courier New',monospace;font-size:8px;letter-spacing:.16em;color:var(--text-faint);text-transform:uppercase;margin-top:16px;text-align:center;">Fig. 1 — Feedback Boundary Model: opacity-enabled scale vs transparency-constrained scale</div>
+  </div>
+
+  <!-- MEASUREMENT -->
+  <div class="section">
+    <div class="section-label">// Measurement</div>
+    <h2>Proxy Indicators</h2>
+
+    <p>The variables in the law are not directly observable in most institutional contexts. The following proxies are proposed as measurable indicators. They are directionally reliable even where precise calibration is not possible. The direction of travel matters more than the absolute value.</p>
+
+    <p><strong>Scale (S)</strong> is proxied by total headcount including volunteers, plus total resource allocation. Sr is the subset directly attributable to production or delivery of the institution's stated output. So is the remainder: functions not directly involved in that production, including but not limited to marketing, public relations, governance overhead beyond statutory compliance, and legal beyond minimum regulatory requirement.</p>
+
+    <p><strong>Feedback integrity (F)</strong> is a composite of four measurable dimensions:</p>
+
+    <div class="proxy-block">
+      <div class="proxy-row header">
+        <div class="proxy-cell">Dimension</div>
+        <div class="proxy-cell">What it measures</div>
+        <div class="proxy-cell">Proxy indicator</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell"><strong>Exit rights</strong></div>
+        <div class="proxy-cell">Whether recipients of institutional output can credibly withdraw and seek an alternative</div>
+        <div class="proxy-cell">Percentage of total recipients with a genuine alternative available. Higher exit availability increases F.</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell"><strong>Revenue conditionality</strong></div>
+        <div class="proxy-cell">Whether institutional income is directly conditional on output quality</div>
+        <div class="proxy-cell">Percentage of revenue that would be materially reduced if output quality fell below a defined threshold. Guaranteed income regardless of output = F contribution near zero.</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell"><strong>Attribution latency</strong></div>
+        <div class="proxy-cell">How long before the consequence of an action becomes attributable to its actor</div>
+        <div class="proxy-cell">Median time between decision and observable outcome, relative to institutional tenure cycle. Where latency exceeds tenure, F contribution approaches zero.</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell"><strong>Performance coupling</strong></div>
+        <div class="proxy-cell">Whether individual actors face material personal consequence tied to output quality</div>
+        <div class="proxy-cell">Proportion of compensation and job security that is outcome-contingent rather than attendance-contingent. Tenure-equivalent employment with no performance consequence = F contribution near zero.</div>
+      </div>
+    </div>
+
+    <p>A composite F score is derived from these four dimensions. The weakness is that each requires data the institution controls and may not report accurately, which is itself an opacity condition. Where self-reporting is the only available source, the reliability of the F measurement is inversely proportional to the institution's So ratio. High So institutions have the strongest incentive to misreport F and the least structural pressure to report it accurately.</p>
+
+    <blockquote>
+      <p>The opacity that generates So is the same opacity that suppresses accurate F measurement. The two are not coincidentally related. They are the same variable observed from different positions in the system.</p>
+    </blockquote>
+
+    <p>This is not a measurement problem that better data collection resolves. It is a structural property of the system being measured. The same opacity that inflates So degrades the accuracy of any F measurement derived from institutional self-reporting. The practical implication is that F, as measured, should be treated as an upper bound in high-So institutions &#8212; the true value is likely to fall below the measured value in direct proportion to the So/S ratio. In the institutions where the law&#8217;s harm potential is highest, the F figure available for input into that calculation is also the least reliable. The two errors compound in the same direction: measured H understates actual H wherever So is large. This is not a limitation of the law. It is a structural prediction of it.</p>
+  </div>
+
+  <!-- AMPLIFICATION -->
+  <div class="section">
+    <div class="section-label">// Amplification</div>
+    <h2>Reputational Fabrication and the So Multiplier</h2>
+
+    <p>Reputation management expenditure is already classified within So: it is a function not directly involved in production or delivery of the institution&#8217;s stated output. But this classification understates its structural effect. Reputation management is not merely overhead. It is a load that compounds with the size of the gap it is maintaining.</p>
+
+    <p>For reputational consequence to function as a corrective mechanism, three structural prerequisites must hold: the behaviour must be visible to the relevant network; attribution must be clear and fast enough that reputation travels before the actor exits; and future interactions must remain possible so that reputational damage carries real cost. These prerequisites are cognitively bounded. Research on human social architecture establishes that individuals can maintain stable social relationships with approximately 150 others &#8212; the maximum number whose behaviour and reputation can be actively tracked and processed. Beyond that boundary, no authentic reputation can exist. Where one appears to, it has been fabricated.</p>
+
+    <p>Fabrication here is a structural description, not a moral one. At institutional scale, constructing reputation through signals, proxies, and managed perception is not a choice. It is a necessity imposed by scale. Every institution operating beyond that threshold is, by structural necessity, maintaining a fabricated reputational layer. And unlike load displacement, fabricated reputation has no release valve. Each signal emitted to sustain the fiction adds to the total fiction that must be maintained. The coordination burden grows faster than linearly with institutional size. The surface area requiring coherence under scrutiny expands. Resources deployed to manage it are consumed without closing the gap between presented and actual performance &#8212; which is precisely what So represents.</p>
+
+    <p>The consequence is that So, as a raw figure, understates its own contribution to harm potential. As So grows relative to Sr, the reputational fabrication load grows non-linearly, consuming productive capacity and widening the gap that opacity was already sustaining. This is an amplification of the So term, not an independent variable. It operates within So, not alongside it.</p>
+
+    <p>The amplification is formalised by replacing So in the primary relation with an adjusted term So*, defined as:</p>
+
+    <div class="formula-block">
+      <div class="formula-label">So Amplifier</div>
+      <div class="formula">So* = So &middot; e<sup>(So/Sr)</sup></div>
+      <div class="formula-note">
+        So* is the reputationally-adjusted opacity-enabled scale.<br>
+        The exponent So/Sr uses only variables already defined by the law. No external coefficient is required.<br>
+        When So is small relative to Sr, e<sup>(So/Sr)</sup> approaches 1 and So* &asymp; So. No meaningful amplification.<br>
+        As So exceeds Sr, the multiplier grows without ceiling, reflecting the non-linear coordination burden of maintaining fabricated reputation at scale.
+      </div>
+    </div>
+
+    <p>The primary relation therefore becomes:</p>
+
+    <div class="formula-block">
+      <div class="formula-label">Amplified Relation</div>
+      <div class="formula">H &prop; (Sr + So*) / F</div>
+      <div class="formula-note">
+        The amplified form replaces So with So* in the scale term. Sr remains unaffected.<br>
+        H &prop; S / F remains the canonical statement of the law. The amplified form shows what correct measurement of So requires.
+      </div>
+    </div>
+
+    <p>The effect at realistic So/Sr ratios is substantial even at the most conservative values consistent with the underlying mechanism. Network complexity research establishes that coordination burden grows at least exponentially with the number of relationships requiring coherent maintenance &#8212; the natural exponential is therefore a lower bound, not a calibrated claim.</p>
+
+    <div class="proxy-block">
+      <div class="proxy-row header">
+        <div class="proxy-cell">So/Sr ratio</div>
+        <div class="proxy-cell">Multiplier e<sup>(So/Sr)</sup></div>
+        <div class="proxy-cell">Interpretation</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell">0.5</div>
+        <div class="proxy-cell">&times;1.6</div>
+        <div class="proxy-cell">So is half of real scale. Modest amplification. Fabrication burden present but contained.</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell">1.0</div>
+        <div class="proxy-cell">&times;2.7</div>
+        <div class="proxy-cell">So equals Sr. Fabrication load has more than doubled the effective contribution of So to harm potential.</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell">2.0</div>
+        <div class="proxy-cell">&times;7.4</div>
+        <div class="proxy-cell">So is double Sr. So* is more than seven times the raw So figure. Likely range for large public institutions.</div>
+      </div>
+      <div class="proxy-row">
+        <div class="proxy-cell">3.0</div>
+        <div class="proxy-cell">&times;20</div>
+        <div class="proxy-cell">So is triple Sr. So* becomes the dominant term in the harm calculation by a wide margin.</div>
+      </div>
+    </div>
+
+    <p>The amplified relation does not alter the structure or falsifiability conditions of the law. It refines how So is correctly measured when applied to institutions where reputational fabrication has become a structural necessity. For institutions where So is small, the primary and amplified relations are functionally identical. The amplification is only consequential where the law&#8217;s harm potential is already elevated &#8212; which means it cannot be omitted in precisely the cases where it matters most.</p>
+
+    <blockquote>
+      <p>The So multiplier is not an optional refinement. It is a structural property of opacity-enabled scale beyond the authentic reputation threshold. Applying the primary relation without it to large institutions systematically underestimates the harm potential the law is designed to surface.</p>
+    </blockquote>
+  </div>
+
+  <!-- SCOPE -->
+  <div class="section">
+    <div class="section-label">// Scope</div>
+    <h2>What the Law Claims and Does Not Claim</h2>
+
+    <p>The law applies to systemic harm. It does not claim to explain all harm at the individual level, though the mechanism operates there too and the same structural logic applies wherever scale has separated action from observable consequence.</p>
+
+    <p>Systemic harm, as the term is used here, does not require physical injury or any single identifiable victim. It refers to four structural conditions, each of which produces real cost that lands somewhere in the system or beyond it. First: sustained divergence between declared and actual institutional behaviour, maintained without corrective intervention. Second: resources consumed by opacity-enabled functions that produce no output consistent with the institution&#8217;s stated purpose &#8212; scale that exists because consequence is hidden, not because value is created. Third: consequences externalised onto actors who had no part in generating them &#8212; counterparties, contractors, the public, or future participants who inherit the accumulated load. Fourth: the degradation of corrective capacity in the broader environment, as institutions operating beyond their feedback boundary progressively undermine the mechanisms that would otherwise constrain them. The financial crisis of 2008 is the clearest large-scale example: systemic harm in this framework was accumulating for years before any individual loss became visible. The harm was structural before it was personal.</p>
+
+    <p>The law does not claim that large systems are inherently harmful. It claims that harm potential rises with scale and falls with feedback integrity, and that the relationship is not linear. A large system with high feedback integrity can be less harmful than a small system with near-zero feedback integrity. The ratio is what matters, not either variable in isolation.</p>
+
+    <p>The law does not advocate for any particular scale of institution, any ownership model, or any political arrangement. It identifies the structural variable, feedback integrity, and the structural driver, opacity enabled by scale, and states their relationship to harm potential. What follows from that in terms of institutional design is a separate question, addressed by the applied frameworks built on this foundation.</p>
+
+    <p>The law is falsified if a system can be identified in which systemic harm persists and compounds without opacity as a structural precondition, or in which opacity is present without scale as its driver. Both conditions would require a mechanism the law does not account for. Neither has been identified.</p>
+  </div>
+
+  <div class="doc-rule"></div>
+
+  <!-- CALCULATOR -->
+  <div class="section" id="calculator">
+    <div class="section-label">// Applied</div>
+    <h2>Harm Potential Calculator</h2>
+
+    <p>The variables in the law are measurable by proxy. Enter values for your institution below. The calculator derives So from your scale inputs, applies the So* amplifier, computes a composite F score from the four feedback dimensions, and returns H under both the primary and amplified relations. The chart shows where your institution sits on the So/Sr exponential curve.</p>
+    <p>Default values represent a mid-sized UK public sector body — a regional NHS trust, a large local authority, or a regulator with approximately 2,000 staff. Adjust to your institution.</p>
+
+    <div class="calc-shell">
+      <div class="calc-columns">
+
+        <!-- LEFT: Scale inputs -->
+        <div>
+          <div class="h-input-group">
+            <label class="h-input-label" for="hTotalStaff">Total headcount</label>
+            <span class="h-input-sub">All staff, volunteers, and contracted personnel who contribute to the institution's operational footprint. Include those in support, governance, and overhead functions — not only frontline staff. Default: 2,000 — typical mid-sized public body.</span>
+            <input class="h-calc-input" type="number" id="hTotalStaff" min="2" max="500000" value="2000" placeholder="2000">
+          </div>
+          <div class="h-input-group">
+            <label class="h-input-label" for="hProductionStaff">Production headcount (Sr)</label>
+            <span class="h-input-sub">Staff directly attributable to producing or delivering the institution's stated output — clinical staff in a hospital, teachers in a school, caseworkers in a regulator. Exclude management, communications, HR, legal, and governance overhead. Default: 900 — consistent with NHS trust data showing roughly 45% of total WTE in direct care roles (NHS Digital Workforce Statistics 2023).</span>
+            <input class="h-calc-input" type="number" id="hProductionStaff" min="1" max="499999" value="900" placeholder="900">
+          </div>
+          <div class="h-live-row" id="hLiveRatio">
+            <span class="h-live-label">So / Sr ratio</span>
+            <span class="h-live-val" id="hRatioVal">—</span>
+            <span class="h-live-label" style="margin-left:24px">So* multiplier</span>
+            <span class="h-live-val" id="hMultiplierVal">—</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Feedback integrity inputs -->
+        <div>
+          <div class="h-input-group">
+            <label class="h-input-label" for="hExitRights">Exit rights (%)</label>
+            <span class="h-input-sub">Percentage of the institution's output recipients who have a credible alternative available. Higher exit availability increases F — the institution faces real consequence if output quality falls. Default: 15% — reflects low genuine exit availability in most public services; patients, benefit claimants, and regulated entities rarely have realistic alternatives (OECD Public Sector Accountability Framework, 2021).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hExitRights" min="0" max="100" value="15" step="1">
+                <span class="h-slider-val" id="hExitRightsVal">15%</span>
+              </div>
+              <div class="h-slider-range">0% = no exit available (monopoly provider) — 100% = full market choice</div>
+            </div>
+          </div>
+          <div class="h-input-group">
+            <label class="h-input-label" for="hRevenueCond">Revenue conditionality (%)</label>
+            <span class="h-input-sub">Percentage of institutional revenue that would be materially reduced if output quality fell below a defined threshold. Block grants, formula funding, and guaranteed budgets score near zero — the income is unconditional. Default: 10% — most public institutions receive the majority of funding regardless of output quality; a small portion may be performance-linked (NAO Accountability Landscape, 2022).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hRevenueCond" min="0" max="100" value="10" step="1">
+                <span class="h-slider-val" id="hRevenueCondVal">10%</span>
+              </div>
+              <div class="h-slider-range">0% = fully guaranteed income — 100% = fully output-conditional revenue</div>
+            </div>
+          </div>
+          <div class="h-input-group">
+            <label class="h-input-label" for="hAttrLatency">Attribution latency (%)</label>
+            <span class="h-input-sub">How quickly the consequences of a decision become attributable to the actor who made it, expressed as the percentage of decisions where consequence surfaces within the actor's tenure. Where most decisions produce consequences after the responsible person has moved on, attribution latency is high and F contribution falls toward zero. Default: 20% — consistent with long policy and service delivery cycles in public institutions where consequences of structural decisions may take 3–10 years to surface (Institute for Government, Whitehall Monitor 2023).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hAttrLatency" min="0" max="100" value="20" step="1">
+                <span class="h-slider-val" id="hAttrLatencyVal">20%</span>
+              </div>
+              <div class="h-slider-range">0% = all consequences surface after actor has moved on — 100% = all consequences attributable within tenure</div>
+            </div>
+          </div>
+          <div class="h-input-group">
+            <label class="h-input-label" for="hPerfCoupling">Performance coupling (%)</label>
+            <span class="h-input-sub">Proportion of an actor's compensation and employment security that is materially contingent on output quality rather than attendance or tenure. Guaranteed employment with no performance consequence scores near zero. Default: 12% — reflects typical public sector arrangements where job security is high, performance-related pay is limited, and exits for sustained underperformance are rare (CIPD Public Sector Reward Report, 2023; Institute for Government, Whitehall HR 2022).</span>
+            <div class="h-slider-wrap">
+              <div class="h-slider-row">
+                <input type="range" id="hPerfCoupling" min="0" max="100" value="12" step="1">
+                <span class="h-slider-val" id="hPerfCouplingVal">12%</span>
+              </div>
+              <div class="h-slider-range">0% = no consequence for any output quality — 100% = compensation fully outcome-contingent</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /calc-columns -->
+
+      <div class="calc-divider"></div>
+      <button class="calc-run" id="hRunBtn">// Calculate Harm Potential</button>
+
+      <!-- OUTPUT -->
+      <div class="h-output-panel" id="hOutputPanel">
+
+        <div class="h-output-summary" id="hSummaryGrid"></div>
+
+        <div class="h-chart-label">So/Sr ratio vs H* — your institution on the exponential curve</div>
+        <div class="h-chart-area">
+          <canvas id="hChart"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-swatch blue"></div>H* — amplified harm potential</div>
+          <div class="legend-item"><div class="legend-swatch red-solid"></div>H — primary relation (unamplified)</div>
+        </div>
+
+        <div class="h-output-breakdown" id="hBreakdownRows"></div>
+
+        <div class="calc-note">
+          <p>All inputs are user-supplied. Default values are anchored to publicly available institutional benchmarks — NHS Digital, NAO, CIPD, OECD, and Institute for Government — and represent conservative estimates for mid-sized UK public bodies. The So* amplifier applies the natural exponential e<sup>(So/Sr)</sup>, which is the minimum amplification consistent with network complexity literature (Briscoe, Odlyzko &amp; Tilly, 2006; Metcalfe, 1995). H values are dimensionless ratios indicating relative harm potential — they are directional and comparative, not absolute. The law is documented in full above.</p>
+        </div>
+
+        <div class="share-row">
+          <button class="share-btn" id="hShareBtn">// Share this scenario</button>
+          <span class="share-confirm" id="hShareConfirm">Link copied to clipboard</span>
+        </div>
+
+      </div><!-- /h-output-panel -->
+    </div><!-- /calc-shell -->
+  </div><!-- /calculator section -->
+
+  <div class="doc-rule"></div>
+  <a href="index.html#outputs" class="back-link">← Return to Output</a>
+
+</div>
+
+<footer>
+  <span>N-OUGHT</span>
+  <span>STRUCTURAL ANALYSIS // EST. BEFORE DISCOVERY</span>
+</footer>
+
+<script>
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts;
+let pSY = 0;
+
+function resize() {
+  W = pCv.width = window.innerWidth;
+  H = pCv.height = window.innerHeight;
+}
+
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save();
+    pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+
+/* ── HARM CALCULATOR ── */
+
+const H_PARAM_KEYS = ['hTotalStaff','hProductionStaff','hExitRights','hRevenueCond','hAttrLatency','hPerfCoupling'];
+
+// Live ratio display as inputs change
+function updateLiveRatio() {
+  const S  = parseFloat(document.getElementById('hTotalStaff').value) || 0;
+  const Sr = parseFloat(document.getElementById('hProductionStaff').value) || 1;
+  const So = Math.max(0, S - Sr);
+  const ratio = Sr > 0 ? So / Sr : 0;
+  const mult  = Math.exp(ratio);
+  document.getElementById('hRatioVal').textContent      = ratio.toFixed(2);
+  document.getElementById('hMultiplierVal').textContent = '×' + mult.toFixed(1);
+}
+
+['hTotalStaff','hProductionStaff'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', updateLiveRatio);
+});
+
+// Slider live values
+[
+  ['hExitRights',    'hExitRightsVal'],
+  ['hRevenueCond',   'hRevenueCondVal'],
+  ['hAttrLatency',   'hAttrLatencyVal'],
+  ['hPerfCoupling',  'hPerfCouplingVal'],
+].forEach(([sliderId, displayId]) => {
+  const el = document.getElementById(sliderId);
+  if(el) el.addEventListener('input', () => {
+    document.getElementById(displayId).textContent = el.value + '%';
+  });
+});
+
+// URL param handling
+function hEncodeURL() {
+  const base = window.location.href.split('?')[0].split('#')[0];
+  const params = new URLSearchParams();
+  H_PARAM_KEYS.forEach(k => {
+    const el = document.getElementById(k);
+    if(el) params.set(k, el.value);
+  });
+  params.set('autorun','1');
+  return base + '#calculator?' + params.toString();
+}
+
+function hLoadFromURL() {
+  const hash = window.location.hash;
+  if(!hash.includes('calculator?')) return;
+  const queryStr = hash.split('calculator?')[1];
+  if(!queryStr) return;
+  const params = new URLSearchParams(queryStr);
+  H_PARAM_KEYS.forEach(k => {
+    const el = document.getElementById(k);
+    if(el && params.has(k)) {
+      el.value = params.get(k);
+      const displayId = k + 'Val';
+      const display = document.getElementById(displayId);
+      if(display) display.textContent = params.get(k) + '%';
+    }
+  });
+  if(params.get('autorun') === '1') {
+    document.getElementById('calculator').scrollIntoView({ behavior:'smooth', block:'start' });
+    setTimeout(hRun, 400);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  hLoadFromURL();
+  updateLiveRatio();
+  const shareBtn = document.getElementById('hShareBtn');
+  if(shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      const url = hEncodeURL();
+      navigator.clipboard.writeText(url).then(() => {
+        const confirm = document.getElementById('hShareConfirm');
+        confirm.classList.add('visible');
+        setTimeout(() => confirm.classList.remove('visible'), 2500);
+      }).catch(() => prompt('Copy this link:', url));
+    });
+  }
+});
+
+document.getElementById('hRunBtn').addEventListener('click', hRun);
+
+function hRun() {
+  const S    = Math.max(2,  parseFloat(document.getElementById('hTotalStaff').value)    || 2000);
+  const Sr   = Math.max(1,  parseFloat(document.getElementById('hProductionStaff').value)|| 900);
+  const So   = Math.max(0,  S - Sr);
+
+  const exitPct   = parseFloat(document.getElementById('hExitRights').value)   / 100;
+  const revPct    = parseFloat(document.getElementById('hRevenueCond').value)   / 100;
+  const attrPct   = parseFloat(document.getElementById('hAttrLatency').value)   / 100;
+  const perfPct   = parseFloat(document.getElementById('hPerfCoupling').value)  / 100;
+
+  // Composite F: equal-weighted average of four dimensions, each 0–1
+  const F = (exitPct + revPct + attrPct + perfPct) / 4;
+  const Fpc = Math.round(F * 100);
+
+  // So/Sr ratio and amplifier
+  const ratio   = Sr > 0 ? So / Sr : 0;
+  const soStar  = So * Math.exp(ratio);
+
+  // Harm values (normalised: divide by Sr so they're comparable across institution sizes)
+  const H_primary    = F > 0 ? S / F / Sr : Infinity;
+  const H_amplified  = F > 0 ? (Sr + soStar) / F / Sr : Infinity;
+  const amplFactor   = So > 0 ? soStar / So : 1;
+
+  // Rating label
+  function rating(h) {
+    if(h < 5)  return { label:'Low',      cls:'' };
+    if(h < 15) return { label:'Elevated', cls:'warn' };
+    if(h < 40) return { label:'High',     cls:'warn' };
+    return             { label:'Severe',  cls:'severe' };
+  }
+
+  const rPrimary   = rating(H_primary);
+  const rAmplified = rating(H_amplified);
+
+  // Summary grid
+  document.getElementById('hSummaryGrid').innerHTML = `
+    <div class="h-summary-cell">
+      <div class="h-summary-cell-label">H — Primary relation</div>
+      <div class="h-summary-cell-val ${rPrimary.cls}">${H_primary.toFixed(1)}</div>
+      <div class="h-summary-cell-sub">H ∝ S / F — unamplified. Rating: ${rPrimary.label}</div>
+    </div>
+    <div class="h-summary-cell">
+      <div class="h-summary-cell-label">H* — Amplified relation</div>
+      <div class="h-summary-cell-val ${rAmplified.cls}">${H_amplified.toFixed(1)}</div>
+      <div class="h-summary-cell-sub">H ∝ (Sr + So*) / F — with So* multiplier. Rating: ${rAmplified.label}</div>
+    </div>
+    <div class="h-summary-cell">
+      <div class="h-summary-cell-label">So* amplification factor</div>
+      <div class="h-summary-cell-val ${amplFactor > 3 ? 'warn' : ''}">&times;${amplFactor.toFixed(1)}</div>
+      <div class="h-summary-cell-sub">How much the RF multiplier inflates So. So/Sr ratio: ${ratio.toFixed(2)}</div>
+    </div>
+  `;
+
+  // Breakdown rows
+  const breakdownData = [
+    ['Real scale (Sr)',             Sr.toLocaleString('en-GB'),      false, Sr/S],
+    ['Opacity-enabled scale (So)',  So.toLocaleString('en-GB'),      false, So/S],
+    ['Amplified So*',               Math.round(soStar).toLocaleString('en-GB'), true, Math.min(1, soStar/(S*3))],
+    ['Feedback integrity (F)',      Fpc + '%',                       Fpc < 30, Fpc/100],
+    ['Exit rights',                 Math.round(exitPct*100) + '%',   exitPct < 0.2, exitPct],
+    ['Revenue conditionality',      Math.round(revPct*100) + '%',    revPct < 0.2, revPct],
+    ['Attribution latency',         Math.round(attrPct*100) + '%',   attrPct < 0.2, attrPct],
+    ['Performance coupling',        Math.round(perfPct*100) + '%',   perfPct < 0.2, perfPct],
+  ];
+
+  document.getElementById('hBreakdownRows').innerHTML = breakdownData.map(([label, val, warn, barW]) => `
+    <div class="h-breakdown-row">
+      <span class="h-breakdown-label">${label}</span>
+      <span class="h-breakdown-val">${val}</span>
+      <div class="h-breakdown-bar-wrap"><div class="h-breakdown-bar ${warn ? 'warn' : ''}" style="width:${Math.min(100,Math.round(barW*100))}%"></div></div>
+    </div>
+  `).join('');
+
+  // Show panel
+  const panel = document.getElementById('hOutputPanel');
+  panel.classList.add('visible');
+
+  // Draw chart
+  hDrawChart(Sr, So, F, ratio, H_primary, H_amplified);
+
+  setTimeout(() => panel.scrollIntoView({ behavior:'smooth', block:'start' }), 80);
+}
+
+function hDrawChart(Sr, So, F, institutionRatio, H_primary, H_amplified) {
+  const canvas = document.getElementById('hChart');
+  const parent = canvas.parentElement;
+  const dpr    = window.devicePixelRatio || 1;
+  canvas.width  = parent.offsetWidth  * dpr;
+  canvas.height = parent.offsetHeight * dpr;
+  canvas.style.width  = parent.offsetWidth  + 'px';
+  canvas.style.height = parent.offsetHeight + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const W   = parent.offsetWidth;
+  const H   = parent.offsetHeight;
+  const pad = { top:16, right:32, bottom:40, left:72 };
+  const cW  = W - pad.left - pad.right;
+  const cH  = H - pad.top  - pad.bottom;
+
+  // Build curve data: So/Sr from 0 to 4
+  const steps = 200;
+  const maxRatio = 4;
+  const primaryVals = [];
+  const amplVals    = [];
+
+  for(let i = 0; i <= steps; i++) {
+    const r   = (i / steps) * maxRatio;
+    const so  = r * Sr;
+    const s   = Sr + so;
+    const soS = so * Math.exp(r);
+    const Fv  = Math.max(0.01, F);
+    primaryVals.push(F > 0 ? s / Fv / Sr : 0);
+    amplVals.push(F > 0    ? (Sr + soS) / Fv / Sr : 0);
+  }
+
+  const maxVal = Math.max(...amplVals.slice(0, steps)) * 1.08;
+
+  function xPos(i) { return pad.left + (i / steps) * cW; }
+  function yPos(v) { return pad.top + cH - Math.min(1, v / maxVal) * cH; }
+  function fmtY(v) { return v >= 100 ? Math.round(v) : v.toFixed(1); }
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  const gridCount = 5;
+  ctx.strokeStyle = 'rgba(26,34,64,0.8)';
+  ctx.lineWidth   = 0.5;
+  for(let g = 0; g <= gridCount; g++) {
+    const y   = pad.top + (g / gridCount) * cH;
+    const val = maxVal * (1 - g / gridCount);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cW, y); ctx.stroke();
+    ctx.fillStyle = '#2a3860';
+    ctx.font = `9px 'Courier New', monospace`;
+    ctx.textAlign = 'right';
+    ctx.fillText(fmtY(val), pad.left - 8, y + 3);
+  }
+
+  // X axis labels (So/Sr ratios)
+  ctx.fillStyle  = '#2a3860';
+  ctx.font       = `9px 'Courier New', monospace`;
+  ctx.textAlign  = 'center';
+  for(let r = 0; r <= maxRatio; r++) {
+    const x = pad.left + (r / maxRatio) * cW;
+    ctx.fillText(r + 'x', x, H - pad.bottom + 16);
+  }
+  ctx.fillStyle = '#2a3860';
+  ctx.fillText('So/Sr ratio', pad.left + cW/2, H - pad.bottom + 30);
+
+  // Primary H line (red)
+  ctx.beginPath();
+  ctx.strokeStyle = '#e07a5f';
+  ctx.lineWidth   = 1.5;
+  ctx.setLineDash([4, 4]);
+  primaryVals.forEach((v, i) => {
+    const x = xPos(i), y = yPos(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Amplified H* line (blue)
+  ctx.beginPath();
+  ctx.strokeStyle = '#4a9eff';
+  ctx.lineWidth   = 2;
+  amplVals.forEach((v, i) => {
+    const x = xPos(i), y = yPos(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Institution marker — vertical line at current ratio
+  const markerX = pad.left + (institutionRatio / maxRatio) * cW;
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(74,158,255,0.35)';
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([3, 5]);
+  ctx.moveTo(markerX, pad.top);
+  ctx.lineTo(markerX, pad.top + cH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Dot at institution's H* position
+  const instStep = Math.round((institutionRatio / maxRatio) * steps);
+  if(instStep >= 0 && instStep <= steps) {
+    const dotY = yPos(amplVals[instStep]);
+    ctx.beginPath();
+    ctx.arc(markerX, dotY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#4a9eff';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(7,8,16,0.8)';
+    ctx.lineWidth   = 1;
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle  = '#4a9eff';
+    ctx.font       = `bold 9px 'Courier New', monospace`;
+    ctx.textAlign  = markerX > W * 0.7 ? 'right' : 'left';
+    const lx = markerX > W * 0.7 ? markerX - 10 : markerX + 10;
+    ctx.fillText('YOUR INSTITUTION', lx, dotY - 10);
+  }
+}
+
+</body>
+</html>
