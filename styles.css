@@ -4,7 +4,8 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
-    --text:#c8d4e8;--text-dim:#3a4a6a;--text-faint:#1a2240;
+    --text:#c8d4e8;--text-dim:#6a7fa0;--text-faint:#1a2240;
+    --text-ghost:#4a5880;
     --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
   }
   html { scroll-behavior:smooth; }
@@ -36,7 +37,7 @@
   .paper-meta {
     font-size:9px;
     letter-spacing:.25em;
-    color:#2a3860;
+    color:var(--text-ghost);
     text-transform:uppercase;
     margin-bottom:40px;
   }
@@ -85,7 +86,7 @@
   .toc-label {
     font-size:9px;
     letter-spacing:.25em;
-    color:#2a3860;
+    color:var(--text-ghost);
     text-transform:uppercase;
     margin-bottom:20px;
   }
@@ -154,7 +155,7 @@
   .abstract-label {
     font-size:9px;
     letter-spacing:.25em;
-    color:#2a3860;
+    color:var(--text-ghost);
     text-transform:uppercase;
     margin-bottom:16px;
   }
