@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-ought Provenance Network — Technical Specification</title>
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+:root {
+  --bg:#070810;
+  --accent:#4a9eff;
+  --accent-mid:#1a2a7a;
+  --accent-deep:#0d1033;
+  --text:#c8d4e8;
+  --text-dim:#3a4a6a;
+  --text-faint:#1a2240;
+  --mono:'Courier New',Courier,monospace;
+  --serif:Georgia,'Times New Roman',serif;
+}
+
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:15px;
+  line-height:1.6;
+  letter-spacing:.04em;
+  overflow-x:hidden;
+}
+
+#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+#surface-light {
+  position:fixed; top:-20%; left:30%; width:50%; height:70%;
+  background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);
+  pointer-events:none; z-index:2;
+}
+
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 48px;
+  border-bottom:.5px solid var(--text-faint);
+  background:rgba(7,8,16,.88);
+  backdrop-filter:blur(4px);
+}
+.nav-mark { display:inline-block; width:28px; height:28px; cursor:pointer; text-decoration:none; flex-shrink:0; }
+.nav-mark svg { display:block; width:28px; height:28px; }
+.nav-links { display:flex; gap:48px; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:11px; letter-spacing:.18em; text-transform:uppercase; transition:color .3s; }
+.nav-links a:hover { color:var(--accent); }
+.nav-links .nav-divider { width:.5px; height:14px; background:var(--text-faint); align-self:center; flex-shrink:0; }
+
+.toc {
+  position:fixed; top:80px; right:24px; width:220px;
+  max-height:calc(100vh - 120px); overflow-y:auto;
+  padding:20px; border:.5px solid var(--text-faint);
+  background:rgba(7,8,16,.92); z-index:50;
+}
+.toc-label { font-size:9px; letter-spacing:.25em; color:#2a3860; text-transform:uppercase; margin-bottom:20px; }
+.toc ol { list-style:none; counter-reset:toc; }
+.toc li {
+  counter-increment:toc; font-size:10px; color:#7a8faa;
+  letter-spacing:.05em; padding:5px 0;
+  border-bottom:.5px solid var(--text-faint);
+  display:flex; gap:10px;
+}
+.toc li:last-child { border-bottom:none; }
+.toc li::before { content:counter(toc,decimal-leading-zero); color:var(--text-faint); font-size:9px; letter-spacing:.1em; flex-shrink:0; padding-top:1px; }
+.toc a { color:#7a8faa; text-decoration:none; transition:color .2s; }
+.toc a:hover { color:var(--accent); }
+.toc::-webkit-scrollbar { width:3px; }
+.toc::-webkit-scrollbar-track { background:transparent; }
+.toc::-webkit-scrollbar-thumb { background:var(--text-faint); }
+
+.doc-wrap { position:relative; z-index:10; max-width:860px; margin:0 auto; padding:140px 48px 120px; }
+
+.paper-meta { font-size:9px; letter-spacing:.25em; color:#2a3860; text-transform:uppercase; margin-bottom:40px; }
+.paper-title { font-family:var(--mono); font-size:18px; font-weight:normal; color:var(--accent); opacity:.9; letter-spacing:.12em; line-height:1.5; margin-bottom:16px; }
+.paper-subtitle { font-size:12px; color:#7a8faa; letter-spacing:.06em; font-style:italic; margin-bottom:48px; }
+.paper-rule { width:100%; height:.5px; background:var(--text-faint); margin-bottom:56px; }
+
+.abstract { margin-bottom:56px; padding:28px 32px; border-left:1px solid var(--accent-mid); background:rgba(13,16,51,.1); }
+.abstract-label { font-size:9px; letter-spacing:.25em; color:#2a3860; text-transform:uppercase; margin-bottom:16px; }
+.abstract p { font-size:12px; color:#7a8faa; line-height:1.9; letter-spacing:.04em; margin-bottom:16px; }
+.abstract p:last-child { margin-bottom:0; }
+
+.section { margin-bottom:72px; }
+.section-anchor { display:block; height:80px; margin-top:-80px; visibility:hidden; }
+.section-label { font-size:9px; letter-spacing:.25em; color:var(--accent); opacity:.7; text-transform:uppercase; margin-bottom:16px; }
+.section h2 { font-family:var(--mono); font-size:13px; font-weight:normal; letter-spacing:.25em; color:var(--accent); opacity:.88; text-transform:uppercase; margin-bottom:32px; padding-bottom:16px; border-bottom:.5px solid var(--text-faint); }
+.section h3 { font-family:var(--mono); font-size:11px; font-weight:normal; letter-spacing:.2em; color:var(--accent); opacity:.75; text-transform:uppercase; margin:40px 0 20px; }
+.section p { font-size:12px; color:#7a8faa; line-height:1.9; letter-spacing:.04em; margin-bottom:20px; max-width:680px; }
+.section ul { margin:0 0 20px 0; padding-left:0; list-style:none; }
+.section ul li { font-size:12px; color:#7a8faa; line-height:1.9; letter-spacing:.04em; padding:4px 0 4px 20px; position:relative; max-width:680px; }
+.section ul li::before { content:'--'; position:absolute; left:0; color:var(--text-faint); }
+
+.section blockquote { margin:32px 0; padding:22px 28px; border-left:1px solid var(--accent-mid); background:rgba(13,16,51,.15); }
+.section blockquote p { font-size:12px; color:var(--text); opacity:.75; letter-spacing:.05em; line-height:1.9; margin-bottom:0; font-style:italic; max-width:none; }
+
+.callout { margin:32px 0; padding:24px 28px; border:.5px solid var(--text-faint); background:rgba(13,16,51,.2); }
+.callout p { font-size:11px; color:#4a5a7a; line-height:1.9; letter-spacing:.04em; margin-bottom:12px; max-width:none; }
+.callout p:last-child { margin-bottom:0; }
+
+.code-block {
+  margin:28px 0; padding:20px 24px;
+  background:rgba(13,16,51,.4);
+  border:.5px solid var(--text-faint);
+  border-left:1px solid var(--accent-mid);
+  overflow-x:auto;
+}
+.code-block pre { font-family:var(--mono); font-size:11px; color:#4a9eff; opacity:.8; line-height:1.7; letter-spacing:.04em; white-space:pre; }
+.code-block .code-label { font-size:9px; letter-spacing:.22em; color:#2a3860; text-transform:uppercase; margin-bottom:12px; }
+
+.flow-step {
+  margin:8px 0; padding:14px 20px;
+  border:.5px solid var(--text-faint);
+  display:flex; gap:20px; align-items:flex-start;
+}
+.flow-step .step-num { font-size:9px; color:var(--accent); opacity:.6; letter-spacing:.1em; flex-shrink:0; padding-top:2px; min-width:24px; }
+.flow-step .step-body { font-size:12px; color:#7a8faa; line-height:1.8; letter-spacing:.04em; }
+.flow-step .step-body strong { color:var(--accent); font-weight:normal; opacity:.85; }
+
+.spec-table { width:100%; border-collapse:collapse; margin:28px 0; font-size:11px; }
+.spec-table th { text-align:left; font-weight:normal; letter-spacing:.18em; color:#2a3860; text-transform:uppercase; font-size:9px; padding:10px 16px; border-bottom:.5px solid var(--text-faint); }
+.spec-table td { color:#7a8faa; padding:10px 16px; border-bottom:.5px solid rgba(26,34,64,.5); line-height:1.7; vertical-align:top; }
+.spec-table tr:last-child td { border-bottom:none; }
+.spec-table td:first-child { color:var(--accent); opacity:.8; white-space:nowrap; }
+
+.def-block { margin:40px 0; padding:28px 32px; border-left:1px solid var(--accent-mid); background:rgba(13,16,51,.15); }
+.def-label { font-size:9px; letter-spacing:.22em; color:#2a3860; text-transform:uppercase; margin-bottom:16px; }
+.def-term { font-family:var(--mono); font-size:13px; color:var(--accent); opacity:.8; letter-spacing:.1em; margin-bottom:12px; line-height:1.7; }
+.def-note { font-size:11px; color:#7a8faa; line-height:1.8; letter-spacing:.04em; margin-top:12px; }
+
+.doc-rule { width:100%; height:.5px; background:var(--text-faint); margin:64px 0; }
+
+footer {
+  position:relative; z-index:10;
+  display:flex; justify-content:space-between;
+  padding:24px 48px; border-top:.5px solid var(--text-faint);
+  font-size:9px; letter-spacing:.18em; color:#2a3860; text-transform:uppercase;
+}
+
+strong { color:var(--accent); font-weight:normal; letter-spacing:.02em; opacity:.9; }
+em { color:#7a8faa; font-style:italic; }
+
+@media print {
+  #particles, #surface-light, nav, .toc { display:none !important; }
+  .doc-wrap { padding:40px; }
+  body { background:#fff; color:#111; }
+}
+@media(max-width:1100px) { .toc { display:none; } }
+@media(max-width:680px) {
+  nav { padding:18px 24px; }
+  .nav-links { display:none; }
+  .doc-wrap { padding:100px 24px 80px; }
+  footer { padding:18px 24px; flex-direction:column; gap:8px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="n-oughts-law.html">N-ought's Law</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li class="nav-divider"></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<nav class="toc" aria-label="Contents">
+  <div class="toc-label">Contents</div>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">System Overview</a></li>
+    <li><a href="#s2">Node Software and Keypair Architecture</a></li>
+    <li><a href="#s3">Submission Flow and Consensus</a></li>
+    <li><a href="#s4">Institutional Client Software</a></li>
+    <li><a href="#s5">The Verified Record</a></li>
+    <li><a href="#s6">API Architecture</a></li>
+    <li><a href="#s7">Front End Specification</a></li>
+    <li><a href="#s8">Node Infrastructure Requirements</a></li>
+    <li><a href="#s9">DNS and Endpoint Architecture</a></li>
+  </ol>
+</nav>
+
+<div class="doc-wrap">
+
+  <div class="paper-meta">N-ought // Technical Output // NPN Technical Specification</div>
+  <h1 class="paper-title">N-ought Provenance Network</h1>
+  <p class="paper-subtitle">Technical specification — node architecture, protocol, and front end</p>
+  <div class="paper-rule"></div>
+
+  <span class="section-anchor" id="abstract"></span>
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+    <p>This document is the technical companion to the NPN White Paper. It presupposes familiarity with that document and does not restate the theoretical or governance foundations described there. It describes the implementation layer: how nodes operate, how submissions are verified, how the verified record is structured, how data is exposed through the API and public front end, and what infrastructure each node operator is required to run.</p>
+    <p>The specification is written at MVP level - sufficient to guide implementation and to demonstrate that the architecture is sound, without pretending to be a finished engineering document. Where specific technical choices remain open, they are noted as such. The protocol is designed around existing, well-understood technology. No novel cryptographic primitives are required. The complexity is in the governance and operational discipline of running the network correctly, not in the underlying technology.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <span class="section-anchor" id="s1"></span>
+  <div class="section">
+    <div class="section-label">// 01</div>
+    <h2>System Overview</h2>
+
+    <p>NPN consists of four interacting layers. Understanding the relationship between them is necessary before examining any one in detail.</p>
+
+    <ul>
+      <li><strong>The node network</strong> - a set of independent institutional operators running verification infrastructure according to the shared protocol. Nodes verify submissions, store the verified record, and participate in governance. They do not receive submissions directly.</li>
+      <li><strong>The central protocol layer</strong> - a submission endpoint and coordination mechanism operated by the founding organisation in Phase 1, transitioning to distributed control in Phase 2. It receives submissions, broadcasts them to nodes, collects signed verification results, and confirms or rejects submissions based on consensus threshold. It does not adjudicate - it counts signatures.</li>
+      <li><strong>The verified record</strong> - an append-only, cryptographically structured dataset distributed across all nodes. It is the output of the verification process and the input to everything above it. It is not owned by any single node or by the founding organisation.</li>
+      <li><strong>The access layer</strong> - the API and public front end through which the verified record is made available. These expose the same underlying data through different interfaces. Neither adds interpretation. Neither restricts access by identity or affiliation.</li>
+    </ul>
+
+    <p>The security model depends on the separation of these layers. Submissions never go directly to nodes - they go to the central protocol layer, which distributes them simultaneously. The verified record is distributed across all nodes - no single operator holds the authoritative copy. The access layer reads from the distributed record - it has no write access and cannot alter what it serves.</p>
+
+    <div class="callout">
+      <p>SCOPE NOTE. This specification covers the MVP architecture. Phase 2 and Phase 3 transitions - particularly the decentralisation of the central protocol layer and the automation of treasury distribution - introduce additional technical complexity that is acknowledged here but not fully specified. Those transitions are governed by the protocol proposal process described in the White Paper.</p>
+    </div>
+
+  </div>
+
+  <!-- SECTION 2 -->
+  <span class="section-anchor" id="s2"></span>
+  <div class="section">
+    <div class="section-label">// 02</div>
+    <h2>Node Software and Keypair Architecture</h2>
+
+    <p>Each node operator runs the NPN node software on their own infrastructure. The software handles verification logic, cryptographic signing, record storage, and network communication. Node operators do not implement these functions themselves - they run and maintain the software that implements them.</p>
+
+    <h3>Keypair generation and registration</h3>
+
+    <p>On initialisation, the node software generates an asymmetric keypair using Ed25519 - a well-established elliptic curve signature scheme chosen for its performance characteristics and resistance to implementation errors relative to older alternatives such as RSA. The private key never leaves the node's infrastructure. The public key is submitted to the consortium for registration.</p>
+
+    <p>Registration of the public key is the act that admits a node to the network. Until a node's public key appears on the consortium's registered key list, its verification signatures are not counted toward consensus. Removal from the registered key list - the consequence of node removal by consortium vote - immediately revokes that node's participation in the consensus mechanism.</p>
+
+    <div class="code-block">
+      <div class="code-label">Keypair specification</div>
+      <pre>Algorithm:     Ed25519
+Key size:      256-bit
+Private key:   Stored in hardware security module (HSM) or
+               encrypted key store with access logging
+Public key:    Submitted to consortium on admission
+               Registered in the consortium public key list
+               Publicly auditable</pre>
+    </div>
+
+    <h3>Private key security</h3>
+
+    <p>Node operators are required to store private keys in a hardware security module or equivalent encrypted key store with access logging. The specific implementation is the node operator's responsibility. The requirement is that the private key cannot be extracted without leaving an auditable trail, and that access to the signing function is limited to the node software process.</p>
+
+    <p>Key compromise is a defined incident type. A node operator who suspects their private key has been compromised must notify the consortium immediately. The consortium revokes the compromised key, the affected node generates a new keypair, and re-registration follows the standard admission process. Historical signatures made with the compromised key remain in the record - they are not invalidated retrospectively, but the compromise event and its timestamp are added to the node's public record.</p>
+
+    <h3>How signing works in practice</h3>
+
+    <p>When the node software receives a submission for verification, it runs its checks and produces a verification result - accept or reject, with a structured reason in the reject case. It signs that result with the node's private key using Ed25519. The signed result is returned to the central protocol layer. The signature proves that this specific node produced this specific result and that neither has been altered in transit. Anyone with access to the consortium's public key list can verify any node's signature on any result at any time.</p>
+
+    <p>Node operators do not manually approve submissions. The software runs the verification logic and produces the signed result automatically. Human intervention is reserved for cases flagged by the software as requiring review - submissions that produce internally inconsistent results, or that cross-reference against disputed primary source data.</p>
+
+    <h3>The consortium public key list</h3>
+
+    <p>The consortium public key list is itself a public document, updated on each node admission or removal and cryptographically signed by the founding organisation in Phase 1, transitioning to multisig signing by Phase 2. It is the authoritative reference for which nodes are currently active participants in the verification network. Any actor can verify whether a given signature on a verification result was produced by a currently registered node.</p>
+
+  </div>
+
+  <!-- SECTION 3 -->
+  <span class="section-anchor" id="s3"></span>
+  <div class="section">
+    <div class="section-label">// 03</div>
+    <h2>Submission Flow and Consensus</h2>
+
+    <p>The submission flow is designed around a single security requirement: no node should receive a submission before it has been broadcast to all other nodes. This prevents the attack vector in which a captured node alters data before broadcast and the network then ratifies the altered version.</p>
+
+    <h3>Submission flow</h3>
+
+    <div class="flow-step"><div class="step-num">01</div><div class="step-body"><strong>Institution submits</strong> a structured JSON payload to the central submission endpoint via HTTPS. The payload must be signed with the institution's own registered key, confirming authorship. The endpoint performs initial schema validation - malformed submissions are rejected immediately with a structured error response, before broadcast.</div></div>
+
+    <div class="flow-step"><div class="step-num">02</div><div class="step-body"><strong>Simultaneous broadcast.</strong> The central protocol layer broadcasts the validated payload to all active nodes simultaneously. No node receives it before another. The broadcast timestamp is recorded and becomes part of the submission record.</div></div>
+
+    <div class="flow-step"><div class="step-num">03</div><div class="step-body"><strong>Independent verification.</strong> Each node runs its verification checks independently and in parallel. Checks cover: schema compliance, internal consistency, cryptographic signature validity, and cross-reference against declared primary sources via public APIs. Each node produces a signed verification result - accept or reject with structured reason.</div></div>
+
+    <div class="flow-step"><div class="step-num">04</div><div class="step-body"><strong>Consensus collection.</strong> Signed results are returned to the central protocol layer. Results are collected over a defined window - 60 seconds in the MVP, adjustable by protocol proposal. Results received after the window closes are logged but not counted toward consensus for this submission round.</div></div>
+
+    <div class="flow-step"><div class="step-num">05</div><div class="step-body"><strong>Threshold assessment.</strong> If 75% or more of active registered nodes return a signed accept result within the window, the submission is accepted. If the threshold is not reached - whether through outright rejection by enough nodes or a split result that fails to clear 75% acceptance - the submission is rejected. All results in all cases are published, including each node's individual signed result and stated reason.</div></div>
+
+    <div class="flow-step"><div class="step-num">06</div><div class="step-body"><strong>Record entry.</strong> An accepted submission is hashed, appended to the verified record, and the confirmation broadcast to all nodes for storage. The institution is notified of acceptance with the record hash. A rejected submission is not entered into the verified record. The institution is notified immediately with the structured reasons from each node that did not accept it.</div></div>
+
+    <div class="flow-step"><div class="step-num">07</div><div class="step-body"><strong>Rejection and resubmission.</strong> A submission that fails to reach 75% consensus is rejected immediately. There is no holding state for substantive data discrepancies. Full structured reasons from all participating nodes are published alongside the rejection. The institution may resubmit at any time once the underlying issue is resolved. Immediate rejection rather than a holding period removes the ambiguity of an unresolved interim state - no submission sits in limbo where a counterparty or third party could mistake it for settled data, and no party can claim ignorance of a dispute that was never actually held open.</div></div>
+
+    <div class="flow-step"><div class="step-num">08</div><div class="step-body"><strong>Infrastructure-failure retry.</strong> A distinct and narrower case applies where a verification round fails not because nodes disagree on the data but because a primary source API was temporarily unreachable during the verification window. This is a network-side failure, not a data dispute. The protocol provides a short automatic retry window, measured in hours rather than days, before the submission is re-broadcast for a fresh verification round. This retry mechanism does not apply to genuine consensus failures on the substance of a submission - only to verification rounds that failed for infrastructure reasons unrelated to the data itself.</div></div>
+
+    <div class="callout">
+      <p>DISPUTE PROTOCOL FORWARD REFERENCE. The governance process for resolving substantive disagreement between counterparty submissions, as distinct from a single submission's consensus failure, is described in the White Paper. In summary: technical-level discrepancies are first reviewed by the founding organisation in Phase 1, transitioning to a designated consortium technical committee in Phase 2. Where resolution cannot be reached at the technical level, the matter proceeds to a full consortium governance vote. All stages of the resolution process and their outcomes are published.</p>
+    </div>
+
+    <h3>Submission format</h3>
+
+    <div class="code-block">
+      <div class="code-label">Submission payload structure</div>
+      <pre>{
+  "schema_version": "1.0",
+  "institution_id": "registered institution identifier",
+  "submission_type": "initial | correction | update",
+  "category": "A | B | C | D | E",
+  "period": "ISO 8601 reporting period",
+  "data": { ... category-specific fields ... },
+  "primary_sources": [
+    {
+      "field": "field name",
+      "source_type": "companies_house | ons | bank_of_england | self_attested | other",
+      "source_reference": "URL or document reference",
+      "retrieval_date": "ISO 8601 date"
+    }
+  ],
+  "attestation": "good faith declaration text",
+  "institution_signature": "Ed25519 signature of payload hash"
+}</pre>
+    </div>
+
+    <h3>Scaling the consensus mechanism</h3>
+
+    <p>At MVP and through Phase 2, all active registered nodes participate in every verification round. No quorum sampling is applied. The full node set verifies every submission.</p>
+
+    <p>The protocol provides for a quorum model at scale, to be introduced as a Phase 3 governance item when the network approaches the node ceiling. At that point, the consortium will determine a quorum threshold by protocol proposal: a minimum percentage of active nodes randomly selected per submission round, with the remainder accepting the confirmed result without reprocessing. The threshold must be set at a level that prevents any coordinated subset of nodes below quorum size from determining the outcome of a submission alone. The specific threshold is a consortium decision, not a founding organisation decision, and will not be set before the consortium has the node diversity to set it meaningfully.</p>
+
+  </div>
+
+  <!-- SECTION 4 -->
+  <span class="section-anchor" id="s4"></span>
+  <div class="section">
+    <div class="section-label">// 04</div>
+    <h2>Institutional Client Software</h2>
+
+    <p>Institutions submitting to the network do not interact with the submission endpoint directly via raw API calls. They run the NPN institutional client - software installed within the institution's own environment that handles submission preparation, validation, signing, and dispatch.</p>
+
+    <p>The client provides the following functions:</p>
+
+    <ul>
+      <li>Schema-compliant data entry across all five categories, with field-level validation before submission leaves the institution's environment.</li>
+      <li>Automatic retrieval of the current verified record entry for any institution, category, and period combination, returning the entry hash for reference and correction linking.</li>
+      <li>Correction flagging: when a submission is of type correction, the client requires the operator to confirm the hash of the entry being superseded before dispatch. The correction submission references that hash explicitly in the payload.</li>
+      <li>Institutional signing: the client holds the institution's registered keypair and signs each submission payload before dispatch, confirming authorship.</li>
+      <li>Local submission log: a signed local record of every submission dispatched, including payload hash, timestamp, and network response, held on the institution's own infrastructure independently of the network record.</li>
+    </ul>
+
+    <h3>The correction flow in practice</h3>
+
+    <p>The operator selects the category and period to be corrected. The client retrieves the current record entry and displays the hash. The operator confirms this is the entry to be superseded, enters the corrected data, and dispatches. The submission payload is automatically typed as correction and carries the superseded entry hash. No manual hash lookup or reference construction is required from the operator.</p>
+
+    <h3>Open source and institutional flexibility</h3>
+
+    <p>The institutional client is open source. Institutions may inspect, audit, and where necessary adapt it for their own integration environment. The submission protocol is public - institutions with sufficient technical capacity may build their own compliant submission tooling. The reference client exists to lower the barrier to participation, not to create a dependency.</p>
+
+  </div>
+
+  <!-- SECTION 5 -->
+  <span class="section-anchor" id="s5"></span>
+  <div class="section">
+    <div class="section-label">// 05</div>
+    <h2>The Verified Record</h2>
+
+    <p>The verified record is an append-only dataset distributed across all active nodes. It is the network's core output - the thing that makes provenance data structurally available and tamper-evident. Its integrity does not depend on trusting any single node, the founding organisation, or the central protocol layer. It depends on the mathematical properties of its structure.</p>
+
+    <h3>Merkle hash structure</h3>
+
+    <p>Each entry in the verified record contains the hash of the entry itself combined with the hash of the preceding entry. This creates a chain in which any alteration to any historical record - even a single character change - produces a different hash for that entry, which then produces a different hash for every subsequent entry, breaking the chain visibly and completely. An attacker who wished to alter a historical record would need to recompute every subsequent hash in the chain and have that altered chain accepted by the network. The distributed storage of the record across all nodes makes this attack practically infeasible - the altered chain would need to replace the correct chain on 75% of independent node stores simultaneously.</p>
+
+    <div class="code-block">
+      <div class="code-label">Record entry structure</div>
+      <pre>{
+  "entry_id": "sequential integer",
+  "timestamp": "ISO 8601 UTC",
+  "submission_hash": "SHA-256 hash of accepted submission payload",
+  "institution_id": "registered institution identifier",
+  "category": "A | B | C | D | E",
+  "schema_version": "1.0",
+  "period": "ISO 8601 reporting period",
+  "node_signatures": [
+    {
+      "node_id": "registered node identifier",
+      "result": "accept",
+      "signature": "Ed25519 signature of submission hash + result"
+    }
+  ],
+  "previous_entry_hash": "SHA-256 hash of preceding record entry",
+  "entry_hash": "SHA-256 hash of this entry including previous_entry_hash"
+}</pre>
+    </div>
+
+    <h3>Corrections in the record</h3>
+
+    <p>A correction submission follows the same flow as an initial submission. On acceptance, it is entered as a new record entry with submission_type set to "correction" and a reference to the entry_id it supersedes. The previous entry is not removed or altered. Both entries persist. Any query against the verified record returns the current value - the most recent accepted entry for a given institution, category, and period - alongside a flag indicating whether a correction history exists, with a link to the full chain.</p>
+
+    <p>The correction chain is itself queryable. A user or application can retrieve the full history of submissions and corrections for any institution and data category, with full timestamp and node signature provenance for each entry.</p>
+
+    <h3>Content addressing and DNS independence</h3>
+
+    <p>The verified record is content-addressed: each entry is identified by its hash, not by its location. This means the record can be retrieved from any node that holds a copy - the hash verifies that the content is genuine regardless of where it was retrieved from. The network's discoverability depends on DNS and the central endpoint. The network's integrity does not. If every domain associated with NPN were taken offline simultaneously, any copy of the verified record on any node would remain intact, verifiable, and complete. The record cannot be suppressed by attacking the network's addressing infrastructure.</p>
+
+    <h3>Storage requirements</h3>
+
+    <p>The verified record grows linearly with submission volume. At MVP scale - tens of submitting institutions across five data categories with annual or quarterly submission frequency - the record grows at a rate of tens of megabytes per year. At full network scale across thousands of institutions, storage requirements remain well within the capacity of standard server infrastructure. The record is text-based JSON with cryptographic hashes. It is not a media store. Storage is not a meaningful constraint at any realistic network scale.</p>
+
+  </div>
+
+  <!-- SECTION 6 -->
+  <span class="section-anchor" id="s6"></span>
+  <div class="section">
+    <div class="section-label">// 06</div>
+    <h2>API Architecture</h2>
+
+    <p>The API exposes the verified record and the public data ingestion layer to programmatic consumers. It is key-gated for rate limiting and abuse prevention. It is not gated for content - the data available through the API is the same data available through the public front end. The API exists to serve bulk retrieval, automated queries, and integration into third-party tools. It does not provide privileged access to additional data.</p>
+
+    <h3>Authentication and rate limiting</h3>
+
+    <p>API access requires a registered key. Key registration is open - any individual or organisation can request a key. The registration process records the applicant's identity and stated use case for abuse prevention purposes. It does not evaluate or restrict use cases. Journalism organisations, research institutions, and oversight bodies may apply for elevated rate limits - the process is documented and the criteria are published. Standard rate limits are set at a level that permits meaningful research use without enabling bulk extraction that would place unreasonable load on the network.</p>
+
+    <div class="spec-table-wrap">
+    <table class="spec-table">
+      <tr><th>Access tier</th><th>Rate limit</th><th>Eligibility</th></tr>
+      <tr><td>Standard</td><td>1,000 requests / hour</td><td>Open registration</td></tr>
+      <tr><td>Research</td><td>10,000 requests / hour</td><td>Academic institutions, verified on application</td></tr>
+      <tr><td>Press</td><td>10,000 requests / hour</td><td>Journalism organisations, verified on application</td></tr>
+      <tr><td>Oversight</td><td>Unlimited</td><td>Regulatory and statutory oversight bodies</td></tr>
+      <tr><td>Node</td><td>Unlimited</td><td>Registered node operators</td></tr>
+    </table>
+    </div>
+
+    <h3>Core endpoints</h3>
+
+    <div class="code-block">
+      <div class="code-label">API endpoint reference</div>
+      <pre>GET  /v1/institution/{id}
+     Returns full verified record for a registered institution
+     Optional params: category, period_from, period_to
+
+GET  /v1/institution/{id}/history/{category}
+     Returns full submission and correction history for
+     a given institution and data category
+
+GET  /v1/institution/{id}/relationships
+     Returns all funding, affiliation, and board relationships
+     for a given institution, with counterparty references
+
+GET  /v1/individual/{id}
+     Returns all governance roles, affiliations, and output
+     attributions for a named individual across all institutions
+
+GET  /v1/network
+     Returns current registered institution list, node list,
+     schema version, and network status
+
+GET  /v1/public/{dataset}
+     Returns ingested public data for a named dataset
+     (companies_house | ons | bank_of_england | parliament)
+     Optional params: entity_id, metric, date_from, date_to
+
+GET  /v1/search
+     Full-text search across institution names, individual
+     names, and registered identifiers
+
+GET  /v1/record/{entry_hash}
+     Returns a specific verified record entry by hash,
+     with all node signatures for independent verification</pre>
+    </div>
+
+    <h3>Response format</h3>
+
+    <p>All API responses are JSON. Every response includes the entry hash and node signatures for any verified record data returned, allowing the consumer to independently verify the data against the distributed record without trusting the API layer. The API is a convenience layer over the distributed record. It does not have authority over the record's contents.</p>
+
+    <h3>Public documentation</h3>
+
+    <p>Full API documentation is publicly available and versioned alongside the protocol. No documentation is paywalled or restricted. The schema, endpoint specifications, response formats, and error codes are open. Third-party applications built on the API are not required to credit NPN, though they are required not to misrepresent the source or integrity of the data they serve.</p>
+
+  </div>
+
+  <!-- SECTION 7 -->
+  <span class="section-anchor" id="s7"></span>
+  <div class="section">
+    <div class="section-label">// 07</div>
+    <h2>Front End Specification</h2>
+
+    <p>The public front end is not a simplified preview of the API. It is a full-capability interface to the verified record and the public data layer, accessible to any person with a web browser. No account is required. No institutional affiliation is required. The front end and the API expose the same data. The front end exists because not everyone who should have access to this data has the technical capacity to query an API, and that gap is itself an information asymmetry the network is designed to eliminate.</p>
+
+    <h3>Institution search and profile</h3>
+
+    <p>The primary entry point is a search interface returning institution profiles. A profile page displays everything in the verified record for that institution - all submitted data categories, the full correction history where it exists, the submission lag record, and the gap between public data and VDS submission where visible. No commentary. No assessment. The data, presented clearly.</p>
+
+    <p>Each data item on the profile page displays its source - whether it came from public data ingestion or from VDS submission - and carries a link to the relevant verified record entry, including the node signatures, for independent verification. Users can inspect the provenance of any data point they are looking at, tracing it to the primary source and the verification result, without leaving the interface.</p>
+
+    <h3>Relationship explorer</h3>
+
+    <p>The relationship explorer takes an institution or named individual as input and returns a navigable graph of connections: funding relationships, board affiliations, output attributions, and governance roles, drawn from the verified record. Each connection is clickable - selecting a connection navigates to the connected institution or individual's profile. The graph can be expanded outward iteratively. The user determines the depth of exploration.</p>
+
+    <p>The relationship explorer renders declared relational fields from verified record entries. It does not derive or infer connections. Every edge displayed in the graph is an explicit declaration - either a funding relationship declared in a Category C submission, a board affiliation or governance role declared in a Category D submission, or a relationship recorded in ingested public source data such as Companies House persons of significant control and director appointment records.</p>
+
+    <p>The underlying query pulls all verified record entries in which the selected institution or individual appears as a named party in a relational field, across Category C, Category D, and the public data layer. The counterparty reference in each such entry becomes a node in the graph. Selecting that counterparty runs the same query against their record. The user determines traversal depth. The network determines nothing about the significance of any connection.</p>
+
+    <p>A query-optimised index over relational fields is a sensible implementation choice at scale and is left to the development team's discretion. It is a performance consideration, not an architectural one. The graph is structurally derivable from the verified record alone.</p>
+
+    <p>The graph presents connections. It does not characterise them. There are no colour-coded risk indicators, no prominence weighting based on connection volume, no visual hierarchy beyond the user's own navigation choices. The inference is the user's.</p>
+
+    <h3>Timeline view</h3>
+
+    <p>The timeline view plots any institution or individual's provenance data on a horizontal time axis. VDS data items - board appointments, funding relationships, output publications, financial period data - appear as events. Public data items - filing dates, legislative changes, macroeconomic events, regulatory actions - are available as overlay layers, toggleable independently.</p>
+
+    <p>Overlay layers available at launch include major macroeconomic events (drawn from Bank of England and ONS data), UK legislative and regulatory changes by sector, Companies House filing events, and parliamentary register entries. Additional overlay layers are added as public data ingestion expands. No overlay layer introduces interpretation - events are labelled with their official designation and dated to primary source. What the user sees in the relationship between the institution's timeline and the event overlay is their own observation.</p>
+
+    <h3>Comparison tool</h3>
+
+    <p>The comparison tool allows users to select multiple institutions and display their Category B and Category E data side by side: turnover trajectory, spend category distribution, compensation ratio, dividend payout ratio, employee count band. All figures are normalised where necessary for cross-institution comparison - turnover expressed as indexed growth from a user-selected baseline, spend categories as percentage of turnover, compensation ratio as a dimensionless multiple. No institution is ranked. No institution is highlighted. The display is neutral. The comparison is the user's.</p>
+
+    <h3>Optional account</h3>
+
+    <p>Users may create an account to save relationship maps, timeline configurations, and comparison sets across sessions. Account creation requires only an email address. No identity verification is required. No account data is used for any purpose other than saving the user's own interface state. Account holders receive no additional data access - the data available to an account holder is identical to the data available to an anonymous visitor.</p>
+
+    <h3>Public data sandbox</h3>
+
+    <p>A dedicated sandbox view allows users to query and visualise the public data layer directly, independent of any specific institution's VDS record. Users can select data series from any ingested public dataset, set a shared time axis, and add event overlays. Multiple series from different datasets can be displayed on the same chart. The user selects the series, sets the baseline, and reads the result. The interface does not suggest combinations, does not highlight correlations, and does not label outputs as significant or otherwise. The data is presented. The reading is the user's.</p>
+
+    <div class="callout">
+      <p>DESIGN PRINCIPLE. Every view in the front end is exportable as a shareable URL that reconstructs the exact configuration - institutions selected, time range, overlays active, comparison parameters. No account is required to share or receive a shared view. A user who has built a specific configuration can send the URL to anyone. The recipient loads the same view without needing an account, without needing to reconstruct the configuration, and without any registration friction between them and the data.</p>
+    </div>
+
+  </div>
+
+  <!-- SECTION 8 -->
+  <span class="section-anchor" id="s8"></span>
+  <div class="section">
+    <div class="section-label">// 08</div>
+    <h2>Node Infrastructure Requirements</h2>
+
+    <p>Node operators are responsible for their own infrastructure. The network does not provision, manage, or audit node hardware. The requirements below define the minimum standard a node must meet to participate in verification. Technical assessment against these requirements is part of the admission process.</p>
+
+    <h3>Compute and memory</h3>
+
+    <p>Verification workload at MVP scale is dominated by API calls to public primary sources and JSON processing. It is not computationally intensive. A node running on a dedicated server with four cores and 16GB RAM comfortably handles the verification load at network scales up to the ceiling of 25-30 nodes and thousands of submitting institutions. Nodes are not processing blockchain-scale transaction volumes. They are running structured data comparison against public APIs.</p>
+
+    <div class="spec-table-wrap">
+    <table class="spec-table">
+      <tr><th>Resource</th><th>Minimum</th><th>Recommended</th></tr>
+      <tr><td>CPU</td><td>4 cores</td><td>8 cores</td></tr>
+      <tr><td>RAM</td><td>16 GB</td><td>32 GB</td></tr>
+      <tr><td>Storage</td><td>2 TB SSD</td><td>4 TB SSD with backup</td></tr>
+      <tr><td>Network</td><td>100 Mbps dedicated</td><td>1 Gbps dedicated</td></tr>
+      <tr><td>Uptime commitment</td><td>99% monthly</td><td>99.5% monthly</td></tr>
+    </table>
+    </div>
+
+    <h3>Uptime and availability</h3>
+
+    <p>A node that misses verification rounds due to downtime reduces the effective network consensus capacity. The 99% monthly uptime commitment permits approximately 7 hours of downtime per month. Planned maintenance must be notified to the consortium in advance. Unplanned downtime exceeding 24 hours in a rolling 30-day period triggers a review. Persistent availability failures are grounds for removal under the standard node removal process.</p>
+
+    <h3>Security requirements</h3>
+
+    <p>Node operators are required to implement standard server security practices: encrypted storage, access control, security patching within a defined window of release, and network-level protection against common attack vectors. Security implementation is the node operator's responsibility and is self-certified on admission. The consortium may commission independent security review of node infrastructure where specific concerns arise. Security incidents must be disclosed to the consortium promptly.</p>
+
+    <h3>Infrastructure diversity compliance</h3>
+
+    <p>As established in the White Paper, the network monitors concentration across cloud providers, operating systems, and automation dependencies. Node operators are required to disclose their hosting environment, operating system, and material automation dependencies on admission and to notify the consortium of material changes. Where the consortium identifies concentration approaching defined thresholds, it will notify affected nodes and initiate a review. Node operators are expected to cooperate with that review and to consider infrastructure adjustments where feasible.</p>
+
+    <p>No specific infrastructure choices are mandated. A node running on-premises Linux infrastructure and a node running on a commercial cloud platform with a Windows server OS are both acceptable. The requirement is diversity across the network, not uniformity within it.</p>
+
+  </div>
+
+  <!-- SECTION 9 -->
+  <span class="section-anchor" id="s9"></span>
+  <div class="section">
+    <div class="section-label">// 09</div>
+    <h2>DNS and Endpoint Architecture</h2>
+
+    <p>The network's DNS and endpoint architecture is designed around a single principle: the verified record must not depend on any single domain, server, or controlling organisation for its integrity or retrievability. DNS and human-readable endpoints are a usability layer. They are not a dependency layer.</p>
+
+    <h3>Content addressing as the foundation</h3>
+
+    <p>The verified record is content-addressed. Each entry is identified by its cryptographic hash, not by a URL. An entry retrieved from any node, or from any copy of the record held anywhere, is verifiable as genuine by checking its hash against the Merkle chain. The record's integrity is a mathematical property of its structure. It does not depend on the domain it is served from, the organisation that operates the server, or the continued availability of any specific endpoint.</p>
+
+    <p>This means the network can survive complete DNS failure, domain seizure, or the loss of the founding organisation's infrastructure, as long as any copy of the verified record exists anywhere and the protocol for reading it is public. The record is the network. The endpoints are how users and applications find it.</p>
+
+    <h3>Primary domain and subdomain structure</h3>
+
+    <p>The primary domain is operated by the founding organisation in Phase 1. Each node operates a subdomain under the primary domain, pointing to that node's server. Users and applications querying the network can direct requests to any node subdomain - there is no single point of API failure. If any node is unavailable, queries can be directed to any other active node. If the primary domain is unavailable, direct IP access to any node remains available as a fallback.</p>
+
+    <div class="code-block">
+      <div class="code-label">Domain structure</div>
+      <pre>Primary domain:    npn.n-ought.com  (Phase 1: founding org)
+                   npn.network      (target: consortium-owned TLD)
+
+Node subdomains:   {node-id}.npn.n-ought.com
+                   Each points to that node's server
+                   Node operator controls their subdomain records
+
+Submission endpoint: submit.npn.n-ought.com
+                   Phase 1: founding org infrastructure
+                   Phase 2: load-balanced across consortium
+
+API endpoint:      api.npn.n-ought.com
+                   Resolves across active nodes (round-robin or
+                   geographic routing)</pre>
+    </div>
+
+    <h3>DNS succession</h3>
+
+    <p>DNS control transitions in parallel with the governance transitions described in the White Paper. In Phase 1, the founding organisation controls the root DNS. In Phase 2, DNS control moves to a multisig arrangement requiring a defined threshold of node operator signatures for any modification to the root domain records. In Phase 3, the consortium controls DNS entirely, with the founding organisation holding one signature among many.</p>
+
+    <p>The multisig DNS implementation uses a DNS management layer that requires cryptographic approval from a threshold of registered node operators before any record change is applied. This is not a novel technology - it is standard multi-party authorisation applied to DNS management. The specific implementation is a protocol parameter to be confirmed before Phase 2 transition.</p>
+
+    <h3>Reducing root domain dependency</h3>
+
+    <p>The architecture is designed to minimise the operational significance of the root domain even in Phase 1. Because the verified record is content-addressed and distributed across all nodes, the root domain controls discoverability but not data integrity. A DNS-level attack or failure takes down the primary entry point - not the record, not the data, not the network's operational capacity. Node subdomains remain accessible via direct IP. The record remains intact and verifiable.</p>
+
+    <p>As the network matures and the consortium develops operational independence, alternative naming mechanisms - including decentralised naming systems - will be evaluated as supplements to the DNS layer. These are noted as a future consideration, not a current requirement.</p>
+
+  </div>
+
+  <div class="doc-rule"></div>
+  <p style="font-size:10px;color:#2a3860;letter-spacing:.12em;text-align:center;">N-ought Provenance Network. Technical Specification. Draft.</p>
+
+</div>
+
+<footer>
+  <span>N-OUGHT PROVENANCE NETWORK</span>
+  <span>TECHNICAL SPECIFICATION // DRAFT</span>
+</footer>
+
+<script>
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts, pSY = 0;
+function resize(){ W=pCv.width=window.innerWidth; H=pCv.height=window.innerHeight; }
+function mkParts(){
+  parts=[];
+  const n=Math.floor(W*H/6500);
+  for(let i=0;i<n;i++) parts.push({
+    x:Math.random()*W, y:Math.random()*H*8,
+    r:Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+function drawParts(){
+  pCx.clearRect(0,0,W,H);
+  pSY+=(window.scrollY-pSY)*.08;
+  const off=pSY*1.65, span=H*8;
+  for(const p of parts){
+    let sy=((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save();
+    pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+function loop(){ drawParts(); requestAnimationFrame(loop); }
+function init(){ resize(); mkParts(); loop(); }
+window.addEventListener('resize',()=>{ resize(); mkParts(); },{passive:true});
+init();
+</script>
+
+</body>
+</html>
