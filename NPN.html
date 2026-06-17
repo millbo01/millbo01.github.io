@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-ought Provenance Network — White Paper</title>
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+:root {
+  --bg:#070810;
+  --accent:#4a9eff;
+  --accent-mid:#1a2a7a;
+  --accent-deep:#0d1033;
+  --text:#c8d4e8;
+  --text-dim:#3a4a6a;
+  --text-faint:#1a2240;
+  --mono:'Courier New',Courier,monospace;
+  --serif:Georgia,'Times New Roman',serif;
+}
+
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:15px;
+  line-height:1.6;
+  letter-spacing:.04em;
+  overflow-x:hidden;
+}
+
+/* ── PARTICLES ── */
+#particles {
+  position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  z-index:1; pointer-events:none;
+}
+#surface-light {
+  position:fixed; top:-20%; left:30%;
+  width:50%; height:70%;
+  background:radial-gradient(ellipse at 50% 0%,rgba(74,158,255,.03) 0%,transparent 70%);
+  pointer-events:none; z-index:2;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 48px;
+  border-bottom:.5px solid var(--text-faint);
+  background:rgba(7,8,16,.88);
+  backdrop-filter:blur(4px);
+}
+.nav-mark { display:inline-block; width:28px; height:28px; cursor:pointer; text-decoration:none; flex-shrink:0; }
+.nav-mark svg { display:block; width:28px; height:28px; }
+.nav-links { display:flex; gap:48px; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:11px; letter-spacing:.18em; text-transform:uppercase; transition:color .3s; }
+.nav-links a:hover { color:var(--accent); }
+.nav-links .nav-divider { width:.5px; height:14px; background:var(--text-faint); align-self:center; flex-shrink:0; }
+
+/* ── TOC ── */
+.toc {
+  position:fixed; top:80px; right:24px;
+  width:220px;
+  max-height:calc(100vh - 120px);
+  overflow-y:auto;
+  padding:20px;
+  border:.5px solid var(--text-faint);
+  background:rgba(7,8,16,.92);
+  z-index:50;
+}
+.toc-label {
+  font-size:9px; letter-spacing:.25em; color:#2a3860;
+  text-transform:uppercase; margin-bottom:20px;
+}
+.toc ol { list-style:none; counter-reset:toc; }
+.toc li {
+  counter-increment:toc; font-size:10px; color:#7a8faa;
+  letter-spacing:.05em; padding:5px 0;
+  border-bottom:.5px solid var(--text-faint);
+  display:flex; gap:10px;
+}
+.toc li:last-child { border-bottom:none; }
+.toc li::before {
+  content:counter(toc,decimal-leading-zero);
+  color:var(--text-faint); font-size:9px; letter-spacing:.1em;
+  flex-shrink:0; padding-top:1px;
+}
+.toc a { color:#7a8faa; text-decoration:none; transition:color .2s; }
+.toc a:hover { color:var(--accent); }
+.toc::-webkit-scrollbar { width:3px; }
+.toc::-webkit-scrollbar-track { background:transparent; }
+.toc::-webkit-scrollbar-thumb { background:var(--text-faint); }
+
+/* ── CONTENT ── */
+.doc-wrap {
+  position:relative; z-index:10;
+  max-width:860px;
+  margin:0 auto;
+  padding:140px 48px 120px;
+}
+
+/* ── PAPER HEADER ── */
+.paper-meta {
+  font-size:9px; letter-spacing:.25em; color:#2a3860;
+  text-transform:uppercase; margin-bottom:40px;
+}
+.paper-title {
+  font-family:var(--mono); font-size:18px; font-weight:normal;
+  color:var(--accent); opacity:.9; letter-spacing:.12em;
+  line-height:1.5; margin-bottom:16px;
+}
+.paper-subtitle {
+  font-size:12px; color:#7a8faa; letter-spacing:.06em;
+  font-style:italic; margin-bottom:48px;
+}
+.paper-rule { width:100%; height:.5px; background:var(--text-faint); margin-bottom:56px; }
+
+/* ── ABSTRACT ── */
+.abstract {
+  margin-bottom:56px; padding:28px 32px;
+  border-left:1px solid var(--accent-mid);
+  background:rgba(13,16,51,.1);
+}
+.abstract-label {
+  font-size:9px; letter-spacing:.25em; color:#2a3860;
+  text-transform:uppercase; margin-bottom:16px;
+}
+.abstract p {
+  font-size:12px; color:#7a8faa; line-height:1.9;
+  letter-spacing:.04em; margin-bottom:16px;
+}
+.abstract p:last-child { margin-bottom:0; }
+
+/* ── SECTIONS ── */
+.section { margin-bottom:72px; }
+.section-anchor { display:block; height:80px; margin-top:-80px; visibility:hidden; }
+.section-label {
+  font-size:9px; letter-spacing:.25em; color:var(--accent);
+  opacity:.7; text-transform:uppercase; margin-bottom:16px;
+}
+.section h2 {
+  font-family:var(--mono); font-size:13px; font-weight:normal;
+  letter-spacing:.25em; color:var(--accent); opacity:.88;
+  text-transform:uppercase; margin-bottom:32px;
+  padding-bottom:16px; border-bottom:.5px solid var(--text-faint);
+}
+.section h3 {
+  font-family:var(--mono); font-size:11px; font-weight:normal;
+  letter-spacing:.2em; color:var(--accent); opacity:.75;
+  text-transform:uppercase; margin:40px 0 20px;
+}
+.section p {
+  font-size:12px; color:#7a8faa; line-height:1.9;
+  letter-spacing:.04em; margin-bottom:20px; max-width:680px;
+}
+.section ul { margin:0 0 20px 0; padding-left:0; list-style:none; }
+.section ul li {
+  font-size:12px; color:#7a8faa; line-height:1.9;
+  letter-spacing:.04em; padding:4px 0 4px 20px;
+  position:relative; max-width:680px;
+}
+.section ul li::before {
+  content:'--'; position:absolute; left:0; color:var(--text-faint);
+}
+
+/* ── BLOCKQUOTE ── */
+.section blockquote {
+  margin:32px 0; padding:22px 28px;
+  border-left:1px solid var(--accent-mid);
+  background:rgba(13,16,51,.15);
+}
+.section blockquote p {
+  font-size:12px; color:var(--text); opacity:.75;
+  letter-spacing:.05em; line-height:1.9;
+  margin-bottom:0; font-style:italic; max-width:none;
+}
+
+/* ── CALLOUT ── */
+.callout {
+  margin:32px 0; padding:24px 28px;
+  border:.5px solid var(--text-faint);
+  background:rgba(13,16,51,.2);
+}
+.callout p {
+  font-size:11px; color:#4a5a7a; line-height:1.9;
+  letter-spacing:.04em; margin-bottom:12px; max-width:none;
+}
+.callout p:last-child { margin-bottom:0; }
+
+/* ── DEFINITION BLOCK ── */
+.def-block {
+  margin:40px 0; padding:28px 32px;
+  border-left:1px solid var(--accent-mid);
+  background:rgba(13,16,51,.15);
+}
+.def-label {
+  font-size:9px; letter-spacing:.22em; color:#2a3860;
+  text-transform:uppercase; margin-bottom:16px;
+}
+.def-term {
+  font-family:var(--mono); font-size:13px; color:var(--accent);
+  opacity:.8; letter-spacing:.1em; margin-bottom:12px; line-height:1.7;
+}
+.def-note {
+  font-size:11px; color:#7a8faa; line-height:1.8;
+  letter-spacing:.04em; margin-top:12px;
+}
+
+/* ── RULE ── */
+.doc-rule { width:100%; height:.5px; background:var(--text-faint); margin:64px 0; }
+
+/* ── FOOTER ── */
+footer {
+  position:relative; z-index:10;
+  display:flex; justify-content:space-between;
+  padding:24px 48px; border-top:.5px solid var(--text-faint);
+  font-size:9px; letter-spacing:.18em; color:#2a3860; text-transform:uppercase;
+}
+
+/* ── STRONG / EM ── */
+strong { color:var(--accent); font-weight:normal; letter-spacing:.02em; opacity:.9; }
+em { color:#7a8faa; font-style:italic; }
+
+/* ── PRINT ── */
+@media print {
+  #particles, #surface-light, nav, .toc { display:none !important; }
+  .doc-wrap { padding:40px; }
+  body { background:#fff; color:#111; }
+}
+
+/* ── MOBILE ── */
+@media(max-width:1100px) { .toc { display:none; } }
+@media(max-width:680px) {
+  nav { padding:18px 24px; }
+  .nav-links { display:none; }
+  .doc-wrap { padding:100px 24px 80px; }
+  footer { padding:18px 24px; flex-direction:column; gap:8px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div id="surface-light"></div>
+
+<nav>
+  <a href="index.html" class="nav-mark" aria-label="N-ought home">
+    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="gn"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#0d1033" stroke-width="3">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#1a2a7a" stroke-width="1.2" filter="url(#gn)">Ø</text>
+      <text x="14" y="22" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="24" font-weight="700" fill="none" stroke="#4a9eff" stroke-width="0.5" opacity="0.6">Ø</text>
+    </svg>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#engine">The Engine</a></li>
+    <li><a href="n-oughts-law.html">N-ought's Law</a></li>
+    <li><a href="index.html#outputs">Output</a></li>
+    <li class="nav-divider"></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- TOC — will populate as sections are added -->
+<nav class="toc" aria-label="Contents">
+  <div class="toc-label">Contents</div>
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#s1">The Structural Problem</a></li>
+    <li><a href="#s2">What NPN Is</a></li>
+    <li><a href="#s3">Node Architecture</a></li>
+    <li><a href="#s4">The Verified Data Stream</a></li>
+    <li><a href="#s5">Governance and Protocol Evolution</a></li>
+    <li><a href="#s6">Protocol Independence Pathway</a></li>
+    <li><a href="#s7">Implications</a></li>
+  </ol>
+</nav>
+
+<div class="doc-wrap">
+
+  <div class="paper-meta">N-ought // Theoretical Output // NPN White Paper</div>
+  <h1 class="paper-title">N-ought Provenance Network</h1>
+  <p class="paper-subtitle">A protocol for structural transparency infrastructure</p>
+  <div class="paper-rule"></div>
+
+  <!-- ABSTRACT -->
+  <span class="section-anchor" id="abstract"></span>
+  <div class="abstract">
+    <div class="abstract-label">Abstract</div>
+    <p>Institutional failure is not primarily a product of bad actors. It is a product of structural conditions in which the gap between declared and actual behaviour accumulates, invisible to corrective mechanisms, until correction requires disruption that exceeds the harm it addresses. The mechanism is not mysterious. Feedback latency allows latent load to compound beyond the system's recovery capacity before it surfaces as registered harm.</p>
+    <p>This failure mode is not addressable through improved governance, tighter regulation, or better intentions. Each of these operates at the level of declared constraints. None of them alters the operational constraint frontier - the real boundary within which adaptive actors actually behave. That frontier is determined by enforcement integrity and feedback latency. Not by policy documents.</p>
+    <p>The N-ought Provenance Network is not a transparency platform. It is feedback infrastructure - a distributed protocol for making provenance data structurally available to those with the ability and incentive to act on it. Where feedback architecture exists, the operational constraint frontier contracts. Where it does not, drift toward that frontier is not a risk. It is a structural certainty.</p>
+    <p>This paper describes the architecture, governance, and operating logic of NPN. It presupposes familiarity with N-ought's Law of Structural Harm and the Beyond Nash paper on structural drift in systems with adaptive actors. It does not restate that foundation. It builds from it.</p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <span class="section-anchor" id="s1"></span>
+  <div class="section">
+    <div class="section-label">// 01</div>
+    <h2>The Structural Problem</h2>
+
+    <p>Existing transparency mechanisms share a common architecture: they are episodic, interpretive, or capturable. Regulatory disclosure produces snapshots. ESG ratings produce interpretations. Audit regimes are retained and constrained by the institutions they assess. Investigative journalism operates at the cost and latency of human investigation. None of these constitutes feedback architecture in any meaningful sense. They are governance theatre performed at the declared constraint layer - visible, periodic, and structurally insufficient to alter the operational frontier.</p>
+
+    <p>The distinction matters precisely because it determines what can and cannot be addressed. Systems fail not because the rules are wrong but because the rules operate at the declared level while behaviour operates at the operational level. The gap between them is where load accumulates invisibly.</p>
+
+    <blockquote>
+      <p>In systems containing adaptive actors, aggregate system load will rise toward the effective constraint frontier defined by enforcement integrity and feedback latency. This tendency is irreducible: optimisation pressure cannot be eliminated by governance design, only constrained in its rate and effect.</p>
+    </blockquote>
+
+    <p>N-ought's Law of Structural Drift identifies this dynamic formally. The operational frontier is the attractor. Not equilibrium. The constraint frontier - and the constraint frontier moves, continuously, in the direction that adaptive actors within the system make it move. Governance theatre does not alter that dynamic. It documents it.</p>
+
+    <h3>Why feedback latency is the operative variable</h3>
+
+    <p>Harm accumulation is a function of two quantities: the scale of opacity-enabled activity and the integrity of feedback mechanisms that would otherwise expose and correct it. The relationship is expressed in N-ought's Law as H proportional to S divided by F, where S is total institutional scale, Sr is the subset directly coupled to productive output, So is the opacity-enabled remainder, and F is feedback integrity - a composite of exit rights, revenue conditionality, attribution latency, and performance coupling.</p>
+
+    <p>F as measured in high-So institutions must be treated as an upper bound, not a reading. The same structural conditions that permit So to expand also degrade the measurement accuracy of F. The two errors compound in the same direction. This is not a limitation of the framework - it is a structural prediction of it.</p>
+
+    <p>What this means in practice is that the harm potential of any institution operating with significant So is systematically underestimated by every measurement tool that relies on the institution's own reporting, its commissioned assessors, or regulatory channels it has the scale and incentive to influence. The underestimation is not incidental. It is structural.</p>
+
+    <h3>The fabrication threshold</h3>
+
+    <p>Authentic reputation is first-degree only. Dunbar's research establishes the cognitive boundary within which behaviour can be continuously tracked and genuinely assessed - approximately 150 relationships. What that limit actually constrains is not opinion-holding or institutional evaluation. It constrains the architecture of genuine social membership.</p>
+
+    <p>Second degree is not a reputational mechanism. It is an access mechanism. A referral lowers the friction of first-degree contact. It does not substitute for it. Beyond first degree, no authentic reputation is possible. What exists in its place is fabricated signal. This is developed fully in Beyond Nash, Section 5a.</p>
+
+    <p>At institutional scale, every organisation operating beyond that threshold is, by structural necessity, maintaining a fabricated reputational layer. The coordination burden of sustaining that layer grows non-linearly with scale. The layer does not thin gradually under pressure - it holds until the fiction fails at a peripheral point, at which moment every actor who has traded in the fabricated reputation must simultaneously seek distance from it. The corrective implication is direct: provenance data, structurally available, makes the fabricated layer unnecessary. Not by repairing reputation, but by rendering it irrelevant.</p>
+
+    <h3>Why existing solutions cannot close the gap</h3>
+
+    <p>The failure of existing transparency mechanisms is not a failure of intention or resource. It is a failure of architecture. Consider each category:</p>
+
+    <ul>
+      <li><strong>Regulatory disclosure</strong> is episodic, backward-looking, and formatted to the institution's own reporting architecture. It tells you what the institution chose to say about itself at a point in time, in a format it had significant influence over. It is not feedback. It is a managed signal with a compliance wrapper.</li>
+      <li><strong>ESG and ratings frameworks</strong> are interpretive. They convert institutional self-reporting into a score, then sell that score to the market. The revenue model depends on institutional participation. The conflict is structural, not accidental. Ratings that consistently produce uncomfortable conclusions do not retain clients.</li>
+      <li><strong>Audit</strong> is commissioned by the institution being assessed and constrained by the relationship that produces the engagement. The auditor's operational constraint frontier includes the retention of the client. This is not a solvable problem within the audit model. It is the audit model.</li>
+      <li><strong>Investigative journalism</strong> operates at human investigation speed and cost, against institutions with legal, financial, and reputational resources orders of magnitude larger than the investigation. It is essential. It is also insufficient as a systemic mechanism. It finds failures after they have accumulated to the point of surfacing. It does not reduce feedback latency. It reports on what latency has hidden.</li>
+    </ul>
+
+    <p>The common failure across all four categories is that they operate at the declared constraint layer. They are responses to the symptom - the gap between declared and actual behaviour - rather than interventions in the structural condition that produces and sustains it.</p>
+
+    <h3>The intervention that changes the calculus</h3>
+
+    <p>The operational constraint frontier contracts when two conditions hold simultaneously: provenance data is structurally available to actors with the ability to act on it, and those actors have genuine incentive to do so. The first condition requires infrastructure. The second exists already - it is the ordinary motivation of counterparties, investors, employees, regulators, and the public to make decisions grounded in accurate information about what institutions have actually done rather than what they have declared.</p>
+
+    <p>The infrastructure gap is the problem NPN addresses. Not by adjudicating, interpreting, or scoring institutional behaviour - but by making provenance data available in a form that is verifiable, attributable, and structurally resistant to the capture that has compromised every existing transparency mechanism.</p>
+
+    <div class="def-block">
+      <div class="def-label">Working definition</div>
+      <div class="def-term">Provenance data</div>
+      <div class="def-note">Structured, attributable records of what an institution has actually done - funding relationships, operational outputs, counterparty transactions, and governance decisions - traceable to primary source, cryptographically verifiable, and independent of the institution's own characterisation of those facts. Provenance data is not interpretation. It is the substrate from which interpretation becomes possible without requiring trust in the institution being assessed.</div>
+    </div>
+
+    <p>The question NPN answers is not whether institutions should be transparent. It is whether feedback architecture can be built that changes the structural conditions under which institutional behaviour operates - such that opacity becomes progressively more costly to maintain than transparency, not through moral pressure but through the ordinary operation of informed counterparties making rational decisions.</p>
+
+    <p>Geography is structurally irrelevant to this question. NPN does not make jurisdictional claims. The feedback dynamics described in N-ought's Law operate identically regardless of national context, regulatory regime, or cultural setting. What determines node participation is integrity of provenance data and operational capacity to verify it - not location. The network is human infrastructure. It cares nothing for borders.</p>
+
+  </div>
+  <!-- end section 1 -->
+
+  <!-- SECTION 2 -->
+  <span class="section-anchor" id="s2"></span>
+  <div class="section">
+    <div class="section-label">// 02</div>
+    <h2>What NPN Is</h2>
+
+    <p>NPN is not a database. It is not a ratings system. It is not a platform for publishing institutional information. It does not adjudicate, interpret, score, or characterise the behaviour of any institution. It has no editorial function and no position on what the data it verifies means.</p>
+
+    <p>NPN is a distributed protocol for provenance verification. It establishes, through a network of independent nodes, that a given piece of institutional data is attributable to a named primary source, unaltered in transit, and submitted by the institution to which it belongs. What any actor then does with that verified data is outside the network's scope and outside its interest.</p>
+
+    <p>The analogy that holds is infrastructure, not media. HTTP does not have a view on what websites say. DNS does not editorialize about domain names. NPN does not have a view on what institutions do. It verifies provenance. The interpretation layer sits above the protocol, built by others, accountable to their own users. NPN is the substrate.</p>
+
+    <h3>Provenance verification is not truth verification</h3>
+
+    <p>NPN verifies that provenance data submitted by an institution is attributable to a named primary source and unaltered in transit. It does not verify that the underlying data accurately reflects reality. That distinction is not a limitation - it is a design principle.</p>
+
+    <p>The network's integrity mechanism is not detection of fabrication at the point of submission. It is the permanent, attributable cost of fabrication after the fact. Data entered into the verified record cannot be quietly withdrawn or revised. An institution whose submitted data is subsequently shown to contradict observable reality has not merely been caught in a lie. It has been caught in a timestamped, cryptographically attributed lie that predates the exposure. That asymmetry is what trends institutional behaviour toward authenticity - not trust in the institution's intentions, but the structural cost of verified falsehood.</p>
+
+    <h3>Errors and the correction mechanism</h3>
+
+    <p>Errors will occur. Submitted data that is subsequently found to be incorrect - whether through internal audit, counterparty challenge, or external investigation - can be corrected through a formal submission process. The correction is hashed independently and supersedes the previous value for all operational purposes. The previous value is not deleted. Both the original submission and the correction persist in the verified record, with full attribution and timestamp.</p>
+
+    <p>An institution with a visible correction history is not a damaged institution. It is one whose data integrity is demonstrably self-correcting. That record is itself a provenance signal. The correction protocol is detailed in Section 4.</p>
+
+    <h3>What the network consists of</h3>
+
+    <p>NPN operates as an invitation-only node network. Each node is an independent institutional operator that has met the admission criteria, integrated its own provenance data as a condition of membership, and committed to running verification infrastructure according to the shared protocol. The node architecture and admission process are detailed in Section 3.</p>
+
+    <h3>What NPN is not</h3>
+
+    <p>NPN does not certify that an institution is ethical, well-governed, or trustworthy. It certifies that specific provenance data submitted by that institution is genuine in the provenance sense described above. An institution with verified provenance data may still be doing things worth scrutinising. The network makes scrutiny possible. It does not perform it.</p>
+
+    <p>NPN does not rank institutions. It does not produce scores, indices, or comparative assessments. Those products may be built on top of NPN data by third parties. The network has no control over and no responsibility for what is built above it.</p>
+
+    <p>NPN does not accept partial disclosure. Verified Data Stream participation requires submission of a complete dataset within the agreed schema. An institution cannot join the network for selected data categories while withholding others. Selective participation is not participation.</p>
+
+    <h3>Public access as a design principle</h3>
+
+    <p>The verified record is publicly accessible. No account is required. No institutional affiliation is required. No technical capability beyond a web browser is required.</p>
+
+    <p>This is not a feature. It is a design constraint. The information asymmetry that NPN is built to reduce cannot be reintroduced through the access architecture of its own interface. A network that makes provenance data available only to those with the resources, affiliations, or technical capacity to retrieve it has not addressed the problem. It has reproduced it one layer up.</p>
+
+    <p>The public front end and the API expose the same underlying data. The API exists for bulk retrieval, programmatic queries, and integration into third-party tools - it is key-gated for rate limiting and abuse prevention, not for restriction. Elevated rate limits are available to research institutions, journalism organisations, and oversight bodies on application. The data is never tiered. Access is never conditional on identity or affiliation.</p>
+
+  </div>
+  <!-- end section 2 -->
+
+  <!-- SECTION 3 -->
+  <span class="section-anchor" id="s3"></span>
+  <div class="section">
+    <div class="section-label">// 03</div>
+    <h2>Node Architecture</h2>
+
+    <p>The network's integrity is a function of its nodes. Not of the protocol alone, not of the governance structure, not of the legal wrapper - of the actual institutions operating the nodes and what their participation credibly signals. Node architecture is therefore not primarily a technical question. It is a question of institutional selection.</p>
+
+    <h3>Admission criteria</h3>
+
+    <p>A node operator must satisfy four conditions before admission is considered.</p>
+
+    <p>First, institutional credibility. The operator must be a functioning institution with a demonstrated track record - not a vehicle created for the purpose of node operation. The credibility of the network in aggregate is bounded by the credibility of its weakest node. Admission is conservative by design.</p>
+
+    <p>Second, technical capacity. The operator must be able to run verification infrastructure to the protocol standard - sufficient uptime, adequate data handling capability, and a team with the competence to maintain it. Technical assessment precedes admission, not follows it.</p>
+
+    <p>Third, own-data integration. Before operating as a node, the institution must have integrated its own provenance data into the network. This is the non-negotiable structural requirement. An institution that has not submitted its own data to the verification process it will administer for others has not demonstrated the commitment the network requires. Participation begins with exposure.</p>
+
+    <p>Fourth, conflict disclosure. Any relationship that could compromise the node's independence as a verifier must be declared prior to admission. Undisclosed conflicts discovered after admission are grounds for removal.</p>
+
+    <h3>The admission process</h3>
+
+    <p>Applications are reviewed by the existing node network. Admission requires 75% node approval. The threshold is deliberately high - the cost of admitting an institution that later compromises network integrity is greater than the cost of moving slowly. A 90-day monitored trial period follows provisional approval, after which full voting rights and network participation activate.</p>
+
+    <p>The network grows through demonstrated integrity, not through growth targets.</p>
+
+    <h3>What a credible founding node looks like</h3>
+
+    <p>The cold-start problem for any network built on trust is that trust requires a track record the network does not yet have. The founding nodes carry that weight. Their credibility is the network's initial credibility. Selection criteria for founding nodes are therefore more demanding than for subsequent admissions - not less.</p>
+
+    <p>The structural profile of a credible founding node is specific. The institution should already be operating with high feedback integrity by the framework's own measures - genuine exit rights for its counterparties, revenue that is meaningfully conditional on performance, low attribution latency between action and consequence, and real performance coupling at the individual level. An institution that joins NPN but has already built these structural conditions internally has nothing materially to fear from provenance exposure. Their participation costs them nothing they have not already effectively disclosed through their own systems.</p>
+
+    <p>A further characteristic of the strongest founding node candidates is an existing audience that understands transparency as a value - not as a compliance exercise, but as a structural feature of how the institution operates. When such an institution joins the network, the signal propagates through a population already primed to understand what that participation means. The network effect compounds from there.</p>
+
+    <p>Institutions built around independently verifiable output are particularly well suited. Where the quality of what an institution produces can be assessed directly by those who use it - without intermediaries, without interpretation, with low latency between delivery and assessment - the institution has already solved, structurally, the problem NPN addresses at network level. Their joining is not a commitment to become transparent. It is a recognition that they already are.</p>
+
+    <h3>Network size and composition</h3>
+
+    <p>The network is designed for integrity, not scale. There is no growth target. There is a floor - three nodes are the minimum for consensus to function - and a ceiling, estimated at 25 to 30 nodes, beyond which coordination costs begin to outweigh the marginal benefit of additional verification capacity.</p>
+
+    <p>Within that range, diversity matters more than volume. Geographic diversity ensures the network cannot be constrained by the regulatory or political conditions of any single jurisdiction. Sector diversity ensures that no single institutional type dominates the consensus mechanism. Both are design targets, not quotas.</p>
+
+    <p>Infrastructure diversity is subject to the same logic. The network sets defined limits on the proportion of nodes relying on any single cloud provider, operating system, or automation platform. No single infrastructure dependency should represent more than a defined threshold of total node capacity. The specific limits are detailed in Section 4, but the principle is architectural: over-reliance on any one infrastructure provider - whether a cloud platform, a software vendor, or an automation stack - creates a point of control that is structurally equivalent to institutional capture. A network that is formally decentralised but operationally dependent on a single provider has not solved the capture problem. It has moved it one level down and made it less visible. Nodes are encouraged to operate diverse hosting environments - a mix of on-premises, private cloud, and public cloud where feasible - and to avoid monocultures in operating systems and core dependencies. The network monitors concentration across these dimensions and flags breaches of threshold to the node consortium for review.</p>
+
+    <h3>Node removal</h3>
+
+    <p>A node can be removed by 75% vote of the remaining network. The grounds are persistent technical failure, undisclosed conflict of interest, or behaviour that compromises the integrity of the verification process. Removal is a last resort - the process includes direct communication, support, and a defined resolution period before a vote is called. A node that exits, whether voluntarily or by removal, does so on the public record. That record persists.</p>
+
+  </div>
+  <!-- end section 3 -->
+
+  <!-- SECTION 4 -->
+  <span class="section-anchor" id="s4"></span>
+  <div class="section">
+    <div class="section-label">// 04</div>
+    <h2>The Verified Data Stream</h2>
+
+    <p>The Verified Data Stream (VDS) is the protocol through which institutions submit provenance data to the network for verification. It is not the only source of data the network holds. NPN actively ingests publicly available data from existing sources - national statistical agencies, company registries, central banks, parliamentary records, and equivalent public sector APIs - where the legal basis for doing so exists. VDS sits on top of that public data layer. It is the voluntary submission channel through which institutions provide data that goes deeper than what is publicly available, mapped to a defined protocol specification and subject to network verification.</p>
+
+    <p>The distinction matters for understanding what an institution's absence from VDS actually signals. The public data layer exists regardless of participation. An institution that does not submit to VDS is not absent from the network. It is present only at the depth that public data permits. The gap between public data and VDS submission is itself visible. That gap is a provenance signal.</p>
+
+    <h3>Public data ingestion</h3>
+
+    <p>NPN ingests publicly available data from appropriate sources as a baseline layer. In the UK this includes Companies House, the Office for National Statistics, the Bank of England, parliamentary registers, and other public sector data APIs where access rights are established. The legal basis for ingestion, the data categories accessed, and the refresh frequency are documented in the network's operational specification and subject to review as access rights and data availability evolve.</p>
+
+    <p>Equivalent ingestion from US, Canadian, European, and other jurisdictions raises distinct questions of access rights, data sovereignty, and legal basis that vary materially by jurisdiction. The network's approach to international public data ingestion will be developed incrementally, beginning with jurisdictions where the access framework is clearest and expanding as that framework develops. This is noted here as a design consideration rather than a resolved question.</p>
+
+    <p>Where public datasets from different jurisdictions use differing schemas, the network's position is to ingest what maps cleanly to the protocol specification and hold what does not, rather than applying normalisation logic that would introduce invisible interpretive bias. Normalisation is interpretation. The network does not interpret. Usability limitations that result from schema divergence across jurisdictions are acknowledged as a real cost of that position - one that is preferable to compromising the network's core design principle. How third-party applications built above the protocol choose to handle divergent datasets is outside the network's scope.</p>
+
+    <p>The public data layer is not merely context for VDS submissions. It is independently significant. The ability to pull verified, timestamped public data across institutions - broad money supply against inflation indices, corporate filing histories against legislative timelines, director networks against procurement records - and present those relationships on a shared timeline gives any user access to correlations that are currently only visible to those with the resources to manually aggregate disparate sources. That capability exists before a single institution submits to VDS. The network does not wait for institutional participation to be useful. It is useful from the moment the public data layer is live. VDS participation makes it more precise. It does not make it possible.</p>
+
+    <h3>The schema</h3>
+
+    <p>VDS submissions conform to a versioned protocol specification. The schema defines the data categories that participating institutions are required to submit, the field structure within each category, and the primary source references that submissions must carry. Completeness within each active category is mandatory - selective submission within a category is not permitted.</p>
+
+    <p>The initial protocol schema is not fixed by this paper. The categories below represent the starting framework for assessment, not a settled list of requirements. Each data category must be evaluated against its usefulness in reducing opacity, its accessibility to submitting institutions, the institutional friction its requirement is likely to generate, and its commercial sensitivity. Categories that generate high friction while delivering low opacity-reduction value relative to what the public data layer already provides are candidates for deferral from the initial protocol, with a defined pathway for reintroduction as the network matures and participation normalises.</p>
+
+    <p>The methodology for category selection works backwards from opacity value. The criteria for inclusion in the initial protocol are: meaningful reduction in opacity not already achieved by public data ingestion; viable verification against primary sources; institutional friction that does not outweigh opacity-reduction value; and no material commercial sensitivity in the data itself. Categories that score poorly on the first or third criteria relative to the fourth are candidates for deferral rather than exclusion - they remain on the protocol roadmap for reintroduction as the network matures.</p>
+
+    <h3>Category A: Governance and control structures</h3>
+
+    <p>Fields: board composition with named positions, start and end dates, and declared external affiliations; ownership structure by shareholder category (individual, institutional, state, employee, public float) as percentage bands; beneficial ownership - named individuals or entities holding above a defined threshold, with jurisdiction of domicile; shareholder concentration as percentage held by largest 1, 5, and 10 shareholders expressed as ranges; dividend payout ratio as total dividends paid as a percentage of turnover per reporting period.</p>
+
+    <p>Opacity value: HIGH. Ownership concentration, beneficial ownership identity, and dividend extraction ratios are among the most structurally significant data points for assessing the incentive architecture of an institution. The dividend payout ratio as a fraction of turnover is scale-neutral and directly indicative of extractive versus productive orientation over time. Timestamped beneficial ownership data cross-referenced against material corporate events makes patterns of informed trading visible without requiring adjudication of intent. The record presents the data. The inference sits above the protocol.</p>
+
+    <p>Verification: STRONG. Board positions and ownership above disclosure thresholds are already required disclosures in most jurisdictions. VDS submission is primarily a standardisation function. Beneficial ownership above threshold is a legal disclosure requirement in many jurisdictions - NPN requests submission of what institutions are already obligated to know and in many cases already required to declare. The 5% initial threshold is a protocol parameter subject to evolution downward as network legitimacy grows. Institutional friction at this threshold is moderate. Resistance from institutions that have structured ownership deliberately to obscure it is itself a provenance signal.</p>
+
+    <p>Recommendation: INCLUDE in initial protocol.</p>
+
+    <h3>Category B: Financial data</h3>
+
+    <p>Fields: turnover by reporting period, annual minimum, quarterly where available; spend by category as percentage of turnover across R&D, people costs, infrastructure, external services, financial instruments, and other; submission lag - date of reporting period end versus date of VDS submission, published as part of the verified record.</p>
+
+    <p>Opacity value: HIGH. Turnover is a fixed number and cannot be manipulated through accounting decisions the way profit can. Category-level spend reveals actual operational priorities without exposing supplier relationships or product strategy. The gap between declared priorities and spend category distribution is one of the most reliable indicators of divergence between declared and actual institutional function. Submission lag is itself a data point - an institution that consistently submits at maximum permissible lag is providing a signal the record makes visible without interpretation.</p>
+
+    <p>Verification: MODERATE. Verifiable against statutory accounts and tax filings with lag. Verification is weaker than Category A for real-time submissions - the attestation and correction mechanism carries more weight here. The friction is not about commercial sensitivity. Neither turnover nor spend category reveals competitive advantage. It is about operational requirements that exceed current statutory norms. Real-time submission is the stated direction of protocol evolution. Periodic submission with a defined maximum lag is the realistic starting point.</p>
+
+    <p>Recommendation: INCLUDE at periodic submission, quarterly where available, annual minimum.</p>
+
+    <h3>Category C: Funding relationships</h3>
+
+    <p>Fields: funder identity by organisation name and category (government, private, charitable, individual); recipient identity; amount as value band where disclosure threshold applies; purpose category (research, operational, capital, political, other); reporting period.</p>
+
+    <p>Opacity value: HIGH. Funding relationships are the primary mechanism through which institutional independence is compromised without declaration. The relationship between funder identity, purpose category, and subsequent output or behaviour of the funded institution is one of the most structurally significant opacity gaps in current disclosure regimes.</p>
+
+    <p>Verification: MODERATE TO STRONG depending on jurisdiction and funder type. Where both parties to a relationship are VDS participants, counterparty submissions provide an independent signal - but only in the adversarial case. Where relationships are established and parties are coordinating, matching submissions are not corroboration. They are a coordinated signal, noted as such and not treated as independent verification. Divergence between counterparty submissions is flagged for resolution. The mechanism has genuine teeth in the cases where coordination breaks down - where a relationship exists that one party would prefer not to declare, or where parties submit materially different accounts of the same relationship. That discrepancy is the signal. Relationship existence is mandatory disclosure. Full detail at band and category level is the initial protocol requirement, with full precision as an evolution target.</p>
+
+    <p>Recommendation: INCLUDE at category and value band level.</p>
+
+    <h3>Category D: Institutional affiliations and outputs</h3>
+
+    <p>Fields: named individuals in governance roles with role, institution, and period; declared external affiliations of those individuals including advisory roles, board positions, and significant shareholdings; institutional outputs including publications, reports, and public statements with funding source declared per output.</p>
+
+    <p>Opacity value: MODERATE TO HIGH. Individual affiliation data for senior leadership cross-referenced with funding relationships and board composition creates a relationship map currently only available to well-resourced investigators. Output attribution with funding source most directly addresses the research and advisory capture problem - it is where the connection between funder and output becomes traceable in the record. Initial protocol scoped to board members and C-suite equivalents captures the highest-value data while limiting friction. Extension to broader senior leadership is a protocol evolution target.</p>
+
+    <p>Recommendation: INCLUDE scoped to governance roles. Output attribution with funding source included from the outset.</p>
+
+    <h3>Category E: Operational structure and scale</h3>
+
+    <p>Fields: employee count by band (direct employment only - contractor and outsourced workforce coverage a protocol evolution target); geographic operational footprint by jurisdiction; subsidiary and related entity structure with named entities, ownership percentage, and jurisdiction; compensation ratio - highest total compensation to modal salary, both WTE and pro-rata normalised, per reporting period.</p>
+
+    <p>Opacity value: MODERATE TO HIGH. Subsidiary structure is significant - its use to obscure financial flows, limit liability, and separate reputational risk from operational risk is a well-documented opacity mechanism. The compensation ratio is the clearest available signal of how value generated by the institution is distributed between those who direct it and those who produce it. Modal salary as the lower bound, rather than median, targets the most common actual salary in the organisation - which in most large institutions is the dominant front-line role. It cannot be shifted by workforce composition changes the way median can. The ratio is scale-neutral and cross-comparable across institutions of any size. An institution with an unusually small direct headcount relative to its operational scale is signalling something about how it has structured its obligations - that signal is visible in the employee count field without requiring interpretation.</p>
+
+    <p>Material third-party dependencies by category are DEFERRED to protocol evolution. The verification mechanism is insufficient in the initial network, and the attestation burden is non-trivial. The field will be reintroduced when network scale permits stronger cross-referencing.</p>
+
+    <p>Recommendation: INCLUDE employee band, geographic footprint, subsidiary structure, and compensation ratio. DEFER material dependencies.</p>
+
+    <div class="callout">
+      <p>INITIAL PROTOCOL SUMMARY</p>
+      <p>Category A: Governance and Control - Include / Category B: Financial Data - Include (periodic) / Category C: Funding Relationships - Include (band and category) / Category D: Affiliations and Outputs - Include (scoped to governance roles) / Category E: Operational Structure - Partial include, defer dependencies</p>
+    </div>
+
+    <p>Schema evolution is managed through the network's formal proposal process, requiring 75% node approval. Backward compatibility is prioritised in all schema changes. The schema version in force at any point is part of the public protocol record.</p>
+
+    <h3>The submission protocol</h3>
+
+    <p>Submission is made to the network, not to a node. A central submission endpoint receives incoming data and distributes it simultaneously to active nodes for independent verification. There is no node attribution on intake. This is an explicit security design decision: a submission received by a single node first, then broadcast by that node, creates an attack surface. A corrupted node could alter data before broadcast, and a network that then verifies the corrupted version has not detected the failure - it has ratified it. Central receipt with simultaneous distribution to all active nodes removes that vector entirely.</p>
+
+    <p>Each node independently verifies schema compliance, internal consistency, cryptographic signature validity, and cross-reference against declared primary sources. Acceptance requires 75% node agreement. No single node can accept or reject a submission. Submissions that fail to reach consensus threshold are held and the submitting institution notified with the specific points of failure.</p>
+
+    <p>As the network scales, verification processing may be distributed across a defined quorum of active nodes rather than the full network, with remaining nodes accepting the verified result without reprocessing. This is a scaling optimisation that preserves the security model while managing processing load. The quorum threshold, and the conditions under which it applies, are protocol parameters subject to the standard proposal and approval process.</p>
+
+    <h3>The correction mechanism</h3>
+
+    <p>Errors are an expected feature of a system operating at institutional scale. The protocol provides a formal correction process. A corrected submission is hashed independently and supersedes the previous value for all operational purposes. The previous value is not deleted. Both the original submission and the correction persist in the verified record, fully attributed and timestamped.</p>
+
+    <p>The correction history of an institution is itself provenance data. A visible pattern of prompt, self-initiated correction reads differently to a pattern of correction under external pressure, or of corrections that are themselves subsequently challenged. The record does not interpret that distinction. It makes it visible.</p>
+
+    <p>Persistent failure to correct known errors, or submission of corrections that are themselves demonstrably false, are grounds for VDS suspension. That decision rests with the node consortium.</p>
+
+    <h3>The good faith attestation</h3>
+
+    <p>Every VDS submission carries a formal attestation: that the data represents the institution's good faith effort to disclose provenance relationships accurately and completely as of the submission date, and that the institution commits to correcting errors promptly when identified. The attestation is a timestamped, attributed statement of intent that becomes part of the permanent record. Its value is in what the record shows when reality diverges from it.</p>
+
+    <h3>Integration and onboarding</h3>
+
+    <p>The protocol specification, schema, and API documentation are published openly. Integration is the institution's responsibility. The network provides the specification. The institution maps its data to it and connects to the submission endpoint. Where institutional data systems require significant internal work to achieve that mapping, that cost falls on the institution.</p>
+
+    <p>This is deliberate. The reputational incentive for participation is structural: once the public data layer is live and founding nodes have established the network's credibility, an institution's absence from VDS is a visible gap. The cost of not integrating - in terms of what that absence signals to counterparties, investors, and the public - is designed to exceed the cost of integration over time. The network does not need to subsidise onboarding. The architecture provides the incentive.</p>
+
+    <h3>Open source and access control</h3>
+
+    <p>The node software and protocol are fully open source. The protocol is auditable by anyone. Open source does not mean permissionless participation. Network access requires cryptographic key pairs registered with the consortium. An institution can read the code, audit the protocol, and verify the logic without being able to participate in verification, submit votes, or receive revenue distributions. Protocol transparency and network access are distinct by design.</p>
+
+    <h3>Infrastructure concentration thresholds</h3>
+
+    <p>As established in Section 3, the network sets concentration thresholds across cloud hosting, operating systems, and automation dependencies. The specific thresholds are not fixed in this paper. They are set by the node consortium relative to the available infrastructure landscape at the time, with the design goal of preventing any single provider representing a point of control equivalent to institutional capture. What constitutes a dangerous concentration level will evolve as the infrastructure landscape evolves. Pragmatic constraints - including the relative complexity and cost of different infrastructure choices for node operators - are legitimate factors in threshold-setting. The thresholds are protocol parameters, adjustable through the standard proposal process with 75% node approval.</p>
+
+    <h3>Revenue model</h3>
+
+    <p>Node operators cover their own infrastructure costs. Revenue enters the network through annual VDS participation fees paid by submitting institutions. The fee structure is tiered and reviewed periodically by the node consortium. Fee revenue is split equally: 50% to network operations and protocol development, 50% distributed equally among active nodes. The specific fee levels are published in the network's operational documentation rather than fixed in this paper, as they are subject to revision through the standard protocol process.</p>
+
+  </div>
+  <!-- end section 4 -->
+
+  <!-- SECTION 5 -->
+  <span class="section-anchor" id="s5"></span>
+  <div class="section">
+    <div class="section-label">// 05</div>
+    <h2>Governance and Protocol Evolution</h2>
+
+    <p>NPN is a Community Interest Company at its legal foundation. The CIC structure is not incidental. It is a deliberate answer to the question of how an organisation whose purpose is to scrutinise institutional behaviour protects itself from the institutional pressures that scrutiny generates.</p>
+
+    <p>A CIC with a 65% asset lock cannot be acquired for the purpose of neutralising it. Profit distribution is capped. On dissolution, assets transfer to an organisation of equivalent purpose. The structure does not prevent mission drift through willpower - it prevents it through legal constraint. The distinction matters because willpower is not a governance mechanism. Structure is.</p>
+
+    <h3>The board</h3>
+
+    <p>The governing board holds genuine authority. It approves material decisions, sets operational parameters, and retains the power to remove the founder or chief executive where mission integrity requires it. The founder does not chair the board. That separation is structural, not ceremonial - it exists to ensure that the organisation's accountability architecture does not depend on the continued good judgement of any single individual.</p>
+
+    <p>From the point at which the minimum operational node network is established, each of the three founding nodes holds board representation. Board composition therefore reflects the network's operational reality from the outset rather than starting centralised and transitioning. As the network grows, board composition evolves toward a settled target of at least 70% node representatives, diversified by sector, geography, and institutional specialism. Independent expertise across research integrity, legal and governance, technology and data systems, and institutional accountability informs the remaining seats. A majority of board seats are independent of the founding organisation at all times.</p>
+
+    <p>Board decisions are published. Governance is not exempt from the transparency standard the network applies to others.</p>
+
+    <h3>The proposal process</h3>
+
+    <p>Protocol changes - to the schema, the consensus threshold, the node admission criteria, the infrastructure concentration limits, or any other parameter that governs network operation - are managed through a formal proposal process. Any party may initiate a proposal: node operators, the founding organisation, submitting institutions, or external researchers. The proposal must include a full technical specification, a statement of rationale, and an assessment of backward compatibility implications.</p>
+
+    <p>Proposals enter an open comment period before any vote is called. Node operators review, challenge, and where necessary request revision. A proposal that cannot withstand scrutiny during the comment period does not proceed to a vote. The 75% approval threshold for adoption is deliberately high - the cost of a bad protocol change is greater than the cost of moving slowly, and that asymmetry should be reflected in the voting structure.</p>
+
+    <p>All proposals, including those that fail, are permanently published. The history of what was proposed, debated, and rejected is part of the network's provenance record.</p>
+
+    <h3>Infrastructure concentration governance</h3>
+
+    <p>Concentration thresholds across cloud providers, operating systems, and automation dependencies are protocol parameters, set and adjusted through the standard proposal process. The node consortium monitors concentration continuously. Where a threshold is approached, the consortium initiates review before it is breached. Where a breach occurs - through network growth, infrastructure changes, or the admission of a new node that tips the balance - a defined remediation period applies. A node that cannot achieve compliance within that period is subject to the standard removal process.</p>
+
+    <p>The thresholds themselves evolve as the infrastructure landscape evolves. What represents dangerous concentration today may not in five years, and vice versa. The governance process, not this paper, sets the live parameters.</p>
+
+    <h3>Treasury evolution and the network maturity threshold</h3>
+
+    <p>The revenue split described in Section 4 is not a permanent fixture. It is calibrated to the early network - covering node operational costs, incentivising participation, and funding protocol development during the period when the network is establishing credibility and scale.</p>
+
+    <p>As the network matures, the calculus changes. Node participation at sufficient scale generates revenue that materially exceeds the costs of operating infrastructure. At that point, routing the surplus primarily back to node operators creates an incentive structure the network is designed to be suspicious of: significant and growing financial returns attached to governance rights, in a network where governance is determined by node majority. The risk is not hypothetical. It is structural.</p>
+
+    <p>The protocol therefore includes a treasury maturity trigger. When the network reaches defined thresholds - measured across verified node count, geographic and sector diversity, verified data volume, and treasury reserve - the revenue split automatically adjusts. The node distribution and founding organisation allocation both reduce. The difference routes to a protected reserve governed exclusively by the node consortium, ring-fenced from operational expenditure, and subject to its own governance framework developed and ratified by the consortium at the point of trigger.</p>
+
+    <p>The purpose of that reserve is to deploy capital in support of institutions that meet the network's strict provenance criteria. The specific deployment mechanism is a matter for consortium governance at the time. It is noted here because the mechanism - automatic reallocation, consortium governance, provenance-gated access - is part of the protocol architecture, not an afterthought. The reserve is built into the network's design from the outset. What it funds is determined by the network when it has earned the right to fund anything.</p>
+
+    <h3>Succession and continuity</h3>
+
+    <p>The network is designed to survive the failure of any single participant, including the founding organisation. The protocol is open source. The verified record is distributed across all nodes. No single operator controls the treasury beyond the early operational phase. If the founding organisation fails, ceases to operate, or is removed by the board, the node consortium convenes, appoints an interim steward, and continues operation.</p>
+
+    <p>This is the design choice the network is most explicitly built around. Most organisations - even well-intentioned ones - construct themselves to persist. NPN is constructed to make itself optional to its own operation. An institution whose stated purpose is to reduce the structural harm caused by organisations that prioritise their own survival over their stated function cannot be exempt from that standard. The succession architecture is not a contingency. It is a demonstration of the principle.</p>
+
+    <p>The founding organisation's role evolves as the network matures. In the early phase it operates the genesis node, maintains the protocol, and coordinates governance. As the node consortium develops operational capacity, decision authority transfers progressively to the consortium. The endpoint is a network in which the founding organisation is one node among many, with no special authority beyond its vote. Getting there is the governance roadmap. A true public service is not subject to any one institution's survival and relevancy incentives. The most optimal outcome, in this context, is always achieved by the collective.</p>
+
+  </div>
+  <!-- end section 5 -->
+
+  <!-- SECTION 6 -->
+  <span class="section-anchor" id="s6"></span>
+  <div class="section">
+    <div class="section-label">// 06</div>
+    <h2>Protocol Independence Pathway</h2>
+
+    <p>NPN launches with a single founding organisation as genesis node and protocol steward. It does not stay that way. The transition from genesis-controlled to consortium-governed is not a future aspiration - it is a structured sequence of governance transfers, each triggered by network conditions rather than by calendar, and each moving decision authority permanently away from the founding organisation and toward the node consortium.</p>
+
+    <p>The pathway has three phases. The boundaries between them are not dates. They are thresholds.</p>
+
+    <h3>Phase 1 - Genesis</h3>
+
+    <p>The founding organisation operates the genesis node, maintains the protocol, and holds primary governance authority. The minimum operational network - three nodes - must be established before Phase 1 is considered stable. Those three founding nodes hold board representation from the outset as established in Section 5. Treasury is held centrally by the founding organisation, with full financial transparency to the board and the node network. All revenue, expenditure, and distribution is published on the network's public record.</p>
+
+    <p>Phase 1 ends when the node network reaches sufficient size and operational maturity that consortium governance becomes viable. The trigger is not a number of nodes. It is demonstrated capacity - the consortium must show it can coordinate, resolve disputes, and make protocol decisions without depending on the founding organisation to convene or arbitrate.</p>
+
+    <h3>Phase 2 - Distribution</h3>
+
+    <p>Protocol change authority transfers to the node consortium via the proposal process established in Section 5. Node admission moves to consortium vote, with the founding organisation holding one vote among many. Treasury transitions to multisig control - a defined number of node signatures required for any material financial decision, with the founding organisation holding one of those signatures but not a controlling share of them.</p>
+
+    <p>The founding organisation continues to coordinate where coordination is useful. It does not retain authority that the consortium can exercise independently. Where the two are in tension, the consortium governs.</p>
+
+    <p>Phase 2 ends when the consortium has operated independently across a sufficient range of decisions - protocol changes, node admissions, financial distributions, dispute resolutions - that the founding organisation's coordinating role has become genuinely redundant rather than merely deferrable.</p>
+
+    <h3>Phase 3 - Independence</h3>
+
+    <p>The founding organisation becomes one node among many. No special authority. One vote in the consortium. Treasury control is fully automated - revenue splits and node distributions execute without human intermediary. The protocol is self-governing. The founding organisation may continue to contribute to protocol development, propose schema changes, and participate in node governance. It does so on the same terms as every other node.</p>
+
+    <p>This is the endpoint the network is built toward from day one. Not because the founding organisation is expected to fail or to act in bad faith, but because a network whose integrity depends on the continued good conduct of any single participant is not a network with structural integrity. It is a network with a single point of trust - which is exactly what NPN exists to make unnecessary.</p>
+
+    <h3>Staged open source release</h3>
+
+    <p>The node software and protocol are committed to full open source release. That commitment is fulfilled in stages, timed to network maturity rather than to a calendar.</p>
+
+    <p>Stage one, active from launch: protocol transparency. The VDS schema, API documentation, and this white paper are published openly. Anyone can examine what the network claims to do, how data is structured, and what the submission requirements are. This stage demonstrates the open source commitment without exposing the verification logic or consensus mechanism.</p>
+
+    <p>Stage two, activated when the founding node network is stable: verification logic release. The algorithms and consensus mechanism are opened for independent security review. External scrutiny of the security model becomes possible without enabling full node replication. This stage invites challenge to the technical architecture at the point when the network has sufficient operational grounding to respond to that challenge constructively.</p>
+
+    <p>Stage three, activated when the network has reached Phase 2 maturity: full release. The complete node software is published. At this point the network has sufficient distributed legitimacy, an established verified record, and a functional node consortium that cannot be replicated by copying the codebase alone. The software is the implementation of the protocol. The verified record, the node trust network, and the governance history are what the software produces over time. Those cannot be copied.</p>
+
+    <p>The staged release is not a qualification of the open source commitment. It is a recognition that open source is a commitment to transparency of method, not a commitment to provide a head start to well-resourced actors who would replicate the architecture without the structural constraints that make it trustworthy. A network built on the same code but without the CIC asset lock, the no-interpretation principle, and the no-selective-disclosure rule is not an equivalent network. The staged release protects the genesis phase. The full release, when it comes, is complete and unqualified.</p>
+
+    <h3>Protecting the genesis phase</h3>
+
+    <p>The transition pathway described above assumes good faith participation from all node operators. The network's architecture provides structural mitigations against bad faith. But one risk warrants explicit acknowledgement: that institutions with significant resources and strong incentives to limit provenance exposure could, in theory, seek to coordinate node admissions to reach a 75% majority capable of removing the genesis node before the network has reached genuine independence.</p>
+
+    <p>The mitigation is layered. The CIC asset lock removes the primary financial incentive for capture - there is nothing to extract. The genesis node carries a time-locked removal protection: a proposal to remove the founding node cannot be initiated before the network has reached Phase 2 maturity as defined by the governance framework. And the board, which includes node representatives but maintains independent majority, retains oversight of any removal proposal affecting the genesis node during the protected period.</p>
+
+    <p>These protections are not permanent. They are calibrated to the period of maximum vulnerability - before the network has sufficient distributed legitimacy that no single coordinated action could undermine it. Once that legitimacy is established, the genesis node requires no special protection. It is one node among many and should be treated as such.</p>
+
+    <h3>Competitive integrity</h3>
+
+    <p>A network that establishes credible provenance infrastructure at global scale will attract competitors. Some of those competitors will be backed by institutions with strong incentives to offer the appearance of transparency without its structural constraints - without the asset lock that prevents acquisition, without the no-interpretation principle that prevents vested interest from shaping what data means, without the no-selective-disclosure rule that prevents institutions from curating their own provenance record.</p>
+
+    <p>These are not equivalent offerings. The structural gaps are not matters of opinion. They are detectable, describable, and publishable. The network's defence against credibility-laundering by structurally compromised competitors is the same as its defence against institutional opacity generally: provenance. What is the competitor's governance structure? Who funded it? Who sits on its board? What are their relationships with the institutions it assesses? Those questions have answers. NPN exists to make answers like those structurally available. Applying the same standard to its own competitive landscape is not aggressive. It is consistent.</p>
+
+    <h3>What does not transfer</h3>
+
+    <p>The name. The verified record. The published history of proposals, decisions, and corrections. These are not owned by the founding organisation and cannot be transferred away from the network by any single actor. The verified record is distributed. The name is embedded in the protocol. The history is permanent. These are the things that persist regardless of what happens to any individual node, including the genesis node.</p>
+
+  </div>
+  <!-- end section 6 -->
+
+  <!-- SECTION 7 -->
+  <span class="section-anchor" id="s7"></span>
+  <div class="section">
+    <div class="section-label">// 07</div>
+    <h2>Implications</h2>
+
+    <p>The sections above describe what NPN is and how it works. This section describes what changes if it works.</p>
+
+    <p>The claim is not that NPN eliminates institutional failure. Adaptive actors in constraint fields will always seek the operational frontier. That tendency is irreducible. What changes is where the frontier sits.</p>
+
+    <h3>The operational constraint frontier contracts</h3>
+
+    <p>N-ought's Law establishes that the operational frontier is determined by enforcement integrity and feedback latency. Where behaviour is visible to actors with the ability and incentive to correct it, divergence from declared function self-limits. Where it is not, divergence compounds.</p>
+
+    <p>NPN does not change enforcement. It changes visibility. Provenance data, structurally available and attributed, reduces the cost of detection for every actor with a legitimate interest in what an institution has actually done - counterparties, investors, regulators, employees, journalists, researchers, and the public. The feedback latency between action and consequence decreases. The operational frontier contracts accordingly. Not because institutions become more virtuous, but because the structural conditions that permitted opacity to compound have changed.</p>
+
+    <p>The change is not binary. It is directional. Each institution that submits to VDS moves its own operational frontier. Each data category that enters the public record narrows the space in which undisclosed relationships can accumulate. Each correction that is promptly made and permanently recorded changes the cost-benefit calculation for institutions considering whether to submit accurate data. The aggregate effect, across a sufficient node network with sufficient data volume, is a measurable reduction in the gap between declared and actual institutional behaviour - not to zero, but toward a new and lower equilibrium.</p>
+
+    <h3>The fabricated reputational layer becomes costly to maintain</h3>
+
+    <p>Every institution operating beyond the fabrication threshold maintains a fabricated reputational layer, sustained by the industrial production of familiarity signals directed at populations who will never have first-degree contact with the institution. Where provenance data is structurally available, that layer becomes progressively more expensive to sustain. Not because it is directly contradicted - NPN does not interpret or characterise institutional behaviour. But because the gap between the fabricated signal and the verifiable record becomes visible to anyone who looks.</p>
+
+    <p>The signal factory does not shut down immediately. But its output becomes progressively less credible as the provenance record grows, and the cost of maintaining a signal that diverges materially from the record grows with it. The long-run implication is that institutions face a structural incentive to align their declared and actual behaviour - not as a matter of ethics, but as a matter of cost. Fabrication becomes more expensive than authenticity. That is the mechanism. It does not require trust in institutions. It requires only that institutions respond to structural incentives, which is the one thing the framework assumes they reliably do.</p>
+
+    <h3>The correction asymmetry shifts</h3>
+
+    <p>In the current environment, the cost of exposure falls almost entirely on those doing the exposing. Investigative journalism is expensive, slow, and legally exposed. Regulatory action is resource-constrained and capturable. Whistleblowing carries personal cost that frequently exceeds any reward. The asymmetry favours opacity.</p>
+
+    <p>NPN does not eliminate that asymmetry. But it changes the baseline. Where provenance data is already in the public record, exposure requires only comparison - between what the record shows and what the institution has declared. The investigative cost falls. The evidentiary standard is easier to meet. The legal exposure of those doing the exposing is reduced because they are working from verified, attributed primary source data rather than from inference or leaked documents. The asymmetry does not reverse. It narrows. A narrower asymmetry produces more correction, more frequently, at lower cost. That is what reduced feedback latency looks like at systemic scale.</p>
+
+    <h3>The scale threshold argument revisited</h3>
+
+    <p>Beyond Nash, Section 12, establishes that scale beyond the point at which authentic corrective feedback can operate becomes structurally self-defeating. Growth that outpaces the feedback architecture available to constrain it produces not more value but more latent harm - accumulating invisibly until it surfaces at a cost that exceeds the value the growth produced.</p>
+
+    <p>NPN does not eliminate the scale threshold. But it raises it. Where provenance infrastructure exists, the feedback architecture available to constrain institutional behaviour at scale improves. The point at which growth becomes structurally self-defeating moves outward. Institutions can operate at larger scale with lower latent harm because the feedback mechanisms constraining them are more robust. This is not an argument for unlimited institutional scale. The scale threshold argument remains valid. It is an argument that the threshold is not fixed - it is a function of the feedback architecture available, and feedback architecture can be improved. NPN is that improvement.</p>
+
+    <h3>What this requires</h3>
+
+    <p>None of the above follows automatically from the network's existence. It follows from the network achieving sufficient scale, data volume, and institutional credibility that provenance data becomes a genuine input to the decisions of actors with the ability and incentive to act on it. A network with three nodes and a handful of submitting institutions changes nothing. A network with thirty nodes, global geographic coverage, and verified provenance data across thousands of institutions changes the structural conditions under which institutional behaviour operates.</p>
+
+    <p>Getting from one to the other is the work. The architecture described in this paper is designed to make that work possible - to create the structural conditions under which the network can grow without compromising the integrity that makes growth worth having. The rest is demonstrated performance over time.</p>
+
+    <p>That is the only claim NPN makes on its own behalf. Not that it will work. That it is designed correctly. Whether it works is a question the record will answer.</p>
+
+  </div>
+  <!-- end section 7 -->
+
+  <div class="doc-rule"></div>
+  <p style="font-size:10px;color:#2a3860;letter-spacing:.12em;text-align:center;">N-ought Provenance Network. White Paper. Draft.</p>
+
+</div>
+
+<footer>
+  <span>N-OUGHT PROVENANCE NETWORK</span>
+  <span>WHITE PAPER // DRAFT</span>
+</footer>
+
+<script>
+/* ── PARTICLES ── */
+const pCv = document.getElementById('particles');
+const pCx = pCv.getContext('2d');
+let W, H, parts, pSY = 0;
+
+function resize() { W = pCv.width = window.innerWidth; H = pCv.height = window.innerHeight; }
+
+function mkParts() {
+  parts = [];
+  const n = Math.floor(W * H / 6500);
+  for (let i = 0; i < n; i++) parts.push({
+    x: Math.random()*W, y: Math.random()*H*8,
+    r: Math.random()*1.8+0.2,
+    vx:(Math.random()-.5)*.1, vy:Math.random()*.07+.015,
+    op:Math.random()*.2+.04,
+    blue:Math.random()<.08, blur:Math.random()<.3
+  });
+}
+
+function drawParts() {
+  pCx.clearRect(0,0,W,H);
+  pSY += (window.scrollY - pSY)*.08;
+  const off = pSY*1.65, span = H*8;
+  for (const p of parts) {
+    let sy = ((p.y-off)%span+span)%span;
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-5) p.x=W+5; if(p.x>W+5) p.x=-5;
+    if(sy>H+20||sy<-20) continue;
+    pCx.save();
+    pCx.globalAlpha=p.op;
+    if(p.blur) pCx.filter='blur(1px)';
+    pCx.beginPath(); pCx.arc(p.x,sy,p.r,0,Math.PI*2);
+    pCx.fillStyle=p.blue?'#4a9eff':'#b8c8e0';
+    pCx.fill(); pCx.restore();
+  }
+}
+
+function loop(){ drawParts(); requestAnimationFrame(loop); }
+function init(){ resize(); mkParts(); loop(); }
+window.addEventListener('resize',()=>{resize();mkParts();},{passive:true});
+init();
+</script>
+
+</body>
+</html>
