@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Vacancy Debt - Methodology - N-ought</title>
@@ -93,6 +92,7 @@
       <div class="formula-label">Structural Gap</div>
       <div class="formula">Gap(s) = Absences / Team Size</div>
       <div class="formula-note">
+        s denotes structural, distinguishing this term from the presenteeism gap introduced below.<br>
         For a team of 5 with 1 absence: Gap(s) = 1/5 = 20%<br>
         For a team of 5 with 2 absences: Gap(s) = 2/5 = 40%<br>
         This is the floor. Actual loss is always higher.
@@ -149,6 +149,7 @@
       <div class="formula-label">Presenteeism Gap</div>
       <div class="formula">Gap(p) = Structural Output x Productivity Decline</div>
       <div class="formula-note">
+        p denotes presenteeism.<br>
         Where Structural Output = Remaining Team / Team Size<br>
         And Productivity Decline scales with workload intensity and duration of exposure.<br>
         The calculator allows this input to be set by the user within the evidence range (13-50%).
@@ -335,6 +336,7 @@
       <div class="formula-label">Total Output Gap</div>
       <div class="formula">Gap(total) = Gap(s) + Gap(p)</div>
       <div class="formula-note">
+        Gap(s) is the structural gap (section 02). Gap(p) is the presenteeism gap (section 03).<br>
         Annual Productivity Loss = Gap(total) x Team Size x Output Value per Person<br>
         Net Loss = Annual Productivity Loss - Salary Saved<br>
         Cascade Cost adds: sick pay during absence + recruitment cost on exit + compounding productivity loss on reduced team
