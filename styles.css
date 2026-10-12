@@ -4,8 +4,9 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --bg:#070810;--accent:#4a9eff;--accent-mid:#1a2a7a;--accent-deep:#0d1033;
-    --text:#c8d4e8;--text-dim:#6a7fa0;--text-faint:#1a2240;
-    --text-ghost:#4a5880;
+    --text:#c8d4e8;--text-dim:#556688;--text-faint:#323c5c;
+    --text-ghost:#2a3860;
+    --text-code:#1a2240;
     --mono:'Courier New',Courier,monospace;--serif:Georgia,'Times New Roman',serif;
   }
   html { scroll-behavior:smooth; }
@@ -55,7 +56,7 @@
 
   .paper-subtitle {
     font-size:12px;
-    color:#7a8faa;
+    color:#98aeca;
     letter-spacing:.06em;
     font-style:italic;
     margin-bottom:48px;
@@ -99,7 +100,7 @@
   .toc li {
     counter-increment:toc;
     font-size:11px;
-    color:#7a8faa;
+    color:#98aeca;
     letter-spacing:.05em;
     padding:5px 0;
     border-bottom:.5px solid var(--text-faint);
@@ -111,7 +112,7 @@
 
   .toc li::before {
     content:counter(toc,decimal-leading-zero);
-    color:var(--text-faint);
+    color:var(--text-code);
     font-size:9px;
     letter-spacing:.1em;
     flex-shrink:0;
@@ -119,7 +120,7 @@
   }
 
   .toc a {
-    color:#7a8faa;
+    color:#98aeca;
     text-decoration:none;
     transition:color .2s;
   }
@@ -162,7 +163,7 @@
 
   .abstract p {
     font-size:12px;
-    color:#7a8faa;
+    color:#98aeca;
     line-height:1.9;
     letter-spacing:.04em;
     margin-bottom:16px;
@@ -217,7 +218,7 @@
 
   .section p {
     font-size:12px;
-    color:#7a8faa;
+    color:#98aeca;
     line-height:1.9;
     letter-spacing:.04em;
     margin-bottom:20px;
@@ -233,7 +234,7 @@
 
   .section ul li, .section ol li {
     font-size:12px;
-    color:#7a8faa;
+    color:#98aeca;
     line-height:1.9;
     letter-spacing:.04em;
     padding:4px 0 4px 20px;
@@ -246,7 +247,7 @@
     content:'—';
     position:absolute;
     left:0;
-    color:var(--text-faint);
+    color:var(--text-code);
   }
 
   .section ol { counter-reset:ol; }
@@ -255,7 +256,7 @@
     content:counter(ol)'.';
     position:absolute;
     left:0;
-    color:var(--text-faint);
+    color:var(--text-code);
     font-size:10px;
   }
 
@@ -287,7 +288,7 @@
 
   .callout p {
     font-size:11px;
-    color:#7a8faa;
+    color:#98aeca;
     line-height:1.9;
     letter-spacing:.04em;
     margin-bottom:12px;
@@ -298,7 +299,7 @@
 
   /* STRONG / EM */
   strong { color:var(--accent);font-weight:normal;letter-spacing:.02em;opacity:.9; }
-  em { color:#7a8faa;font-style:italic; }
+  em { color:#98aeca;font-style:italic; }
 
   /* FORMULA BLOCK */
   .formula {
@@ -315,7 +316,7 @@
   .formula-var {
     margin-top:16px;
     font-size:11px;
-    color:#7a8faa;
+    color:#98aeca;
     line-height:2;
     letter-spacing:.04em;
   }
@@ -448,7 +449,7 @@
   .appendix-tag {
     font-size:9px;
     letter-spacing:.3em;
-    color:var(--text-faint);
+    color:var(--text-code);
     text-transform:uppercase;
     margin-bottom:12px;
   }
@@ -458,7 +459,7 @@
     display:inline-block;
     font-size:10px;
     letter-spacing:.2em;
-    color:#7a8faa;
+    color:#98aeca;
     text-decoration:none;
     text-transform:uppercase;
     margin-bottom:64px;
@@ -467,7 +468,7 @@
   .back-link:hover { color:var(--accent); }
 
   /* FOOTER */
-  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-faint);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
+  footer { position:relative;z-index:10;padding:20px 48px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:var(--text-ghost);letter-spacing:.1em;border-top:.5px solid var(--text-faint); }
 
   @media(max-width:860px){
     nav { padding:20px 24px; }
