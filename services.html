@@ -246,7 +246,7 @@
         <!-- RIGHT COLUMN: Productivity + cascade -->
         <div>
           <div class="input-group">
-            <label class="input-label" for="prodDecline">Productivity decline per affected worker</label>
+            <label class="input-label" for="prodDecline">Productivity decline at 125% workload (one absence in a team of five); scaled down for smaller overloads</label>
             <span class="input-sublabel">Presenteeism effect on remaining staff under sustained overload</span>
             <div class="slider-wrap">
               <div class="slider-row">
@@ -300,7 +300,7 @@
         </div>
 
         <div class="calc-note">
-          <p>The model makes conservative assumptions throughout. Productivity decline is set at the user-specified value within the evidence range. Cascade probability is derived from Aiken et al. (JAMA 2002), RCN 2025, Workhuman UK 2023, and BMJ Open 2023, adjusted downward to reflect the gap between stated intent and observed exit rates. The cascade scenario assumes one additional absence following cascade onset; actual outcomes compound. Figures are directional, not actuarial.</p>
+          <p>The model makes conservative assumptions throughout. Productivity decline is set at the user-specified value within the evidence range. The productivity decline and the cascade probabilities scale with the extra workload each remaining person carries, reaching the stated values at 125% workload. Cascade probability is derived from Aiken et al. (JAMA 2002), RCN 2025, Workhuman UK 2023, and BMJ Open 2023, adjusted downward to reflect the gap between stated intent and observed exit rates. The cascade scenario assumes one additional absence following cascade onset; actual outcomes compound. Figures are directional, not actuarial.</p>
         </div>
 
         <div class="method-link-row">
@@ -432,21 +432,31 @@ function fmt(n) {
   return '£' + Math.round(n);
 }
 function fmtFull(n) {
-  return '£' + Math.round(n).toLocaleString('en-GB');
+  const r = Math.round(n);
+  return (r < 0 ? '−£' : '£') + Math.abs(r).toLocaleString('en-GB');
+}
+
+/* ─── WORKLOAD INTENSITY ─── */
+// Extra workload per remaining person, as a fraction of the 125% calibration point
+// (1 absence from 5-person team): 0 at 100% workload, rising linearly to 1 at 125%.
+function workloadIntensity(workloadRatio) {
+  return Math.min(1, Math.max(0, (workloadRatio - 1) / 0.25));
 }
 
 /* ─── CASCADE PROBABILITY ─── */
-// Base probabilities at 125% workload (1 absence from 5-person team).
-// Scale with workload intensity (each 5pp above 125% adds ~10pp to probability, capped at 97%).
+// Base probabilities at 125% workload (1 absence from 5-person team): the cumulative chance
+// that cascade has occurred by each month. Scale with workload intensity (each 5pp above 125%
+// raises probabilities by 10% of their value, capped at 97%).
 function cascadeProb(months, workloadRatio) {
-  // Base probabilities apply at any understaffing (ratio >= 1.0).
+  // Below 125% workload, base probabilities scale down with workload intensity.
   // Above 125% workload, probabilities scale up proportionally, capped at 0.97.
-  const base = { 3:0.15, 6:0.45, 12:0.68, 18:0.85, 24:0.95 };
+  const base = { 3:0.15, 6:0.45, 12:0.68, 18:0.85, 24:0.95, 36:0.97 };
+  const intensity = workloadIntensity(workloadRatio);
   const excess = Math.max(0, workloadRatio - 1.25);
   const scale = 1 + excess * 2;
   const result = {};
   for (const [m, p] of Object.entries(base)) {
-    result[m] = Math.min(0.97, p * scale);
+    result[m] = Math.min(0.97, p * intensity * scale);
   }
   return result;
 }
@@ -460,7 +470,7 @@ function run() {
   const sickLeave   = Math.max(0, parseInt(document.getElementById('sickLeave').value) || 0);
   const absences    = Math.min(teamSize - 1, vacancies + sickLeave) || 1;
   const salary      = parseFloat(document.getElementById('salary').value) || 35000;
-  const outputVal   = parseFloat(document.getElementById('outputVal').value) || 50000;
+  const outputVal   = parseFloat(document.getElementById('outputVal').value) || 70000;
   const prodPct     = parseFloat(document.getElementById('prodDecline').value) / 100;
   const fullPayMo   = parseFloat(document.getElementById('fullPayMonths').value) || 0;
   const halfPayMo   = parseFloat(document.getElementById('halfPayMonths').value) || 0;
@@ -468,12 +478,13 @@ function run() {
 
   const remaining = teamSize - absences;
   const workloadRatio = teamSize / remaining;
+  const intensity = workloadIntensity(workloadRatio);
 
   // Structural gap: fraction of output structurally unavailable
   const structGap = absences / teamSize;
 
-  // Presenteeism gap: on remaining staff
-  const presentGap = (remaining / teamSize) * prodPct;
+  // Presenteeism gap: on remaining staff, scaled by the extra workload each carries
+  const presentGap = (remaining / teamSize) * prodPct * intensity;
 
   // Total annual output gap (no cascade)
   const totalGap = structGap + presentGap;
@@ -496,7 +507,8 @@ function run() {
   const extraAbsences   = Math.min(teamSize - 1, absences + 1);
   const extraRemaining  = Math.max(1, teamSize - extraAbsences);
   const extraStructGap  = extraAbsences / teamSize;
-  const extraPresentGap = (extraRemaining / teamSize) * prodPct;
+  const extraIntensity  = workloadIntensity(teamSize / extraRemaining);
+  const extraPresentGap = (extraRemaining / teamSize) * prodPct * extraIntensity;
   const extraTotalGap   = extraStructGap + extraPresentGap;
   const extraMonthlyLoss = Math.max(0, (extraTotalGap * teamSize * outputVal - annualLossNoCascade) / 12);
 
@@ -505,10 +517,10 @@ function run() {
   // each month after trigger costs 5% more than the previous month's increment (1.05^n),
   // modelling accelerating degradation as the reduced team deteriorates further.
   const cascadeTriggers = [3, 6, 12, 18, 24, 36];
-  const baseMonthlyIncrease = (annualLossNoCascade / 12) * 1.5; // 50% worse monthly rate post-cascade
+  const baseMonthlyIncrease = annualLossNoCascade / 12 + extraMonthlyLoss; // monthly loss with one additional absence
 
   const cascadeLines = cascadeTriggers.map(triggerMo => {
-    const prob = probs[triggerMo] !== undefined ? probs[triggerMo] : 0.97;
+    const prob = probs[triggerMo];
     const line = new Array(months).fill(null);
 
     // Up to trigger: follow no-cascade
@@ -539,11 +551,17 @@ function run() {
   // Render summary cells
   const net12 = noCascadeLine[11] - salaryLine[11];
   const net36 = noCascadeLine[35] - salaryLine[35];
-  // Expected cascade cost at 36mo: probability-weighted across trigger points
-  const cascade36 = cascadeLines.reduce((sum, { line, prob }) => {
-    const val = line[35];
-    return val !== null ? sum + prob * val : sum;
-  }, 0) / cascadeLines.filter(({ line }) => line[35] !== null).length - salaryLine[35];
+  // Expected cascade cost at 36mo: each branch is weighted by the chance that cascade first
+  // fires in the interval ending at its trigger point (probs are cumulative); the chance
+  // that it never fires stays on the no-cascade line.
+  let firedProb = 0;
+  let expected36 = 0;
+  for (const { line, prob } of cascadeLines) {
+    expected36 += (prob - firedProb) * line[35];
+    firedProb = prob;
+  }
+  expected36 += (1 - firedProb) * noCascadeLine[35];
+  const cascade36 = expected36 - salaryLine[35];
 
   document.getElementById('summaryGrid').innerHTML = `
     <div class="summary-cell">
@@ -559,7 +577,7 @@ function run() {
     <div class="summary-cell">
       <div class="summary-cell-label">Expected cascade cost (36 mo)</div>
       <div class="summary-cell-val warn">${fmtFull(cascade36)}</div>
-      <div class="summary-cell-sub">Net loss under cascade scenario</div>
+      <div class="summary-cell-sub">Probability-weighted loss, with and without cascade, minus salary saved</div>
     </div>
   `;
 

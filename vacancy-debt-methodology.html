@@ -212,7 +212,7 @@
       </div>
     </div>
 
-    <p>The probability of cascade increases with both time and workload intensity. The base probabilities below reflect a team operating at 125% workload (one absence from a five-person team). Higher workload intensity accelerates these timelines proportionally.</p>
+    <p>The probability of cascade increases with both time and workload intensity. The base probabilities below reflect a team operating at 125% workload (one absence from a five-person team). Higher workload intensity accelerates these timelines proportionally. Below 125% workload, the probabilities scale down in proportion to the extra workload each remaining person carries.</p>
 
     <table class="data-table">
       <tr>
@@ -325,11 +325,11 @@
     <div class="section-label">// 08</div>
     <h2>The Model</h2>
 
-    <p>The Vacancy Debt Calculator operationalises the three-component model described in this paper. The inputs are: team size, number of absences, median salary, output value per person, productivity decline (user-set within the evidence range), sick pay duration applicable to the team, and recruitment cost if cascade produces exit rather than sick leave.</p>
+    <p>The Vacancy Debt Calculator operationalises the three-component model described in this paper. The inputs are: team size, number of absences, median salary, output value per person, productivity decline (user-set within the evidence range), sick pay duration applicable to the team, and recruitment cost if cascade produces exit rather than sick leave. The productivity decline and the cascade probabilities scale with the extra workload each remaining person carries, reaching the stated values at 125% workload.</p>
 
-    <p>The outputs are three cost trajectories over 36 months: the salary the organisation believes it is saving, the productivity loss in the no-cascade scenario, and the cascade scenario triggered at the probability thresholds documented in Section 05. The gap between the first and second lines is the minimum cost of the vacancy. The gap between the first and third is the expected cost once cascade probability is factored in.</p>
+    <p>The outputs are three cost trajectories over 36 months: the salary the organisation believes it is saving, the productivity loss in the no-cascade scenario, and the cascade scenario triggered at the probability thresholds documented in Section 05. The gap between the first and second lines is the minimum cost of the vacancy. The gap between the first and third is the expected cost once cascade probability is factored in. Each cascade branch is weighted by the probability that cascade first occurs in the interval ending at its trigger point, and the probability that it does not occur within 36 months stays on the no-cascade line.</p>
 
-    <p>The model makes conservative assumptions throughout. The productivity decline default is set at the lower bound of the evidence range. The cascade probability curve reflects stated intent adjusted for the gap between intent and action. The error-correction loop and moral distress mechanisms are not separately quantified, meaning the model underestimates the true cost in clinical environments relative to generic service sector contexts.</p>
+    <p>The model makes conservative assumptions throughout. The productivity decline default (20%) sits towards the lower end of the evidence range (13-50%). The cascade probability curve reflects stated intent adjusted for the gap between intent and action. The error-correction loop and moral distress mechanisms are not separately quantified, meaning the model underestimates the true cost in clinical environments relative to generic service sector contexts.</p>
 
     <p>The model's purpose is directional accuracy rather than false precision. The specific figures it produces will vary with input assumptions. The relationship between the figures is structurally stable: the cost of a vacancy is always substantially larger than the salary being saved, and it grows with time in a non-linear way that linear budget thinking does not capture.</p>
 
